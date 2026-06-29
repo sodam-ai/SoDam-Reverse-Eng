@@ -1,0 +1,16 @@
+{
+  "_comment": "분석 중 발견한 시크릿을 보고서·로그에 평문 노출/저장하지 않도록 마스킹할 때 참조하는 정규식 목록 (PRD 01 §8.4). AI(1층)가 보고서 작성 시, 그리고 향후 로그 기록 시 적용한다.",
+  "patterns": [
+    { "name": "anthropic_key", "regex": "sk-ant-[A-Za-z0-9_-]{20,}" },
+    { "name": "generic_sk_key", "regex": "sk-[A-Za-z0-9]{20,}" },
+    { "name": "openai_proj_key", "regex": "sk-proj-[A-Za-z0-9_-]{20,}" },
+    { "name": "aws_access_key", "regex": "AKIA[0-9A-Z]{16}" },
+    { "name": "github_pat", "regex": "ghp_[A-Za-z0-9]{36}" },
+    { "name": "google_api_key", "regex": "AIza[0-9A-Za-z_-]{35}" },
+    { "name": "slack_token", "regex": "xox[baprs]-[0-9A-Za-z-]{10,}" },
+    { "name": "private_key_block", "regex": "-----BEGIN [A-Z ]*PRIVATE KEY-----" },
+    { "name": "jwt", "regex": "eyJ[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+" },
+    { "name": "kv_secret", "regex": "(?i)(password|passwd|secret|token|api[_-]?key|access[_-]?key)\\s*[:=]\\s*['\"]?[^'\"\\s]{6,}" }
+  ],
+  "_mask_with": "••••(마스킹됨)"
+}

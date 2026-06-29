@@ -1,0 +1,26 @@
+# SoDam-Reverse-Eng
+
+# 분석 결과(보고서) — 로컬 전용, 유출 방지
+.sodam-re/
+
+# 의존성 / 로그 / OS
+node_modules/
+*.log
+.DS_Store
+Thumbs.db
+
+# 환경설정 (시크릿 추적 금지)
+.env
+.env.*
+
+# 내부 기획 문서 (GitHub 푸시 금지)
+.PRD/
+
+# PDF 중간 생성 HTML 임시 파일
+/*.html
+
+# 로컬 전용 플러그인 설정 및 캐시
+.omc/
+.plugin-config/
+.todos-report.md/
+.complexity-log.md

@@ -1,0 +1,8 @@
+{
+  "name": "sodam-reverse",
+  "version": "0.1.0",
+  "description": "검증된 리버스 엔지니어링 엔진을 한국어·초보 UX와 코드레벨 안전장치(3층)로 감싼 Claude Code 플러그인. 방어·교육·본인 소유물 전용.",
+  "author": { "name": "SoDam AI Studio" },
+  "license": "Apache-2.0",
+  "keywords": ["reverse-engineering", "security", "korean", "beginner", "sodam", "defensive"]
+}

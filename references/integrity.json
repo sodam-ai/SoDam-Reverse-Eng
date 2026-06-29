@@ -1,0 +1,5 @@
+{
+  "_note": "/re-selftest 또는 node hooks/_selftest.mjs 실행 후 출력된 SHA-256 해시로 채우세요.",
+  "_example": "{ \"hooks/re-deny-guard.mjs\": \"abc123...\" }",
+  "hooks/re-deny-guard.mjs": "8403cb13384f9b8aac5bf7e82ab0abb7b8fe00de21bc9cbf6723c389bcdd4b66"
+}

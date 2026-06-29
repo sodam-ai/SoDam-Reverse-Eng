@@ -1,0 +1,15 @@
+SoDam-Reverse-Eng
+Copyright 2026 SoDam AI Studio
+
+This product is licensed under the Apache License, Version 2.0.
+You may obtain a copy of the License in the LICENSE file or at
+http://www.apache.org/licenses/LICENSE-2.0
+
+---
+
+이 플러그인은 외부 리버스 엔지니어링 도구를 **번들하지 않고 "외부 설치 안내(wrap)"** 방식으로 연동합니다.
+각 외부 도구(예: Ghidra, JADX, Apktool, Frida, ghidra-mcp, ida-pro-mcp, android-reverse-engineering-skill 등)는
+**각자의 라이선스**를 따릅니다. 해당 도구를 설치·사용할 때는 그 도구의 LICENSE/NOTICE를 확인하세요.
+번들이 필요해지는 경우, 각 도구의 LICENSE/NOTICE를 함께 동봉해야 합니다.
+
+IDA Pro 등 상용 도구는 사용자 본인의 정식 라이선스가 필요합니다.

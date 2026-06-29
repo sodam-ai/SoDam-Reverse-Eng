@@ -1,0 +1,79 @@
+{
+  "_note": "큐레이션된 외부 MCP/도구 연결 설정. Phase별 wrap 구현 후 활성화. (PRD 04_PROJECT_SPEC 구조 §mcp/)",
+  "version": 1,
+  "snapshot_date": "2026-06-28",
+  "servers": [
+    {
+      "id": "android-re",
+      "name": "android-reverse-engineering-skill",
+      "phase": "P2",
+      "source": "SimoneAvogadro/android-reverse-engineering-skill",
+      "trust_tier": "verified",
+      "license": "Apache-2.0",
+      "stars": 6200,
+      "capabilities": ["APK 분석", "API 추출", "Kotlin 복원", "JADX/Apktool 기반"],
+      "requires": ["JADX", "Apktool", "Java"],
+      "status": "pending-wrap",
+      "skill_target": "skills/re-analyze-android/SKILL.md"
+    },
+    {
+      "id": "ghidra-mcp",
+      "name": "ghidra-mcp",
+      "phase": "P3",
+      "source": "bethington/ghidra-mcp",
+      "trust_tier": "verified",
+      "license": "Apache-2.0",
+      "tools_count": 251,
+      "capabilities": ["바이너리 역공학", "함수 분석", "어셈블리 분석", "251 tools"],
+      "requires": ["Ghidra (무료)", "Java 17+"],
+      "status": "pending-wrap",
+      "skill_target": "skills/re-analyze-binary/SKILL.md"
+    },
+    {
+      "id": "ida-pro-mcp",
+      "name": "ida-pro-mcp",
+      "phase": "P3",
+      "source": "mrexodia/ida-pro-mcp",
+      "trust_tier": "verified",
+      "license": "MIT",
+      "stars": 9700,
+      "capabilities": ["IDA Pro 연동", "바이너리 분석", "디버거"],
+      "requires": ["IDA Pro (상용 라이선스 필요 — 본인 구매)"],
+      "status": "optional",
+      "note": "IDA Pro 상용 라이선스 보유 사용자만"
+    },
+    {
+      "id": "malware-analysis",
+      "name": "malware-analysis-claude-skills",
+      "phase": "P3",
+      "source": "gl0bal01/malware-analysis-claude-skills",
+      "trust_tier": "verified",
+      "license": "MIT",
+      "capabilities": ["악성코드 분석", "Orchestrator + 5 스킬 라우팅"],
+      "requires": ["격리 VM (REMnux/FlareVM 권장)", "네트워크 차단 환경"],
+      "status": "pending-wrap"
+    },
+    {
+      "id": "ios-re",
+      "name": "iOS-reverse-engineering-claude-skill",
+      "phase": "backlog",
+      "source": "incogbyte/iOS-reverse-engineering-claude-skill",
+      "trust_tier": "conditional",
+      "capabilities": ["iOS IPA 분석", "Objective-C/Swift 역공학"],
+      "status": "backlog-review",
+      "note": "원본 목록 누락분 — Phase 2~3 사이 검토 예정"
+    }
+  ],
+  "excluded": [
+    {
+      "source": "DaCodeChick/GhidraMCP",
+      "reason": "archived(폐기) — 2026-06-28 실측",
+      "tier": "excluded"
+    },
+    {
+      "source": "LaurieWired/ghidra-mcp",
+      "reason": "1년 이상 업데이트 정체 — 2026-06-28 실측",
+      "tier": "excluded"
+    }
+  ]
+}
