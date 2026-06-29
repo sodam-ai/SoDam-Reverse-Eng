@@ -163,17 +163,43 @@ node scripts/re-inject-harness.mjs
 
 Claude Code 채팅창에 아래를 입력하세요:
 
-**방법 A — GitHub에서 (공개 후 권장):**
-```
-/plugin marketplace add sodam-ai/SoDam-Reverse-Eng
-```
+> 📦 **이 플러그인은 비공개 저장소입니다.**
+> 아래 두 방법 중 받은 방식에 맞는 것을 선택하세요.
 
-**방법 B — 내 컴퓨터 폴더에서 (현재 개발 단계):**
-```
-/plugin marketplace add D:\AI_Dev_Work\2026y\26y_06m_30d_SoDam-Reverse-Eng
-```
+---
 
-> 💡 방법 B의 경로는 실제 플러그인 폴더 경로로 바꿔 입력하세요.
+**방법 A — GitHub 저장소에서 복제 (저장소 초대를 받은 분)**
+
+> ⚠️ GitHub 계정이 필요하며, 저장소 접근 권한(초대)이 있어야 합니다.
+> 초대 요청: startmxk@gmail.com
+
+1. PowerShell(검은 창)을 열고 복제 명령어 입력:
+   ```powershell
+   git clone https://github.com/sodam-ai/SoDam-Reverse-Eng.git
+   ```
+   → 현재 폴더 안에 `SoDam-Reverse-Eng` 폴더가 생성됩니다.
+
+2. 복제된 폴더 경로 확인 (예: `C:\Users\내이름\SoDam-Reverse-Eng`)
+
+3. Claude Code 채팅창에 해당 경로로 입력:
+   ```
+   /plugin marketplace add C:\Users\내이름\SoDam-Reverse-Eng
+   ```
+   > 💡 `내이름` 부분을 실제 사용자 이름으로 바꿔 입력하세요.
+
+---
+
+**방법 B — 폴더/압축 파일로 전달받은 분 (git 불필요)**
+
+1. 받은 zip 파일의 압축을 풀거나 폴더를 원하는 위치에 저장
+   (예: `C:\Users\내이름\SoDam-Reverse-Eng`)
+
+2. Claude Code 채팅창에 실제 경로 입력:
+   ```
+   /plugin marketplace add C:\Users\내이름\SoDam-Reverse-Eng
+   ```
+   > 💡 경로에 공백이 포함된 경우 큰따옴표로 감싸세요:
+   > `/plugin marketplace add "C:\내 이름 포함 경로\SoDam-Reverse-Eng"`
 
 ### 단계 2: 플러그인 설치
 
@@ -583,9 +609,10 @@ node scripts/re-inject-harness.mjs
 
 ## 14. 연락·기여
 
-- **버그 신고 · 기능 요청:** GitHub Issues (공개 후 활성화)
+- **버그 신고 · 기능 요청:** [GitHub Issues](https://github.com/sodam-ai/SoDam-Reverse-Eng/issues) (저장소 초대된 분만 접근 가능) 또는 이메일
 - **이메일:** startmxk@gmail.com
-- **기여 방법:** Fork → 수정 → Pull Request (Apache-2.0 라이선스 적용)
+- **GitHub 저장소:** https://github.com/sodam-ai/SoDam-Reverse-Eng (비공개 — 초대 필요)
+- **기여 방법:** 이메일로 먼저 연락 → 협의 후 진행 (비공개 저장소)
 
 ---
 

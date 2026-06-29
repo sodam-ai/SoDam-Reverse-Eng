@@ -161,17 +161,43 @@ If not, install Claude Code from the Anthropic official website.
 
 Type one of the following in the Claude Code chat:
 
-**Option A — From GitHub (recommended after public release):**
-```
-/plugin marketplace add sodam-ai/SoDam-Reverse-Eng
-```
+> 📦 **This is a private repository.**
+> Choose the method below that matches how you received the plugin.
 
-**Option B — From local folder (current development phase):**
-```
-/plugin marketplace add D:\AI_Dev_Work\2026y\26y_06m_30d_SoDam-Reverse-Eng
-```
+---
 
-> 💡 Replace the path in Option B with the actual plugin folder path on your machine.
+**Option A — Clone from GitHub (for invited repository members)**
+
+> ⚠️ You need a GitHub account and access permission (invitation) to the repository.
+> Request an invitation: startmxk@gmail.com
+
+1. Open PowerShell (black window) and run the clone command:
+   ```powershell
+   git clone https://github.com/sodam-ai/SoDam-Reverse-Eng.git
+   ```
+   → A folder named `SoDam-Reverse-Eng` will be created in your current directory.
+
+2. Note the path to the cloned folder (e.g., `C:\Users\YourName\SoDam-Reverse-Eng`)
+
+3. In the Claude Code chat, type:
+   ```
+   /plugin marketplace add C:\Users\YourName\SoDam-Reverse-Eng
+   ```
+   > 💡 Replace `YourName` with your actual Windows username.
+
+---
+
+**Option B — Received as a folder or zip file (no git required)**
+
+1. Unzip the received file or place the folder in a convenient location
+   (e.g., `C:\Users\YourName\SoDam-Reverse-Eng`)
+
+2. In the Claude Code chat, type the actual path:
+   ```
+   /plugin marketplace add C:\Users\YourName\SoDam-Reverse-Eng
+   ```
+   > 💡 If the path contains spaces, wrap it in double quotes:
+   > `/plugin marketplace add "C:\My Folder\SoDam-Reverse-Eng"`
 
 ### Step 2: Install the Plugin
 
@@ -566,9 +592,10 @@ node scripts/re-inject-harness.mjs
 
 ## 14. Contact · Contributing
 
-- **Bug reports and feature requests:** GitHub Issues (active after public release)
+- **Bug reports and feature requests:** [GitHub Issues](https://github.com/sodam-ai/SoDam-Reverse-Eng/issues) (accessible to invited members only) or by email
 - **Email:** startmxk@gmail.com
-- **How to contribute:** Fork → Modify → Pull Request (Apache-2.0 license applies)
+- **GitHub repository:** https://github.com/sodam-ai/SoDam-Reverse-Eng (private — invitation required)
+- **How to contribute:** Contact by email first → discuss and proceed (private repository)
 
 ---
 

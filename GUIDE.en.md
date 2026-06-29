@@ -133,17 +133,31 @@ claude
 
 In the Claude Code chat, type:
 
-**Option A — From local folder (current development phase, use this):**
-```
-/plugin marketplace add D:\AI_Dev_Work\2026y\26y_06m_30d_SoDam-Reverse-Eng
-```
+> 📦 **This is a private repository. Choose the method below that matches how you received the plugin.**
 
-> The path above is the plugin folder path. Replace it with your actual path.
+**Option A — Clone from GitHub (for invited repository members)**
 
-**Option B — From GitHub (recommended after public release):**
-```
-/plugin marketplace add sodam-ai/SoDam-Reverse-Eng
-```
+> ⚠️ Requires a GitHub account and repository invitation. Request: startmxk@gmail.com
+
+1. In PowerShell, run the clone command:
+   ```powershell
+   git clone https://github.com/sodam-ai/SoDam-Reverse-Eng.git
+   ```
+2. Note the path to the cloned folder (e.g., `C:\Users\YourName\SoDam-Reverse-Eng`)
+3. In the Claude Code chat, type:
+   ```
+   /plugin marketplace add C:\Users\YourName\SoDam-Reverse-Eng
+   ```
+   > Replace `YourName` with your actual Windows username.
+
+**Option B — Received as folder or zip file (no git required)**
+
+1. Unzip the received file to a convenient location (e.g., `C:\Users\YourName\SoDam-Reverse-Eng`)
+2. In the Claude Code chat, type the actual path:
+   ```
+   /plugin marketplace add C:\Users\YourName\SoDam-Reverse-Eng
+   ```
+   > If the path has spaces: `/plugin marketplace add "C:\My Folder\SoDam-Reverse-Eng"`
 
 ---
 
@@ -1207,13 +1221,15 @@ Yes, under the Apache-2.0 license. You must document what changes you made and i
 
 **Q18. I want to suggest a new feature.**
 
-Please submit a suggestion in GitHub Issues (activated after public release).
+Please send your suggestion by email (startmxk@gmail.com).
+If you have been invited to the repository, you can also post in [GitHub Issues](https://github.com/sodam-ai/SoDam-Reverse-Eng/issues).
 
 ---
 
 **Q19. I found a bug.**
 
-Please report it in GitHub Issues. Include what you typed, what result appeared, and what you expected.
+Please report it by email (startmxk@gmail.com). Include what you typed, what result appeared, and what you expected.
+If you have been invited to the repository, you can also use [GitHub Issues](https://github.com/sodam-ai/SoDam-Reverse-Eng/issues).
 
 ---
 

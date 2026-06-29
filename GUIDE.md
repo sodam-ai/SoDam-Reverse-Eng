@@ -134,17 +134,31 @@ claude
 
 Claude Code 채팅창에 아래를 입력:
 
-**방법 A — 내 컴퓨터 폴더에서 (현재 개발 단계, 이것 사용):**
-```
-/plugin marketplace add D:\AI_Dev_Work\2026y\26y_06m_30d_SoDam-Reverse-Eng
-```
+> 📦 **이 플러그인은 비공개 저장소입니다. 받은 방식에 따라 아래 중 하나를 선택하세요.**
 
-> 💡 위 경로는 플러그인 폴더의 실제 경로입니다. 실제 경로로 바꿔 입력하세요.
+**방법 A — GitHub 저장소에서 복제 (저장소 초대를 받은 분)**
 
-**방법 B — GitHub에서 (공개 후 권장):**
-```
-/plugin marketplace add sodam-ai/SoDam-Reverse-Eng
-```
+> ⚠️ GitHub 계정 + 저장소 초대 필요. 초대 요청: startmxk@gmail.com
+
+1. PowerShell에서 복제:
+   ```powershell
+   git clone https://github.com/sodam-ai/SoDam-Reverse-Eng.git
+   ```
+2. 복제된 폴더 경로 확인 (예: `C:\Users\내이름\SoDam-Reverse-Eng`)
+3. Claude Code 채팅창에 입력:
+   ```
+   /plugin marketplace add C:\Users\내이름\SoDam-Reverse-Eng
+   ```
+   > 💡 `내이름`을 실제 윈도우 사용자 이름으로 바꾸세요.
+
+**방법 B — 폴더/압축 파일로 전달받은 분 (git 불필요)**
+
+1. 받은 파일을 원하는 위치에 압축 해제 (예: `C:\Users\내이름\SoDam-Reverse-Eng`)
+2. Claude Code 채팅창에 실제 경로 입력:
+   ```
+   /plugin marketplace add C:\Users\내이름\SoDam-Reverse-Eng
+   ```
+   > 💡 경로에 공백이 있으면: `/plugin marketplace add "C:\내 폴더\SoDam-Reverse-Eng"`
 
 ---
 
@@ -1070,7 +1084,7 @@ node D:\내플러그인폴더\hooks\_selftest.mjs
 
 **해결:**
 1. 해당 보고서 파일 삭제
-2. GitHub Issues에 신고
+2. 이메일(startmxk@gmail.com) 또는 [GitHub Issues](https://github.com/sodam-ai/SoDam-Reverse-Eng/issues)에 신고
 
 **보고서 파일 삭제:**
 ```powershell
@@ -1229,14 +1243,16 @@ Apache-2.0 라이선스에 따라 수정 가능합니다.
 
 **Q18. 새 기능을 제안하고 싶어요**
 
-GitHub Issues에 제안해 주세요 (GitHub 공개 후 활성화).
+이메일(startmxk@gmail.com)로 제안해 주세요.
+저장소 초대를 받은 분은 [GitHub Issues](https://github.com/sodam-ai/SoDam-Reverse-Eng/issues)에도 작성 가능합니다.
 
 ---
 
 **Q19. 버그를 발견했어요**
 
-GitHub Issues에 신고해 주세요. 어떤 명령어를 입력했는지,
+이메일(startmxk@gmail.com)로 신고해 주세요. 어떤 명령어를 입력했는지,
 어떤 결과가 나왔는지, 기대했던 결과가 무엇인지 포함해 주세요.
+저장소 초대를 받은 분은 [GitHub Issues](https://github.com/sodam-ai/SoDam-Reverse-Eng/issues)에도 신고 가능합니다.
 
 ---
 
