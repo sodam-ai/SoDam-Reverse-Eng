@@ -24,6 +24,7 @@
 12. [Troubleshooting · FAQ](#12-troubleshooting--faq)
 13. [License · Copyright · Commercial Use](#13-license--copyright--commercial-use)
 14. [Contact · Contributing](#14-contact--contributing)
+15. [Update Summary](#15-update-summary)
 
 ---
 
@@ -378,7 +379,7 @@ SoDam-Reverse-Eng/
 │   └── hooks.json               ← Hook configuration
 │
 ├── references/                  ← Data and rule files
-│   ├── deny-corpus.json         ← 43 dangerous patterns
+│   ├── deny-corpus.json         ← 48 keywords + 5 regex
 │   ├── mask-patterns.json       ← 10 masking rules
 │   ├── trust-catalog.md         ← 15 trusted tool entries
 │   ├── report-template.md       ← Standard report template
@@ -420,7 +421,7 @@ SoDam-Reverse-Eng/
 | License Full Text | `LICENSE` | Apache-2.0 full text |
 | Copyright Notice | `NOTICE` | Third-party notices |
 | Dev Progress | `CHECKPOINT.md` | Developer milestones |
-| Danger Pattern DB | `references/deny-corpus.json` | 43 blocked patterns |
+| Danger Pattern DB | `references/deny-corpus.json` | 48 keyword + 5 regex patterns |
 | Masking Patterns | `references/mask-patterns.json` | 10 masking rules |
 | Trusted Tool List | `references/trust-catalog.md` | 15 tools with trust ratings |
 | Report Template | `references/report-template.md` | Report format definition |
@@ -596,6 +597,46 @@ node scripts/re-inject-harness.mjs
 - **Email:** startmxk@gmail.com
 - **GitHub repository:** https://github.com/sodam-ai/SoDam-Reverse-Eng (private — invitation required)
 - **How to contribute:** Contact by email first → discuss and proceed (private repository)
+
+---
+
+## 15. Update Summary
+
+> Click each item to expand the details. (Based on development history — collapsible on both GitHub and browsers.)
+
+<details>
+<summary><strong>v0.1.0 — Initial Release (Phase 1 MVP)</strong></summary>
+
+- Built-in 3-layer safety (1: AI output refusal, 2: deny-hook, 3: SHA-256 integrity)
+- Consent gate (ownership/authorization + responsibility notice) — no analysis without passing
+- Standard Korean report (summary, per-function, source location, uncertainties, next steps)
+- Commands `/re-start`, `/re-report`, `/re-selftest`
+- Market curation catalog + safe practice sample (`samples/`)
+- Auto-masking (passwords, keys, tokens → `••••`)
+
+</details>
+
+<details>
+<summary><strong>Phase 1 Hardening — Release Prep (M5)</strong></summary>
+
+- New `/re-ping`: install-verification diagnostic (the first command to try)
+- Aligned `/re-start` report format with the standard template (`report-template.md`)
+- Improved install docs: private-repo clone (A) / folder-or-zip delivery (B)
+- Registered session file in `.gitignore` (prevents accidental commits)
+
+</details>
+
+<details>
+<summary><strong>Phase 2 Start — Android Analysis Scaffolding (⚠️ Not Live-Verified)</strong></summary>
+
+- **Safety first**: expanded the block corpus with Android danger patterns → **48 keywords + 5 regex**
+- Added `re-analyze-android` skill + `/re-android` command scaffolding (stronger consent gate, read-only; not yet usable)
+- Added JADX/Apktool/Java 17+ install guide (section 2-6) to GUIDE
+- ⚠️ Actual decompilation is **pending live verification** on a machine with the tools (currently scaffolding). Safety, consent, and report rules operate the same as Phase 1.
+
+</details>
+
+> For detailed development history, see `CHECKPOINT.md` (for developers).
 
 ---
 

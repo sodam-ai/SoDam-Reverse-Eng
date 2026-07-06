@@ -20,6 +20,7 @@
 10. [Troubleshooting and Error Handling](#10-troubleshooting--error-handling)
 11. [FAQ: 25 Questions](#11-faq-25-questions)
 12. [License, Copyright, and Commercial Use Details](#12-license-copyright-and-commercial-use-details)
+13. [Update Summary](#13-update-summary)
 
 ---
 
@@ -1431,6 +1432,46 @@ The creator (SoDam AI Studio) is not responsible for:
 
 **Full license text:** [LICENSE](./LICENSE)
 **Copyright notice:** [NOTICE](./NOTICE)
+
+---
+
+## 13. Update Summary
+
+> Click each item to expand the details. (Based on development history — collapsible on both GitHub and browsers.)
+
+<details>
+<summary><strong>v0.1.0 — Initial Release (Phase 1 MVP)</strong></summary>
+
+- Built-in 3-layer safety (1: AI output refusal, 2: deny-hook, 3: SHA-256 integrity)
+- Consent gate (ownership/authorization + responsibility notice) — no analysis without passing
+- Standard Korean report (summary, per-function, source location, uncertainties, next steps)
+- Commands `/re-start`, `/re-report`, `/re-selftest`
+- Market curation catalog + safe practice sample (`samples/`)
+- Auto-masking (passwords, keys, tokens → `••••`)
+
+</details>
+
+<details>
+<summary><strong>Phase 1 Hardening — Release Prep (M5)</strong></summary>
+
+- New `/re-ping`: install-verification diagnostic (the first command to try)
+- Aligned `/re-start` report format with the standard template (`report-template.md`)
+- Improved install docs: private-repo clone (A) / folder-or-zip delivery (B)
+- Registered session file in `.gitignore` (prevents accidental commits)
+
+</details>
+
+<details>
+<summary><strong>Phase 2 Start — Android Analysis Scaffolding (⚠️ Not Live-Verified)</strong></summary>
+
+- **Safety first**: expanded the block corpus with Android danger patterns → **48 keywords + 5 regex**
+- Added `re-analyze-android` skill + `/re-android` command scaffolding (stronger consent gate, read-only; not yet usable)
+- Added the JADX/Apktool/Java 17+ install guide in section 2-6
+- ⚠️ Actual decompilation is **pending live verification** on a machine with the tools (currently scaffolding). Safety, consent, and report rules operate the same as Phase 1.
+
+</details>
+
+> For detailed development history, see `CHECKPOINT.md` (for developers).
 
 ---
 

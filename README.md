@@ -25,6 +25,7 @@
 12. [문제 해결·FAQ](#12-문제-해결faq)
 13. [라이선스·저작권·상업적 용도](#13-라이선스저작권상업적-용도)
 14. [연락·기여](#14-연락기여)
+15. [업데이트 내용 요약](#15-업데이트-내용-요약)
 
 ---
 
@@ -380,7 +381,7 @@ SoDam-Reverse-Eng/
 │   └── hooks.json               ← hook 설정
 │
 ├── references/                  ← 데이터·규칙 파일
-│   ├── deny-corpus.json         ← 위험 키워드 43개 패턴
+│   ├── deny-corpus.json         ← 위험 패턴 (키워드 48개 + 정규식 5개)
 │   ├── mask-patterns.json       ← 마스킹 패턴 10개
 │   ├── trust-catalog.md         ← 신뢰 도구 카탈로그 (15개 repo)
 │   ├── report-template.md       ← 보고서 표준 양식
@@ -434,7 +435,7 @@ SoDam-Reverse-Eng/
 | 라이선스 원문 | `LICENSE` | Apache-2.0 전문 |
 | 저작권 고지 | `NOTICE` | 서드파티 고지 |
 | 개발 진행 상태 | `CHECKPOINT.md` | 개발자용 체크포인트 |
-| 위험 패턴 DB | `references/deny-corpus.json` | 43개 차단 패턴 |
+| 위험 패턴 DB | `references/deny-corpus.json` | 키워드 48개 + 정규식 5개 |
 | 마스킹 패턴 | `references/mask-patterns.json` | 10개 마스킹 규칙 |
 | 신뢰 도구 목록 | `references/trust-catalog.md` | 15개 도구 신뢰등급 |
 | 보고서 표준 양식 | `references/report-template.md` | 보고서 형식 정의 |
@@ -613,6 +614,46 @@ node scripts/re-inject-harness.mjs
 - **이메일:** startmxk@gmail.com
 - **GitHub 저장소:** https://github.com/sodam-ai/SoDam-Reverse-Eng (비공개 — 초대 필요)
 - **기여 방법:** 이메일로 먼저 연락 → 협의 후 진행 (비공개 저장소)
+
+---
+
+## 15. 업데이트 내용 요약
+
+> 각 항목을 클릭하면 상세 내용이 펼쳐집니다. (개발 이력 기반 — GitHub·브라우저 모두 접기/펼치기 지원)
+
+<details>
+<summary><strong>v0.1.0 — 초기 릴리스 (Phase 1 MVP)</strong></summary>
+
+- 안전 3층(①AI 출력 거부 ②deny-hook ③SHA-256 무결성) 자체 탑재
+- 동의 게이트(본인 소유/허가 + 책임 고지) — 통과 못 하면 분석 0건
+- 표준 한국어 보고서(요약·함수별·근거 위치·불확실성·다음 확인)
+- 명령어 `/re-start`·`/re-report`·`/re-selftest`
+- 마켓 큐레이션 카탈로그 + 연습용 안전 샘플(`samples/`)
+- 자동 마스킹(비밀번호·키·토큰 → `••••`)
+
+</details>
+
+<details>
+<summary><strong>Phase 1 정비 — 배포 준비(M5)</strong></summary>
+
+- `/re-ping` 신규: 설치 확인용 진단 명령(가장 먼저 눌러보는 명령)
+- `/re-start` 보고서 형식을 표준 양식(`report-template.md`)과 정합
+- 설치 문서 보강: 비공개 저장소 clone(A) / 폴더·압축 전달(B) 2가지 방법
+- 세션 파일 `.gitignore` 등록(우발 커밋 방지)
+
+</details>
+
+<details>
+<summary><strong>Phase 2 착수 — 안드로이드 분석 골격 (⚠️ 라이브 미검증)</strong></summary>
+
+- **안전 우선**: 안드로이드 위험 패턴으로 차단 코퍼스 확장 → **키워드 48개 + 정규식 5개**
+- `re-analyze-android` 스킬 + `/re-android` 명령 **골격** 추가(동의 게이트 강화·읽기 전용, 아직 사용 불가)
+- GUIDE에 JADX·Apktool·Java 17+ 설치 안내(2-6절) 추가
+- ⚠️ 실제 디컴파일 동작은 도구 설치 환경에서 **라이브 검증 예정**(현재 골격). 안전·동의·보고서 규칙은 Phase 1과 동일
+
+</details>
+
+> 개발 상세 이력은 `CHECKPOINT.md`(개발자용)를 참고하세요.
 
 ---
 
