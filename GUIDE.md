@@ -251,6 +251,61 @@ node scripts/re-inject-harness.mjs
 
 ---
 
+### 2-6. (Phase 2) 안드로이드 분석 도구 설치 — 선택 사항
+
+> **이 항목은 `/re-android`로 APK(안드로이드 앱)를 분석할 때만 필요합니다.**
+> 소스코드만 분석하는 Phase 1 기능(`/re-start`)만 쓰신다면 **건너뛰어도 됩니다.**
+>
+> ⚠️ **현재 상태: 골격(라이브 미검증).** 안드로이드 분석 기능은 아래 도구가 설치된 환경에서
+> 실제 동작 검증이 아직 끝나지 않았습니다. 안전·동의·보고서 규칙은 Phase 1과 동일하게 작동합니다.
+>
+> 🛡️ **안전 고지:** 이 도구들은 **본인이 만들었거나 분석 허가를 받은 APK**를 방어·학습 목적으로
+> 이해하기 위한 것입니다. 크랙·결제/라이선스 우회를 돕는 도구가 아니며, 그런 요청은 여전히 거절됩니다.
+
+안드로이드 APK 분석에는 무료 도구 **3개**가 필요합니다. **Java를 가장 먼저** 설치하세요
+(JADX와 Apktool이 Java 위에서 동작합니다).
+
+#### 도구 1: Java 17 이상 (먼저 설치)
+
+- **공식(권장):** [adoptium.net](https://adoptium.net) → "Temurin 17 (LTS)" → Windows `.msi` 내려받아 설치
+- **패키지 매니저가 있다면(선택):**
+  ```powershell
+  winget install EclipseAdoptium.Temurin.17.JDK
+  ```
+- **확인:**
+  ```powershell
+  java -version
+  ```
+  `17` 이상 숫자가 나오면 OK.
+
+#### 도구 2: JADX (APK → 자바 코드 복원)
+
+- **공식(권장):** [github.com/skylot/jadx/releases](https://github.com/skylot/jadx/releases) → 최신 `jadx-x.x.x.zip` 내려받아 압축 해제 → `bin\jadx-gui.bat` 실행
+- **패키지 매니저가 있다면(선택):** `scoop install jadx` 또는 `choco install jadx`
+  (패키지명·버킷은 각 매니저 안내를 따르세요)
+- **확인:** `jadx --version` (또는 압축 푼 `bin\jadx.bat --version`)
+
+#### 도구 3: Apktool (리소스·매니페스트 복원)
+
+- **공식(권장):** [apktool.org/docs/install](https://apktool.org/docs/install) 의 Windows 안내대로
+  `apktool.bat`와 `apktool.jar`를 같은 폴더에 두고 그 폴더를 PATH에 추가
+- **패키지 매니저가 있다면(선택):** `choco install apktool` 또는 `scoop install apktool`
+- **확인:** `apktool --version`
+
+> 💡 버전·명령은 시간이 지나면 바뀔 수 있습니다. 위 **공식 페이지가 항상 정답**입니다.
+> 설치가 막히면 공식 페이지의 최신 안내를 우선하세요.
+
+#### 설치 후 사용
+
+3개 모두 `--version`이 정상으로 나오면, 프로젝트 폴더에서:
+```
+/re-android [APK파일경로]
+```
+`/re-android`는 먼저 **소유·허가 여부**와 **방어 목적**을 확인(동의 게이트)한 뒤,
+도구가 없으면 **분석을 시작하지 않고 이 설치 안내로 되돌려 보냅니다**(fail-closed).
+
+---
+
 ## 3. SoDam 형제 플러그인과 함께 쓰기
 
 ### 6형제 개요
@@ -585,7 +640,7 @@ AI가 코드를 쓰려 함 → deny-hook 감시 → 위험 패턴 감지?
   ↳ 있음: 즉시 차단 + 사용자에게 알림
 ```
 
-**차단 패턴 (43개):**
+**차단 패턴 (키워드 48개 + 정규식 5개):**
 `crack`, `keygen`, `bypass`, `patch` 관련 등 위험 키워드를 포함한 파일 쓰기/실행을 차단합니다.
 
 **fail-closed 원칙:**
@@ -728,7 +783,7 @@ Claude Code가 실행하는 모든 도구를 감시하고 제어합니다.
 
 | 파일 | 내용 |
 |---|---|
-| `deny-corpus.json` | 차단할 위험 패턴 43개 |
+| `deny-corpus.json` | 차단할 위험 패턴 (키워드 48개 + 정규식 5개) |
 | `mask-patterns.json` | 마스킹할 민감 정보 패턴 10개 |
 | `trust-catalog.md` | 신뢰하는 외부 도구 목록 15개 |
 | `report-template.md` | 보고서 표준 양식 |

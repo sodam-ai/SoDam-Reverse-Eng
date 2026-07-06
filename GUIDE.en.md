@@ -250,6 +250,60 @@ A message saying "RE rules N injected successfully" means success.
 
 ---
 
+### 2-6. (Phase 2) Android Analysis Tools — Optional
+
+> **You only need this if you plan to analyze APKs (Android apps) with `/re-android`.**
+> If you only use Phase 1 source-code analysis (`/re-start`), you can **skip this.**
+>
+> ⚠️ **Current status: scaffolding (not yet live-verified).** Android analysis has not yet been
+> verified end-to-end on a machine with these tools installed. The safety, consent, and report
+> rules operate the same as in Phase 1.
+>
+> 🛡️ **Safety note:** These tools are for understanding an **APK you built or are authorized to
+> analyze**, for defense and learning. They are not for cracking or payment/license bypass, and
+> such requests are still refused.
+
+Android APK analysis needs **3 free tools**. Install **Java first** (JADX and Apktool run on top of Java).
+
+#### Tool 1: Java 17 or higher (install first)
+
+- **Official (recommended):** [adoptium.net](https://adoptium.net) → "Temurin 17 (LTS)" → download the Windows `.msi` and install
+- **If you use a package manager (optional):**
+  ```powershell
+  winget install EclipseAdoptium.Temurin.17.JDK
+  ```
+- **Verify:**
+  ```powershell
+  java -version
+  ```
+  A number `17` or higher means OK.
+
+#### Tool 2: JADX (APK → Java code)
+
+- **Official (recommended):** [github.com/skylot/jadx/releases](https://github.com/skylot/jadx/releases) → download the latest `jadx-x.x.x.zip`, unzip, run `bin\jadx-gui.bat`
+- **If you use a package manager (optional):** `scoop install jadx` or `choco install jadx` (follow each manager's package/bucket guidance)
+- **Verify:** `jadx --version` (or `bin\jadx.bat --version` from the unzipped folder)
+
+#### Tool 3: Apktool (resources and manifest)
+
+- **Official (recommended):** follow the Windows instructions at [apktool.org/docs/install](https://apktool.org/docs/install) — place `apktool.bat` and `apktool.jar` in the same folder and add that folder to PATH
+- **If you use a package manager (optional):** `choco install apktool` or `scoop install apktool`
+- **Verify:** `apktool --version`
+
+> Versions and commands may change over time. The **official pages above are always authoritative** — if installation stalls, follow their latest instructions.
+
+#### After Installation
+
+Once all 3 respond to `--version`, from your project folder:
+```
+/re-android [APK-file-path]
+```
+`/re-android` first confirms **ownership/authorization** and **defensive intent** (consent gate),
+then, if the tools are missing, it **does not start analysis and points you back to this install
+section** (fail-closed).
+
+---
+
 ## 3. Using SoDam Sibling Plugins Together
 
 ### Overview of the 6 Siblings
@@ -587,7 +641,7 @@ AI tries to write code
      Yes: Immediately block and notify user
 ```
 
-**Blocked patterns (43 total):**
+**Blocked patterns (48 keywords + 5 regex):**
 File writes and executions containing dangerous keywords related to crack, keygen, bypass, patch, etc. are blocked.
 
 **fail-closed principle:**
@@ -732,7 +786,7 @@ This means paths never need to be adjusted on any computer.
 
 | File | Contents |
 |---|---|
-| `deny-corpus.json` | 43 dangerous patterns to block |
+| `deny-corpus.json` | 48 keyword + 5 regex patterns to block |
 | `mask-patterns.json` | 10 sensitive information masking patterns |
 | `trust-catalog.md` | 15 trusted external tools |
 | `report-template.md` | Standard report format |
