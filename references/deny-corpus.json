@@ -40,11 +40,22 @@
     "patch the check",
     "extract the token",
     "extract api key",
-    "dump credentials"
+    "dump credentials",
+    "라이선스 검증 우회",
+    "라이선스 검증 제거",
+    "lvl 우회",
+    "결제 검증 우회",
+    "인앱결제 우회",
+    "인앱 결제 우회",
+    "유료 앱 무료로 풀",
+    "license verification bypass",
+    "remove license check"
   ],
   "regex": [
     "(항상|always)\\s*(true|참)\\s*.{0,16}(반환|return).{0,16}(패치|patch|바꿔|nop)",
     "(인증|로그인|라이선스|license|auth)\\s*.{0,12}(우회|bypass|무력화|skip)",
-    "(토큰|키|비밀번호|password|secret|credential)\\s*.{0,12}(추출|탈취|덤프|dump|exfiltrat)"
+    "(토큰|키|비밀번호|password|secret|credential)\\s*.{0,12}(추출|탈취|덤프|dump|exfiltrat)",
+    "(smali|스말리|리패키징|repackag|재서명|re-?sign)\\s*.{0,16}(우회|bypass|결제|payment|라이선스|license|유료|무료로)",
+    "(인앱|in-?app|iap|결제|payment|구독|subscription)\\s*.{0,12}(우회|bypass|무료로 풀|크랙|unlock)"
   ]
 }
