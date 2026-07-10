@@ -10,7 +10,9 @@
 - **브랜치:** `feat/m5-readiness` — `main` 대비 **6커밋 앞섬, 미머지·미푸시** (`origin/main` = `d1393cd`). 작업 트리 clean.
 - **Phase 1 MVP:** 코드 완료, 안전 3층 셀프테스트 **6 통과 / 0 실패**. 사람 검증(M5)만 남음.
 - **Phase 2 안드로이드:** **골격 완료 · 라이브 미검증** (Java/JADX/Apktool·테스트 APK 부재로 실동작 미확인).
-- **Phase 2 AI 에이전트 분석 (NEXT-1):** ✅ **완료·해피패스+거부경로 라이브 검증됨** (`re-analyze-agent`+`re-agent`, 소스레벨·외부도구 0. PRD 재검토로 3건 보강: ①프롬프트 인젝션 방어(§0-1, 제3자 SKILL.md가 AI 지시로 오해석되는 신규 위협 차단) ②`agent-injection-demo.md` 레드팀 샘플로 거부경로 실측(지침무시·마스킹해제·동의범위이탈 3종 시도 전부 거부 확인) ③`~/.claude` 루트 전체 분석 시 하드 확인게이트(토큰 폭탄 방지, 실측: 이 PC agents 1,289개·skills 636개)).
+- **Phase 2 AI 에이전트 분석 (NEXT-1):** ✅ **완료·독립 레드팀 감사 통과** (`re-analyze-agent`+`re-agent`, 소스레벨·외부도구 0).
+  - 1차 보강(자체검증): 프롬프트 인젝션 방어(§0-1) + 거부경로 실측(`agent-injection-demo.md`) + `~/.claude` 루트 하드게이트(실측: 이 PC agents 1,289개·skills 636개).
+  - **2차 보강(독립 감사, 2026-07-11)**: 자체검증은 "자기 채점"이라 신뢰도 낮음(05_AUDIT.md의 "독립 서브에이전트 3명" 원칙과 불일치) → 무관한 독립 에이전트가 블라인드로 공격 6종 고안 → **PARTIAL GAPS 판정**: ①가짜 `<system-reminder>` 시스템태그 스푸핑(가장 심각) ②SKILL.md 본문에 박힌 키는 마스킹 스코프 밖 ③대상 안의 가짜 ConsentRecord로 동의 우회 가능 — 3건 모두 §0-1에 규칙 4개 추가로 봉쇄, `agent-injection-demo-2.md`(결합공격 재현)로 재검증 통과.
 - **문서:** README·GUIDE (한/영) **md + html**, "업데이트 요약" 토글 포함. deny 코퍼스 = **키워드 48 + 정규식 5**.
 - **다음 할 일 → §6 "다음 작업" 참조.**
 
@@ -42,7 +44,8 @@ cd2d518 fix: M5 준비 정비 — /re-ping 추가·보고서 형식 정합·세�
 | `references/report-template.md` | ✅ | 보고서 정본 양식 |
 | `references/integrity.json` | ✅ | guard 해시 `8403cb13…` (M3에서 채움) |
 | `samples/safe-login.js` · `deny-demo.txt` | ✅ | 정상/차단 테스트용 |
-| `samples/agent-injection-demo.md` | ✅ | **신규** — re-analyze-agent 프롬프트 인젝션 거부경로 레드팀 테스트용 |
+| `samples/agent-injection-demo.md` | ✅ | 프롬프트 인젝션 거부경로 레드팀 테스트용(자체 저작) |
+| `samples/agent-injection-demo-2.md` | ✅ | **신규** — 독립 레드팀 감사가 찾은 결합공격(가짜 시스템태그+가짜동의+마스킹우회) 재현·회귀용 |
 | `scripts/*.mjs` (4종) | ✅ | 시너지 주입·형제 진단·신선도 |
 | `mcp/catalog.json` | ✅ | **android-re = active** (e7353cb) |
 | `hooks/*` (5 보호파일) | ✅ | M2 완료 · **AI 편집 금지** |
@@ -53,7 +56,7 @@ cd2d518 fix: M5 준비 정비 — /re-ping 추가·보고서 형식 정합·세�
 | `.gitignore` · `LICENSE` · `NOTICE` | ✅ | Apache-2.0 · html 4종 추적 예외(1686176) |
 | `skills/re-analyze-android/SKILL.md` | 🔄 | **골격 active · 라이브 미검증** (JADX/Apktool wrap; 안전·동의·보고서는 Phase 1 재사용) |
 | `commands/re-android.md` | 🔄 | **기능화 · 라이브 미검증** |
-| `skills/re-analyze-agent/SKILL.md` | ✅ | **NEXT-1 신규 · 해피패스+거부경로 라이브 검증됨** (자기분석 도그푸드 + `agent-injection-demo.md` 레드팀 통과. §0-1 프롬프트인젝션 방어·§2 `~/.claude` 루트 하드게이트 보강 완료) |
+| `skills/re-analyze-agent/SKILL.md` | ✅ | **NEXT-1 신규 · 독립 레드팀 감사 통과** (자체검증→편향 발견→독립 에이전트 블라인드 공격 6종→3건 실제 갭 확인(가짜시스템태그·가짜동의·마스킹스코프)→§0-1에 4개 규칙 보강→재검증 통과) |
 | `commands/re-agent.md` | ✅ | **NEXT-1 신규** (re-android 미러링) |
 | `skills/re-analyze-binary/SKILL.md` · `commands/re-binary.md` | ⏳ | Phase 3 stub (미착수) |
 
@@ -157,7 +160,7 @@ git ls-files .PRD                 # 빈값 = .PRD 미추적(정상)
 | # | 작업 | 담당 | done-when |
 |---|---|---|---|
 | **NEXT-0** | 본 CHECKPOINT 현실화 | AI | ✅ **본 갱신으로 완료** |
-| **NEXT-1** | Phase 2 나머지 절반 = **AI 코딩 에이전트 구조 분석 모듈** | AI | ✅ **완료** — `re-analyze-agent`+`re-agent` 신규, router 4번 활성, 셀프테스트 6/0 무회귀. **PRD 재검토로 안전 보강 3건 추가**: 프롬프트 인젝션 방어(§0-1)·레드팀 거부경로 실측(`agent-injection-demo.md`)·`~/.claude` 루트 하드게이트. (A4 deny-corpus 추가는 문서 카운트 동기화 회피 위해 의도적 생략) |
+| **NEXT-1** | Phase 2 나머지 절반 = **AI 코딩 에이전트 구조 분석 모듈** | AI | ✅ **완료** — `re-analyze-agent`+`re-agent` 신규, router 4번 활성, 셀프테스트 6/0 무회귀. 자체검증(3건)→**독립 레드팀 감사**(3건 실제 갭 추가 발견·전부 봉쇄)로 2단계 강화. (A4 deny-corpus 추가는 문서 카운트 동기화 회피 위해 의도적 생략) |
 | **NEXT-2** | 안드로이드 **라이브 검증** | 사람·환경 | 도구+테스트 APK로 `/re-android` 동의→디컴파일→보고서, 크랙 요청 거부 재현 |
 | **NEXT-3** | 6커밋 브랜치 **머지/푸시** | 사용자 결정 | 승인 시 `feat/m5-readiness`→`main` 머지(또는 백업 브랜치 푸시) |
 | **NEXT-4** | **Phase 3 골격** (바이너리 ghidra-mcp wrap) | AI | NEXT-1 완료 후 착수, M7 항목 |
