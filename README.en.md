@@ -647,6 +647,17 @@ node scripts/re-inject-harness.mjs
 
 </details>
 
+<details>
+<summary><strong>Phase 3 Start — Binary Analysis Scaffolding (⚠️ Not Live-Verified)</strong></summary>
+
+- Added `re-analyze-binary` skill + `/re-binary` command **scaffolding** — static analysis wrap around Ghidra (free), with optional IDA Pro support via `SODAM_RE_IDA_PATH`
+- Added Java/Ghidra install guide (section 2-7) to GUIDE
+- Applied the same prompt-injection defense (§0-1) as the Android module, from the start this time
+- **Malware defense analysis is out of scope for now** (pending platform policy review, confirmed with the user) — the related tool entry stays on hold
+- ⚠️ Actual disassembly is **pending live verification** on a machine with the tools (currently scaffolding). Safety, consent, and report rules operate the same as Phase 1.
+
+</details>
+
 > For detailed development history, see `CHECKPOINT.md` (for developers).
 
 ---

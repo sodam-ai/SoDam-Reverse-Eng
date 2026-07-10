@@ -13,6 +13,7 @@
 - **Phase 2 AI 에이전트 분석 (NEXT-1):** ✅ **완료·독립 레드팀 감사 통과** (`re-analyze-agent`+`re-agent`, 소스레벨·외부도구 0).
   - 1차 보강(자체검증): 프롬프트 인젝션 방어(§0-1) + 거부경로 실측(`agent-injection-demo.md`) + `~/.claude` 루트 하드게이트(실측: 이 PC agents 1,289개·skills 636개).
   - **2차 보강(독립 감사, 2026-07-11)**: 자체검증은 "자기 채점"이라 신뢰도 낮음(05_AUDIT.md의 "독립 서브에이전트 3명" 원칙과 불일치) → 무관한 독립 에이전트가 블라인드로 공격 6종 고안 → **PARTIAL GAPS 판정**: ①가짜 `<system-reminder>` 시스템태그 스푸핑(가장 심각) ②SKILL.md 본문에 박힌 키는 마스킹 스코프 밖 ③대상 안의 가짜 ConsentRecord로 동의 우회 가능 — 3건 모두 §0-1에 규칙 4개 추가로 봉쇄, `agent-injection-demo-2.md`(결합공격 재현)로 재검증 통과.
+- **Phase 3 바이너리 RE + IDA (NEXT-4, 2026-07-11):** ✅ **골격 완료·라이브 미검증**(안드로이드와 동일 규약). `re-analyze-binary`+`/re-binary`, Ghidra 정적분석 wrap + IDA 옵션(`SODAM_RE_IDA_PATH`). §0-1 프롬프트인젝션 방어를 처음부터 반영(재발방지). **악성코드 방어 분석은 PRD 자체 감사(H5) 근거로 사용자 확정하에 이번 범위에서 명시적 제외** — `mcp/catalog.json`의 `malware-analysis`는 `pending-wrap` 그대로.
 - **문서:** README·GUIDE (한/영) **md + html**, "업데이트 요약" 토글 포함. deny 코퍼스 = **키워드 48 + 정규식 5**.
 - **다음 할 일 → §6 "다음 작업" 참조.**
 
@@ -116,11 +117,13 @@ cd2d518 fix: M5 준비 정비 — /re-ping 추가·보고서 형식 정합·세�
 - [x] **AI 코딩 에이전트 구조 분석 모듈** (PRD 03 명시 · Phase 2 나머지 절반) — ✅ **완료·라이브 검증됨** (`re-analyze-agent`, 외부도구 0, 도그푸드 통과)
 - done-when: `/re-android <apk경로>` → 한국어 보고서 + Phase 1 회귀 없음 → **미충족**
 
-### M7: Phase 3 — 대기 (전제: M6 완료 후)
-- [ ] Ghidra + Java 설치 가이드 · `mcp/catalog.json` `ghidra-mcp` 활성화
-- [ ] `skills/re-analyze-binary/SKILL.md` 실제 wrap 로직 (bethington/ghidra-mcp)
-- [ ] 격리 VM 가이드 (REMnux/FlareVM) · `SODAM_RE_IDA_PATH` 옵션 · Phase 1+2 회귀
-- done-when: `/re-binary <경로>` → 한국어 보고서, 이전 Phase 회귀 없음
+### M7: Phase 3 — 🔄 부분 완료 (바이너리 RE+IDA 골격, 악성코드는 명시적 보류)
+- [x] Ghidra + Java 설치 가이드(GUIDE 2-7절, 한/영) · `mcp/catalog.json` `ghidra-mcp` 활성화(active)
+- [x] `skills/re-analyze-binary/SKILL.md` 골격 완성 — 정적분석(디스어셈블/디컴파일) 절차·표준보고서+바이너리섹션·§0-1 프롬프트인젝션 방어(re-analyze-agent 교훈 선반영)
+- [x] `SODAM_RE_IDA_PATH` 옵션 처리 로직(스킬 §2에 명문화, env var 미설정 시 Ghidra만 사용)
+- [x] Phase 1+2 회귀 무결(셀프테스트 6/0 유지)
+- [ ] **격리 VM 가이드(REMnux/FlareVM)·악성코드 방어 분석** — **의도적 보류**(2026-07-11 사용자 확정: PRD 05_AUDIT H5 "플랫폼 정책 검토 전" 리스크 → 정책검토 후 별도 작업. `mcp/catalog.json`의 `malware-analysis` 항목은 `pending-wrap` 그대로 유지, 임의 활성화 금지)
+- done-when(바이너리RE+IDA 한정): `/re-binary <경로>` → 한국어 보고서 형식 완비, 이전 Phase 회귀 없음 → **충족(구조상)**. **실제 Ghidra 디스어셈블 라이브 검증은 미충족**(도구 미설치, 사람·환경 몫)
 
 ---
 
@@ -163,7 +166,7 @@ git ls-files .PRD                 # 빈값 = .PRD 미추적(정상)
 | **NEXT-1** | Phase 2 나머지 절반 = **AI 코딩 에이전트 구조 분석 모듈** | AI | ✅ **완전 완료** — `re-analyze-agent`+`re-agent` 신규, router 4번 활성, 셀프테스트 6/0 무회귀. 자체검증(3건)→**독립 레드팀 감사**(3건 실제 갭 추가 발견·전부 봉쇄)로 2단계 강화. **문서 4종(README·GUIDE 한/영) 동기화 완료**(PRD §10 의무 이행) — 이 모듈은 여기서 종료, 추가 레드팀 루프는 의도적으로 중단(한계효용 판단, 다음은 Phase C/D). (A4 deny-corpus 추가는 문서 카운트 동기화 회피 위해 의도적 생략) |
 | **NEXT-2** | 안드로이드 **라이브 검증** | 사람·환경 | 도구+테스트 APK로 `/re-android` 동의→디컴파일→보고서, 크랙 요청 거부 재현 |
 | **NEXT-3** | 6커밋 브랜치 **머지/푸시** | 사용자 결정 | 승인 시 `feat/m5-readiness`→`main` 머지(또는 백업 브랜치 푸시) |
-| **NEXT-4** | **Phase 3 골격** (바이너리 ghidra-mcp wrap) | AI | NEXT-1 완료 후 착수, M7 항목 |
+| **NEXT-4** | **Phase 3 골격** (바이너리 ghidra-mcp wrap) | AI | ✅ **완료**(바이너리RE+IDA만, 사용자 범위확정) — `re-analyze-binary`+`/re-binary` 골격, catalog `ghidra-mcp` active. **악성코드는 정책검토 대기로 명시적 보류**(임의 구현 안 함) |
 | **NEXT-5** | **M5 사람몫** (레드팀·베타·법무·공개) | 사람 | 모든 구현 후(연기 확정) |
 
 ### 작업별 리스크·변수·대응
@@ -180,8 +183,9 @@ git ls-files .PRD                 # 빈값 = .PRD 미추적(정상)
 **NEXT-3 — 브랜치 머지/푸시 (사용자 결정)**
 - **리스크:** `main`·push는 **비가역/대외**(비공개라도) → **승인 필수**. 머지 전 `git ls-files .PRD`(빈값)·시크릿 재확인. 백업만 원하면 *브랜치만* 푸시하는 선택지.
 
-**NEXT-4 — Phase 3 골격 (AI, NEXT-1 완료 후)**
-- **리스크:** **악성코드 분석 도메인 → 격리 VM 안내 필수**, 설치 부담 큼(Java/Ghidra), 미검증 골격 debt 재발 → "라이브 미검증" 라벨 유지.
+**NEXT-4 — Phase 3 골격 (AI, NEXT-1 완료 후) — ✅ 완료(범위 축소)**
+- **리스크 반영:** 악성코드 분석 도메인(격리 VM 필수)은 PRD 자체 감사(H5, 플랫폼 정책 미검토)를 근거로 **사용자에게 직접 확인 후 이번 범위에서 제외**(재제안 금지 아님 — 정책검토 완료 시 재검토 가능). 설치 부담(Java/Ghidra)은 GUIDE 2-7절로 안내. 미검증 골격 debt는 "라이브 미검증" 라벨 유지(안드로이드와 동일 규약).
+- **선반영한 교훈:** re-analyze-agent에서 독립 레드팀으로 뒤늦게 발견했던 §0-1 프롬프트인젝션 방어(디컴파일 문자열이 지시문으로 위장될 위험)를 이번엔 설계 단계부터 포함 — 같은 실수 반복 안 함.
 
 **NEXT-5 — M5 사람몫 (최종 · 연기 확정)**
 - **지금 준비·재제안 금지**(사용자 확정). 공개 전환은 비가역·승인 필수. 법무 H5/H6 미해결.

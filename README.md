@@ -664,6 +664,17 @@ node scripts/re-inject-harness.mjs
 
 </details>
 
+<details>
+<summary><strong>Phase 3 착수 — 바이너리 분석 골격 (⚠️ 라이브 미검증)</strong></summary>
+
+- `re-analyze-binary` 스킬 + `/re-binary` 명령 **골격** 추가 — Ghidra(무료) 정적분석 wrap, IDA Pro는 `SODAM_RE_IDA_PATH` 설정 시 옵션
+- GUIDE에 Java·Ghidra 설치 안내(2-7절) 추가
+- 안드로이드와 동일한 프롬프트 인젝션 방어(§0-1)를 처음부터 반영
+- **악성코드 방어 분석은 이번 범위에 없음**(플랫폼 정책 검토 대기, 사용자 확정) — 관련 도구는 계속 보류 상태
+- ⚠️ 실제 디스어셈블 동작은 도구 설치 환경에서 **라이브 검증 예정**(현재 골격). 안전·동의·보고서 규칙은 Phase 1과 동일
+
+</details>
+
 > 개발 상세 이력은 `CHECKPOINT.md`(개발자용)를 참고하세요.
 
 ---

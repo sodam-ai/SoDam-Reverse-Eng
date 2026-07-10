@@ -305,6 +305,53 @@ section** (fail-closed).
 
 ---
 
+### 2-7. (Phase 3) Binary Analysis (Ghidra) Tools — Optional
+
+> **You only need this if you plan to analyze executables (EXE/DLL/SO) with `/re-binary`.**
+> If you only use Phase 1 source-code analysis (`/re-start`), you can **skip this.**
+>
+> ⚠️ **Current status: scaffolding (not yet live-verified).** Binary analysis has not yet been
+> verified end-to-end on a machine with these tools installed. The safety, consent, and report
+> rules operate the same as in Phase 1.
+>
+> This feature is meant to help you understand an executable **you built yourself or were
+> authorized to analyze**, in plain language. It is not a tool for helping bypass cracks or
+> licenses, and such requests are still refused. **Malware defense analysis is not included in
+> this scope** (pending policy review).
+
+Binary analysis needs **2 free tools**. Install **Java first** (Ghidra runs on top of Java).
+
+#### Tool 1: Java 17 or higher (install first)
+
+- Official: https://adoptium.net/ (Eclipse Temurin, free)
+- Verify: `java --version`
+
+#### Tool 2: Ghidra (free, built by the NSA)
+
+- Official: https://ghidra-sre.org/
+- Verify: after extracting, `ghidraRun` (macOS/Linux) or `ghidraRun.bat` (Windows) should launch
+
+#### (Optional) IDA Pro integration
+
+IDA Pro is **commercial software**. If you already own a license, set the `SODAM_RE_IDA_PATH`
+environment variable to your IDA install path, and `/re-binary` can offer IDA-based analysis
+instead of (or alongside) Ghidra. If not, you don't need to worry about this — analysis proceeds
+with Ghidra alone. (License validity is your own responsibility.)
+
+> Versions and commands may change over time. The **official pages above are always authoritative**.
+
+#### After Installation
+
+Once Java and Ghidra are ready, from your project folder:
+```
+/re-binary [executable-path]
+```
+`/re-binary` first confirms **ownership/authorization** and **defensive intent** (consent gate),
+then, if the tools are missing, it **does not start analysis and points you back to this install
+section** (fail-closed).
+
+---
+
 ## 3. Using SoDam Sibling Plugins Together
 
 ### Overview of the 6 Siblings
@@ -1478,6 +1525,17 @@ The creator (SoDam AI Studio) is not responsible for:
 - Added `re-analyze-agent` skill + `/re-agent` command — source-level analysis of your own Claude config or another plugin's structure (no external tools needed)
 - Unlike Android, this needed no external tooling, so it's **fully live-verified**: self-analysis dogfood + 2 rounds of prompt-injection red-teaming (self-check, then an independent blind-test agent)
 - Analyzing the entire `~/.claude` root requires passing a confirmation gate first, to protect against runaway token usage
+
+</details>
+
+<details>
+<summary><strong>Phase 3 Start — Binary Analysis Scaffolding (⚠️ Not Live-Verified)</strong></summary>
+
+- Added `re-analyze-binary` skill + `/re-binary` command **scaffolding** — static analysis wrap around Ghidra (free), with optional IDA Pro support via `SODAM_RE_IDA_PATH`
+- Added Java/Ghidra install guide (section 2-7) to GUIDE
+- Applied the same prompt-injection defense (§0-1) as the Android module, from the start this time
+- **Malware defense analysis is out of scope for now** (pending platform policy review, confirmed with the user) — the related tool entry stays on hold
+- ⚠️ Actual disassembly is **pending live verification** on a machine with the tools (currently scaffolding). Safety, consent, and report rules operate the same as Phase 1.
 
 </details>
 
