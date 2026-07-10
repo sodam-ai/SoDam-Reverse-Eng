@@ -528,7 +528,9 @@ Vague answers like "probably" or "I think so" are not treated as agreement.
 
 ---
 
-## 5. Starting Your First Analysis (Step-by-Step)
+## 5. Starting Your First Analysis (Step-by-Step) — ⚡ Quick Start
+
+> **This section is the "Quick Start."** Once installation is done, start with the checklist below and you can have your first analysis result in about 5 minutes.
 
 ### Pre-Analysis Checklist
 

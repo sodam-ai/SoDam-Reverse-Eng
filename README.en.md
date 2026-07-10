@@ -16,6 +16,7 @@
 4. [SoDam Family Synergy](#4-sodam-family-synergy)
 5. [Prerequisites](#5-prerequisites-free-2-items)
 6. [Installation](#6-installation)
+    - 6-1. [Quick Start (5-Minute Summary)](#6-1-quick-start-5-minute-summary)
 7. [Commands](#7-commands)
 8. [Analysis Workflow](#8-analysis-workflow)
 9. [Security · Data Flow](#9-security--data-flow)
@@ -253,6 +254,20 @@ If any are not green → See [GUIDE.en.md](./GUIDE.en.md) Chapter 2
 Copy the SHA-256 hash from the selftest output →
 Paste it as the value for `hooks/re-deny-guard.mjs` in `references/integrity.json` → Save
 → Run `/re-selftest` again → Confirm Layer 3 ✅
+
+---
+
+### 6-1. Quick Start (5-Minute Summary)
+
+> Already did the 6 steps above? Here's the **5-line path to your first analysis.**
+
+1. Fully restart Claude Code (required right after install), then type `/re-ping` → "Pong!" means installed successfully.
+2. Type `/re-selftest` → confirm all 6 safety checks show ✅ (if any show ❌, see §12 Troubleshooting first).
+3. Type `/re-start samples/safe-login.js` → answer **"yes"** to the ownership/consent questions.
+4. Wait a moment — a Korean-language analysis report appears on screen (summary, function descriptions, evidence locations).
+5. Now try your own code: `/re-start [your-file-path]` — that's it.
+
+> Stuck? See §12 (Troubleshooting · FAQ). For the reasoning behind each step, see §6 (Installation).
 
 ---
 
