@@ -10,6 +10,7 @@
 - **브랜치:** `feat/m5-readiness` — `main` 대비 **6커밋 앞섬, 미머지·미푸시** (`origin/main` = `d1393cd`). 작업 트리 clean.
 - **Phase 1 MVP:** 코드 완료, 안전 3층 셀프테스트 **6 통과 / 0 실패**. 사람 검증(M5)만 남음.
 - **Phase 2 안드로이드:** **골격 완료 · 라이브 미검증** (Java/JADX/Apktool·테스트 APK 부재로 실동작 미확인).
+- **Phase 2 AI 에이전트 분석 (NEXT-1):** ✅ **완료·라이브 검증됨** (`re-analyze-agent` 스킬 + `re-agent` 명령, 소스레벨·외부도구 0, sodam-reverse 자기분석 도그푸드 통과).
 - **문서:** README·GUIDE (한/영) **md + html**, "업데이트 요약" 토글 포함. deny 코퍼스 = **키워드 48 + 정규식 5**.
 - **다음 할 일 → §6 "다음 작업" 참조.**
 
@@ -51,6 +52,8 @@ cd2d518 fix: M5 준비 정비 — /re-ping 추가·보고서 형식 정합·세�
 | `.gitignore` · `LICENSE` · `NOTICE` | ✅ | Apache-2.0 · html 4종 추적 예외(1686176) |
 | `skills/re-analyze-android/SKILL.md` | 🔄 | **골격 active · 라이브 미검증** (JADX/Apktool wrap; 안전·동의·보고서는 Phase 1 재사용) |
 | `commands/re-android.md` | 🔄 | **기능화 · 라이브 미검증** |
+| `skills/re-analyze-agent/SKILL.md` | ✅ | **NEXT-1 신규 · 라이브 검증됨** (에이전트 설정 소스레벨 분석, 외부도구 0, sodam-reverse 자기분석 도그푸드 통과) |
+| `commands/re-agent.md` | ✅ | **NEXT-1 신규** (re-android 미러링) |
 | `skills/re-analyze-binary/SKILL.md` · `commands/re-binary.md` | ⏳ | Phase 3 stub (미착수) |
 
 ---
@@ -106,7 +109,7 @@ cd2d518 fix: M5 준비 정비 — /re-ping 추가·보고서 형식 정합·세�
 - [x] Phase 1 회귀 없음 — 셀프테스트 6/0 유지
 - [~] `skills/re-analyze-android/SKILL.md` wrap 로직 = **골격 작성(라이브 미검증)**
 - [ ] **안드로이드 라이브 검증** (도구+테스트 APK 필요) → §6 NEXT-2
-- [ ] **AI 코딩 에이전트 구조 분석 모듈** (PRD 03 명시 · Phase 2 나머지 절반) — **미착수** → §6 NEXT-1
+- [x] **AI 코딩 에이전트 구조 분석 모듈** (PRD 03 명시 · Phase 2 나머지 절반) — ✅ **완료·라이브 검증됨** (`re-analyze-agent`, 외부도구 0, 도그푸드 통과)
 - done-when: `/re-android <apk경로>` → 한국어 보고서 + Phase 1 회귀 없음 → **미충족**
 
 ### M7: Phase 3 — 대기 (전제: M6 완료 후)
@@ -153,7 +156,7 @@ git ls-files .PRD                 # 빈값 = .PRD 미추적(정상)
 | # | 작업 | 담당 | done-when |
 |---|---|---|---|
 | **NEXT-0** | 본 CHECKPOINT 현실화 | AI | ✅ **본 갱신으로 완료** |
-| **NEXT-1** | Phase 2 나머지 절반 = **AI 코딩 에이전트 구조 분석 모듈** | AI | 스킬·라우팅 골격 + 안전 1층 규칙 + 표준 보고서 재사용, 셀프테스트 6/0 무회귀 |
+| **NEXT-1** | Phase 2 나머지 절반 = **AI 코딩 에이전트 구조 분석 모듈** | AI | ✅ **완료** — `re-analyze-agent`+`re-agent` 신규, router 4번 활성, 셀프테스트 6/0 무회귀, 도그푸드 통과 (A4 deny-corpus 추가는 문서 카운트 동기화 회피 위해 의도적 생략) |
 | **NEXT-2** | 안드로이드 **라이브 검증** | 사람·환경 | 도구+테스트 APK로 `/re-android` 동의→디컴파일→보고서, 크랙 요청 거부 재현 |
 | **NEXT-3** | 6커밋 브랜치 **머지/푸시** | 사용자 결정 | 승인 시 `feat/m5-readiness`→`main` 머지(또는 백업 브랜치 푸시) |
 | **NEXT-4** | **Phase 3 골격** (바이너리 ghidra-mcp wrap) | AI | NEXT-1 완료 후 착수, M7 항목 |
