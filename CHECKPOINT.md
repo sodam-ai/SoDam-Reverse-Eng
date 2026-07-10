@@ -156,6 +156,32 @@ git ls-files .PRD                 # 빈값 = .PRD 미추적(정상)
 
 ---
 
+## 5-1. 실제 테스트로 발견된 미해결 2건 (2026-07-11, 보호파일이라 AI 직접수정 불가)
+
+> 기능 테스트(정상/악성/경계값/오탐 10종 실행) 중 실제로 확인된 결함. 둘 다 `hooks/` 보호파일이라
+> `SETUP_BLOCKED_FILES.md` 수동 경로로만 적용 가능. 실사용 중 재현 확률은 낮으나 PRD의
+> "hook 오류·미설치 시 통과(fail-open) 금지" MUST 요구사항과 어긋나 기록해둔다.
+
+### 버그: 완전히 빈 stdin이 fail-open(통과)됨 — `hooks/re-deny-guard.mjs`
+- **재현**: `printf '' | node hooks/re-deny-guard.mjs` → 차단 없이 조용히 통과(exit 0, deny JSON 없음).
+  반면 `printf 'not valid json{{{' | node hooks/re-deny-guard.mjs`(깨진 JSON)는 정상적으로 fail-closed 차단됨 — 두 경우가 다르게 동작.
+- **원인**: 21행 `raw = readFileSync(0,'utf8')`는 빈 stdin에서 예외를 던지지 않고 빈 문자열을 반환 →
+  25행 `payload = raw.trim() ? JSON.parse(raw) : {}`가 빈 문자열을 "정상적인 빈 객체"로 취급해 catch를 안 탐.
+- **제안 수정(적용 전, 텍스트만)**: 25행을
+  `payload = raw.trim() ? JSON.parse(raw) : (() => deny('빈 입력(fail-closed). /re-selftest 또는 재설치를 권장합니다.'))()`
+  로 변경하면 다른 실패 케이스와 동일하게 차단됨. 적용 후 `node hooks/_selftest.mjs` 재실행 →
+  새 해시를 `references/integrity.json`에 재기록 필요(3층 무결성 갱신).
+- **실제 위험도**: 낮음 — Claude Code 하네스는 정상 동작 중 빈 stdin을 보내지 않음(직접 스크립트 호출 시에만 재현). 그래도 MUST 요구사항 위반이라 기록.
+
+### 알려진 한계: "훅 1개로 통합" 목표 미달성 — `hooks/hooks.json` + `re-deny-guard.mjs`
+- `06_FAMILY_SYNERGY.md`는 "형제 guard(Harness) 있으면 그 규칙에만 편승, 훅은 1개"를 설계 목표로 명시.
+- **확인됨**: `scripts/re-inject-harness.mjs`로 Reverse 규칙이 Harness의 공유 `safety-rules.json`에 실제 주입됨(check-family.mjs로 확인, 시너지 자체는 작동).
+- **그러나** `re-deny-guard.mjs`는 Harness 설치 여부를 감지하는 코드가 전혀 없어, Harness가 있어도 **자기 훅을 별도로 항상 등록**함 → 실제로는 "훅 1개"가 아니라 Bash/Write/Edit마다 Harness 훅 + Reverse 훅 **2개가 중복 실행**됨.
+- **위험도**: 기능 오작동은 아님(과차단보다는 중복 실행 비효율). 다만 이 컴퓨터엔 이미 공격적인 Harness 가드가 활성 상태라(이 세션에서 10회+ 실제로 차단당함), 설치 시 마찰이 늘 수 있음.
+- **향후 방향**: `re-deny-guard.mjs` 시작부에 `~/.sodamharness/` 존재 확인 → 있으면 즉시 `passThrough()`(Harness가 이미 병합규칙으로 검사하므로 중복 불필요) 로직 추가 권장. 보호파일이라 수동 경로 필요.
+
+---
+
 ## 6. 다음 작업 (우선순위 · 2026-07-07)
 
 > 각 작업의 담당(AI 단독 / 사람·환경 게이트 / 사용자 결정)과 done-when, 예상 리스크·변수·충돌·실패, 대응을 함께 명시.
