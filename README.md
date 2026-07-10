@@ -266,6 +266,7 @@ selftest 출력에서 SHA-256 해시를 복사 →
 | `/re-start [파일경로]` | 새로운 분석을 시작할 때 | `/re-start src/login.js` |
 | `/re-report` | 마지막 분석 보고서를 다시 볼 때 | `/re-report` |
 | `/re-selftest` | 안전장치 3층 점검할 때 | `/re-selftest` |
+| `/re-agent [설정폴더/repo 경로]` | 내 Claude 설정이나 다른 플러그인 구조를 이해하고 싶을 때 | `/re-agent ~/.claude` |
 
 **앞으로 추가될 명령어 (Phase 2·3 구현 후):**
 
@@ -365,6 +366,7 @@ SoDam-Reverse-Eng/
 │   ├── re-start.md
 │   ├── re-report.md
 │   ├── re-selftest.md
+│   ├── re-agent.md              ← AI 에이전트 구조 분석
 │   ├── re-android.md            ← Phase 2 예정
 │   └── re-binary.md             ← Phase 3 예정
 │
@@ -650,6 +652,15 @@ node scripts/re-inject-harness.mjs
 - `re-analyze-android` 스킬 + `/re-android` 명령 **골격** 추가(동의 게이트 강화·읽기 전용, 아직 사용 불가)
 - GUIDE에 JADX·Apktool·Java 17+ 설치 안내(2-6절) 추가
 - ⚠️ 실제 디컴파일 동작은 도구 설치 환경에서 **라이브 검증 예정**(현재 골격). 안전·동의·보고서 규칙은 Phase 1과 동일
+
+</details>
+
+<details>
+<summary><strong>Phase 2 — AI 에이전트 구조 분석 모듈 (라이브 검증됨)</strong></summary>
+
+- `re-analyze-agent` 스킬 + `/re-agent` 명령 추가 — 내 Claude 설정이나 다른 플러그인 구조를 소스레벨로 분석(외부 도구 불필요)
+- 안드로이드와 달리 **외부 도구가 필요 없어 라이브 검증까지 완료**: 자기분석 도그푸드 + 프롬프트 인젝션 레드팀 2라운드(자체검증 → 독립 에이전트 블라인드 검증) 통과
+- `~/.claude` 전체 분석은 사용량 보호를 위해 확인 게이트를 통과해야 진행
 
 </details>
 

@@ -264,6 +264,7 @@ Paste it as the value for `hooks/re-deny-guard.mjs` in `references/integrity.jso
 | `/re-start [file-path]` | Start a new analysis | `/re-start src/login.js` |
 | `/re-report` | View the last analysis report again | `/re-report` |
 | `/re-selftest` | Check the 3-layer safety system | `/re-selftest` |
+| `/re-agent [config-folder/repo path]` | Understand your own Claude config or another plugin's structure | `/re-agent ~/.claude` |
 
 **Upcoming commands (after Phase 2·3):**
 
@@ -363,6 +364,7 @@ SoDam-Reverse-Eng/
 │   ├── re-start.md              ← /re-start (analysis start)
 │   ├── re-report.md             ← /re-report
 │   ├── re-selftest.md           ← /re-selftest
+│   ├── re-agent.md              ← /re-agent (AI agent structure analysis)
 │   ├── re-android.md            ← Phase 2 (stub)
 │   └── re-binary.md             ← Phase 3 (stub)
 │
@@ -633,6 +635,15 @@ node scripts/re-inject-harness.mjs
 - Added `re-analyze-android` skill + `/re-android` command scaffolding (stronger consent gate, read-only; not yet usable)
 - Added JADX/Apktool/Java 17+ install guide (section 2-6) to GUIDE
 - ⚠️ Actual decompilation is **pending live verification** on a machine with the tools (currently scaffolding). Safety, consent, and report rules operate the same as Phase 1.
+
+</details>
+
+<details>
+<summary><strong>Phase 2 — AI Coding Agent Structure Analysis Module (Live-Verified)</strong></summary>
+
+- Added `re-analyze-agent` skill + `/re-agent` command — source-level analysis of your own Claude config or another plugin's structure (no external tools needed)
+- Unlike Android, this needed no external tooling, so it's **fully live-verified**: self-analysis dogfood + 2 rounds of prompt-injection red-teaming (self-check, then an independent blind-test agent)
+- Analyzing the entire `~/.claude` root requires passing a confirmation gate first, to protect against runaway token usage
 
 </details>
 

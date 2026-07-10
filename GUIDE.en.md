@@ -884,11 +884,12 @@ SoDam-Reverse-Eng/                   <- Plugin root folder
 |   +-- plugin.json
 |   +-- marketplace.json
 |
-+-- commands/                        <- 4 commands (+ 2 planned)
++-- commands/                        <- 5 commands (+ 2 planned)
 |   +-- re-ping.md
 |   +-- re-start.md
 |   +-- re-report.md
 |   +-- re-selftest.md
+|   +-- re-agent.md                  <- AI agent structure analysis
 |   +-- re-android.md                <- Phase 2 planned
 |   +-- re-binary.md                 <- Phase 3 planned
 |
@@ -1468,6 +1469,15 @@ The creator (SoDam AI Studio) is not responsible for:
 - Added `re-analyze-android` skill + `/re-android` command scaffolding (stronger consent gate, read-only; not yet usable)
 - Added the JADX/Apktool/Java 17+ install guide in section 2-6
 - ⚠️ Actual decompilation is **pending live verification** on a machine with the tools (currently scaffolding). Safety, consent, and report rules operate the same as Phase 1.
+
+</details>
+
+<details>
+<summary><strong>Phase 2 — AI Coding Agent Structure Analysis Module (Live-Verified)</strong></summary>
+
+- Added `re-analyze-agent` skill + `/re-agent` command — source-level analysis of your own Claude config or another plugin's structure (no external tools needed)
+- Unlike Android, this needed no external tooling, so it's **fully live-verified**: self-analysis dogfood + 2 rounds of prompt-injection red-teaming (self-check, then an independent blind-test agent)
+- Analyzing the entire `~/.claude` root requires passing a confirmation gate first, to protect against runaway token usage
 
 </details>
 

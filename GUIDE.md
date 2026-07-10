@@ -886,6 +886,7 @@ SoDam-Reverse-Eng/                   ← 플러그인 루트 폴더
 │   ├── re-start.md
 │   ├── re-report.md
 │   ├── re-selftest.md
+│   ├── re-agent.md                  ← AI 에이전트 구조 분석
 │   ├── re-android.md                ← Phase 2 예정
 │   └── re-binary.md                 ← Phase 3 예정
 │
@@ -1494,6 +1495,15 @@ Copyright (c) 2026 SoDam AI Studio
 - `re-analyze-android` 스킬 + `/re-android` 명령 **골격** 추가(동의 게이트 강화·읽기 전용, 아직 사용 불가)
 - GUIDE 2-6절에 JADX·Apktool·Java 17+ 설치 안내 추가
 - ⚠️ 실제 디컴파일 동작은 도구 설치 환경에서 **라이브 검증 예정**(현재 골격). 안전·동의·보고서 규칙은 Phase 1과 동일
+
+</details>
+
+<details>
+<summary><strong>Phase 2 — AI 에이전트 구조 분석 모듈 (라이브 검증됨)</strong></summary>
+
+- `re-analyze-agent` 스킬 + `/re-agent` 명령 추가 — 내 Claude 설정이나 다른 플러그인 구조를 소스레벨로 분석(외부 도구 불필요)
+- 안드로이드와 달리 **외부 도구가 필요 없어 라이브 검증까지 완료**: 자기분석 도그푸드 + 프롬프트 인젝션 레드팀 2라운드(자체검증 → 독립 에이전트 블라인드 검증) 통과
+- `~/.claude` 전체 분석은 사용량 보호를 위해 확인 게이트를 통과해야 진행
 
 </details>
 
