@@ -175,6 +175,7 @@ git ls-files .PRD                 # 빈값 = .PRD 미추적(정상)
   로 변경하면 다른 실패 케이스와 동일하게 차단됨. 적용 후 `node hooks/_selftest.mjs` 재실행 →
   새 해시를 `references/integrity.json`에 재기록 필요(3층 무결성 갱신).
 - **실제 위험도**: 낮음 — Claude Code 하네스는 정상 동작 중 빈 stdin을 보내지 않음(직접 스크립트 호출 시에만 재현). 그래도 MUST 요구사항 위반이라 기록.
+- **반영(2026-07-12)**: `SETUP_BLOCKED_FILES.md`의 재현 코드에 위 수정을 실제로 적용 + node 직접 실행으로 4케이스(빈stdin·깨진JSON·위험키워드·안전명령) 검증 완료(빈stdin만 결과가 바뀌어 차단으로, 나머지 3개는 회귀 없음 확인). 단 **라이브 `hooks/re-deny-guard.mjs`(보호파일) 자체는 미반영** — 다음 사람이 5개 파일을 재생성/재설치할 때만 적용됨.
 
 ### 알려진 한계: "훅 1개로 통합" 목표 미달성 — `hooks/hooks.json` + `re-deny-guard.mjs`
 - `06_FAMILY_SYNERGY.md`는 "형제 guard(Harness) 있으면 그 규칙에만 편승, 훅은 1개"를 설계 목표로 명시.
@@ -182,6 +183,7 @@ git ls-files .PRD                 # 빈값 = .PRD 미추적(정상)
 - **그러나** `re-deny-guard.mjs`는 Harness 설치 여부를 감지하는 코드가 전혀 없어, Harness가 있어도 **자기 훅을 별도로 항상 등록**함 → 실제로는 "훅 1개"가 아니라 Bash/Write/Edit마다 Harness 훅 + Reverse 훅 **2개가 중복 실행**됨.
 - **위험도**: 기능 오작동은 아님(과차단보다는 중복 실행 비효율). 다만 이 컴퓨터엔 이미 공격적인 Harness 가드가 활성 상태라(이 세션에서 10회+ 실제로 차단당함), 설치 시 마찰이 늘 수 있음.
 - **향후 방향**: `re-deny-guard.mjs` 시작부에 `~/.sodamharness/` 존재 확인 → 있으면 즉시 `passThrough()`(Harness가 이미 병합규칙으로 검사하므로 중복 불필요) 로직 추가 권장. 보호파일이라 수동 경로 필요.
+- **반영(2026-07-12) + 신규 발견**: `SETUP_BLOCKED_FILES.md`에 위임 로직을 반영하되, **단순 존재확인이 아니라 조건을 정교화**함 — `scripts/re-inject-harness.mjs`가 **설치 시 자동 실행되지 않는다는 사실을 코드로 확인**했기 때문(`re-local-install.mjs`엔 호출 코드가 없고, 스크립트 자체 주석의 "`/re-selftest`가 자동 호출"이라는 설명도 실제 `_selftest.mjs`엔 없는 내용 — 문서-코드 불일치). 그래서 단순 폴더 존재만으로 위임하면 **주입 안 한 사용자의 안전장치가 통째로 꺼지는 회귀**가 될 뻔했음 — 실제 규칙(`plugins.reverse.catastrophic`/`risky`)이 비어있지 않을 때만 위임하도록 수정. 이 역시 라이브 파일 미반영, 재설치 시 적용.
 
 ---
 

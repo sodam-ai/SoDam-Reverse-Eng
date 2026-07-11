@@ -68,9 +68,10 @@
  * 크랙·인증/라이선스 우회·키/토큰 추출 등 금지 범위 도구 호출을 차단.
  * 원칙: 1차 방어는 AI 출력거부(스킬). 이 hook은 2차. fail-closed(판단불가 시 차단). 과차단 최소화(좁은 패턴).
  */
-import { readFileSync } from 'node:fs';
+import { readFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
+import { homedir } from 'node:os';
 
 const TAG = '[sodam-reverse]';
 function deny(reason) {
@@ -81,12 +82,28 @@ function deny(reason) {
 }
 function passThrough() { process.exit(0); }
 
+// 형제 Harness에 이 플러그인 규칙이 실제로 주입되어 있으면 그 guard가 이미 병합 규칙으로 검사한다 — 자체 훅 중복실행 방지.
+// 단순 설치 여부(폴더 존재)만으로 판단하지 않는다 — 규칙 주입은 별도 단계(scripts/re-inject-harness.mjs)라
+// 미주입 상태에서 존재만 보고 건너뛰면 안전장치가 통째로 꺼지는 회귀가 된다. 실제 규칙이 등록돼 있을 때만 위임한다.
+try {
+  const harnessRulesPath = join(homedir(), '.sodamharness', 'safety-rules.json');
+  if (existsSync(harnessRulesPath)) {
+    const hr = JSON.parse(readFileSync(harnessRulesPath, 'utf8'));
+    const ns = hr?.plugins?.reverse;
+    const hasRules = ns && (((ns.catastrophic?.length) || 0) > 0 || ((ns.risky?.length) || 0) > 0);
+    if (hasRules) passThrough();
+  }
+} catch {}
+
 let raw = '';
 try { raw = readFileSync(0, 'utf8'); }
 catch { deny('안전검사 입력을 읽지 못했습니다(fail-closed). /re-selftest 또는 재설치를 권장합니다.'); }
 
 let payload;
-try { payload = raw.trim() ? JSON.parse(raw) : {}; }
+try {
+  if (!raw.trim()) deny('빈 입력을 받았습니다(fail-closed). /re-selftest 또는 재설치를 권장합니다.');
+  payload = JSON.parse(raw);
+}
 catch { deny('안전검사 입력 해석에 실패했습니다(fail-closed).'); }
 
 const ti = payload.tool_input || payload.toolInput || {};
