@@ -71,7 +71,6 @@
 import { readFileSync, existsSync, mkdirSync, appendFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
-import { homedir } from 'node:os';
 import { createHash } from 'node:crypto';
 
 const TAG = '[sodam-reverse]';
@@ -98,18 +97,9 @@ function deny(reason) {
 }
 function passThrough() { process.exit(0); }
 
-// 형제 Harness에 이 플러그인 규칙이 실제로 주입되어 있으면 그 guard가 이미 병합 규칙으로 검사한다 — 자체 훅 중복실행 방지.
-// 단순 설치 여부(폴더 존재)만으로 판단하지 않는다 — 규칙 주입은 별도 단계(scripts/re-inject-harness.mjs)라
-// 미주입 상태에서 존재만 보고 건너뛰면 안전장치가 통째로 꺼지는 회귀가 된다. 실제 규칙이 등록돼 있을 때만 위임한다.
-try {
-  const harnessRulesPath = join(homedir(), '.sodamharness', 'safety-rules.json');
-  if (existsSync(harnessRulesPath)) {
-    const hr = JSON.parse(readFileSync(harnessRulesPath, 'utf8'));
-    const ns = hr?.plugins?.reverse;
-    const hasRules = ns && (((ns.catastrophic?.length) || 0) > 0 || ((ns.risky?.length) || 0) > 0);
-    if (hasRules) passThrough();
-  }
-} catch {}
+// [2026-07-12] Harness 위임(존재 시 자체검사 생략) 로직은 도입 후 라이브 셀프테스트에서
+// 실제 회귀(격리 실행 시 위험 샘플이 무검증 통과)가 확인되어 롤백함 — 안전 공백 > 중복실행 비효율.
+// 자체 검사는 항상 수행한다(§5-1 "훅 중복" 한계는 유지되나 위험도는 기존에 이미 "낮음"으로 평가됨).
 
 let raw = '';
 try { raw = readFileSync(0, 'utf8'); }
