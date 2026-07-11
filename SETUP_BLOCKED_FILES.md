@@ -68,13 +68,29 @@
  * 크랙·인증/라이선스 우회·키/토큰 추출 등 금지 범위 도구 호출을 차단.
  * 원칙: 1차 방어는 AI 출력거부(스킬). 이 hook은 2차. fail-closed(판단불가 시 차단). 과차단 최소화(좁은 패턴).
  */
-import { readFileSync, existsSync } from 'node:fs';
+import { readFileSync, existsSync, mkdirSync, appendFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { homedir } from 'node:os';
+import { createHash } from 'node:crypto';
 
 const TAG = '[sodam-reverse]';
+
+// 안전로그 기록(02_DATA_MODEL SafetyLog) — 원문 대신 해시만 저장(자기부죄 방지, PRD M7).
+// 기록 실패가 차단 판정에 영향 주면 안 되므로 항상 try/catch로 격리한다.
+// 범위: 해시 기록까지만(최소 스코프) — "자동 만료"는 후속 과제로 남긴다.
+function logSafetyEvent(reason) {
+  try {
+    const dir = join(process.cwd(), '.sodam-re');
+    if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+    const hash = createHash('sha256').update(raw || '').digest('hex').slice(0, 16);
+    const entry = { id: `log-${Date.now()}`, blocked_request: `sha256:${hash}`, reason, occurred_at: new Date().toISOString() };
+    appendFileSync(join(dir, 'safety-log.jsonl'), JSON.stringify(entry) + '\n', 'utf8');
+  } catch {}
+}
+
 function deny(reason) {
+  logSafetyEvent(reason);
   process.stdout.write(JSON.stringify({
     hookSpecificOutput: { hookEventName: 'PreToolUse', permissionDecision: 'deny', permissionDecisionReason: `${TAG} ${reason}` },
   }));

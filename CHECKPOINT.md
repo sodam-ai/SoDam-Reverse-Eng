@@ -204,6 +204,18 @@ git ls-files .PRD                 # 빈값 = .PRD 미추적(정상)
 
 ---
 
+## 5-4. 2026-07-12 SafetyLog 미구현 발견·최소 구현 반영
+
+> §5-3의 "신규 치명 갭 없음" 결론은 이 발견으로 갱신됨 — 이후 동의게이트 대조 조사에서 새 데이터를 발견했기 때문.
+
+- **발견**: `README.md`·`GUIDE.md`(한/영 4개 문서 전부)가 "`./.sodam-re/safety-log.jsonl`에 차단 이벤트가 기록된다(원문 해시 처리)"고 명시하지만, 실제로 이걸 생성·기록하는 코드가 `skills/`·`hooks/`·`scripts/` 어디에도 없었음(Grep 전수 확인). PRD `04_PROJECT_SPEC.md` ALWAYS DO "deny 이벤트를 안전로그에 기록하라"(MUST) 미구현 + `02_DATA_MODEL.md` SafetyLog 엔티티 미구현.
+- **반영**: `SETUP_BLOCKED_FILES.md`의 `re-deny-guard.mjs`에 `logSafetyEvent()` 추가 — `deny()` 호출 시 `.sodam-re/safety-log.jsonl`에 JSONL 한 줄 기록. 원문 대신 **SHA-256 해시만** 저장(자기부죄 방지, PRD M7). 기록 실패는 try/catch로 격리해 **deny 판정엔 영향 없음**(fail-safe).
+- **검증**: node 직접 실행으로 4케이스 확인 — 빈stdin·위험키워드 deny 시 로그 정확히 2건 기록(해시만, 원문 없음), 안전명령은 로그 미기록(과잉로깅 없음), TDZ 등 크래시 없음.
+- **스코프 경계(의도적 제외)**: PRD M7이 요구하는 "자동 만료"는 이번에 구현하지 않음 — 파일을 열어 오래된 줄을 지우는 추가 로직이 필요해 범위가 커지므로 후속 과제로 남김.
+- **미반영 범위**: 라이브 `hooks/re-deny-guard.mjs`(보호파일)는 그대로 — 재설치/재현 시에만 적용. `session_id` 필드는 hook 레벨에서 알 수 없어 생략(스킬 레벨 연동은 후속 과제).
+
+---
+
 ## 6. 다음 작업 (우선순위 · 2026-07-07)
 
 > 각 작업의 담당(AI 단독 / 사람·환경 게이트 / 사용자 결정)과 done-when, 예상 리스크·변수·충돌·실패, 대응을 함께 명시.
