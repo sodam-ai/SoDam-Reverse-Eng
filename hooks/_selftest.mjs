@@ -22,7 +22,7 @@ function runGuardDenied(toolName, toolInput) {
 
 console.log('🔒 SoDam-Reverse 안전 3층 셀프테스트\n');
 
-const skillFiles = ['skills/re-router/SKILL.md', 'skills/re-analyze-mycode/SKILL.md', 'skills/re-report/SKILL.md'];
+const skillFiles = ['skills/re-router/SKILL.md', 'skills/re-analyze-mycode/SKILL.md', 'skills/re-report/SKILL.md', 'skills/re-analyze-agent/SKILL.md', 'skills/re-analyze-binary/SKILL.md'];
 for (const f of skillFiles) {
   const p = join(root, f);
   if (existsSync(p)) {
