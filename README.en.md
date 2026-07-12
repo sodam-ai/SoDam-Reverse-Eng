@@ -281,12 +281,12 @@ Paste it as the value for `hooks/re-deny-guard.mjs` in `references/integrity.jso
 | `/re-selftest` | Check the 3-layer safety system | `/re-selftest` |
 | `/re-agent [config-folder/repo path]` | Understand your own Claude config or another plugin's structure | `/re-agent ~/.claude` |
 
-**Upcoming commands (after Phase 2·3):**
+**Phase 2·3 commands:**
 
 | Command | Status | Description |
 |---|---|---|
-| `/re-android [APK-path]` | ⏳ Phase 2 | Android app analysis |
-| `/re-binary [file-path]` | ⏳ Phase 3 | Binary/executable analysis |
+| `/re-android [APK-path]` | ✅ Live-verified (2026-07-13) | Android app analysis |
+| `/re-binary [file-path]` | 🚧 Scaffolding complete (not yet live-verified) | Binary/executable analysis |
 
 ---
 
@@ -307,7 +307,7 @@ User: /re-start my-code/login.js
           ↓
 [Step 3] Analysis Begins (read-only)
   - File reading ONLY (never executed)
-  - Path manipulation (../, symlinks) auto-blocked
+  - Path manipulation (../, symlinks) blocking is attempted — **AI-judgment based (layer 1)**, not 100% code-enforced (confirmed in the 2026-07-13 security review)
   - Passwords and keys auto-masked
           ↓
 [Step 4] Standard Report Output
@@ -380,14 +380,14 @@ SoDam-Reverse-Eng/
 │   ├── re-report.md             ← /re-report
 │   ├── re-selftest.md           ← /re-selftest
 │   ├── re-agent.md              ← /re-agent (AI agent structure analysis)
-│   ├── re-android.md            ← scaffolding complete (not yet live-verified)
+│   ├── re-android.md            ← live-verified
 │   └── re-binary.md             ← scaffolding complete (not yet live-verified)
 │
 ├── skills/                      ← AI analysis logic
 │   ├── re-router/               ← Layer 1 safety rules + request routing
 │   ├── re-analyze-mycode/       ← Source code analysis
 │   ├── re-report/               ← Report generation
-│   ├── re-analyze-android/      ← scaffolding complete (not yet live-verified)
+│   ├── re-analyze-android/      ← live-verified
 │   └── re-analyze-binary/       ← scaffolding complete (not yet live-verified)
 │
 ├── hooks/                       ← Safety layers 2 and 3
@@ -396,7 +396,7 @@ SoDam-Reverse-Eng/
 │   └── hooks.json               ← Hook configuration
 │
 ├── references/                  ← Data and rule files
-│   ├── deny-corpus.json         ← 48 keywords + 5 regex
+│   ├── deny-corpus.json         ← 60 keywords + 7 regex
 │   ├── mask-patterns.json       ← 10 masking rules
 │   ├── trust-catalog.md         ← 15 trusted tool entries
 │   ├── report-template.md       ← Standard report template
@@ -438,7 +438,7 @@ SoDam-Reverse-Eng/
 | License Full Text | `LICENSE` | Apache-2.0 full text |
 | Copyright Notice | `NOTICE` | Third-party notices |
 | Dev Progress | `CHECKPOINT.md` | Developer milestones |
-| Danger Pattern DB | `references/deny-corpus.json` | 48 keyword + 5 regex patterns |
+| Danger Pattern DB | `references/deny-corpus.json` | 60 keyword + 7 regex patterns |
 | Masking Patterns | `references/mask-patterns.json` | 15 masking rules |
 | Trusted Tool List | `references/trust-catalog.md` | 15 tools with trust ratings |
 | Report Template | `references/report-template.md` | Report format definition |
@@ -644,12 +644,23 @@ node scripts/re-inject-harness.mjs
 </details>
 
 <details>
-<summary><strong>Phase 2 Start — Android Analysis Scaffolding (⚠️ Not Live-Verified)</strong></summary>
+<summary><strong>Phase 2 Start — Android Analysis Scaffolding (not live-verified at the time · verified later, see below)</strong></summary>
 
-- **Safety first**: expanded the block corpus with Android danger patterns → **48 keywords + 5 regex**
-- Added `re-analyze-android` skill + `/re-android` command scaffolding (stronger consent gate, read-only; not yet usable)
+- **Safety first**: expanded the block corpus with Android danger patterns (as of this point in time)
+- Added `re-analyze-android` skill + `/re-android` command scaffolding (stronger consent gate, read-only)
 - Added JADX/Apktool/Java 17+ install guide (section 2-6) to GUIDE
-- ⚠️ Actual decompilation is **pending live verification** on a machine with the tools (currently scaffolding). Safety, consent, and report rules operate the same as Phase 1.
+- At this stage, live verification with the actual tools installed hadn't happened yet — **completed on 2026-07-13, see the entry below**
+
+</details>
+
+<details>
+<summary><strong>Phase 1 + Phase 2 (Android) Live E2E Verification Complete (2026-07-13)</strong></summary>
+
+- Installed the plugin **from scratch, the real way** (`/plugin marketplace add` → `/plugin install` → `/reload-plugins`), live-verifying the marketplace install flow itself
+- Phase 1: ran `/re-start` on a real code file → passed the 2-question consent gate → got a genuine report → confirmed API keys/passwords were masked (`••••`) → confirmed a bypass request was refused
+- Phase 2 (Android): installed Java 17, JADX, and Apktool for real → ran `/re-android` on a real APK (an open-source app from F-Droid) → passed the 3-question consent gate → got a genuine report covering permissions, network activity, and evidence locations → confirmed a license-bypass request was refused
+- Expanded the deny-corpus to **60 keywords + 7 regex patterns** (from the 4th-round red-team audit)
+- One defect found during development (documented for transparency, no user-facing impact confirmed): the deny-hook over-blocked a legitimate sentence describing the *absence* of cracking code, causing that observation to be dropped from one report — logged as a backlog item for context-aware matching in a future release
 
 </details>
 

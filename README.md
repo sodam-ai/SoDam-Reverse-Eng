@@ -283,11 +283,11 @@ selftest 출력에서 SHA-256 해시를 복사 →
 | `/re-selftest` | 안전장치 3층 점검할 때 | `/re-selftest` |
 | `/re-agent [설정폴더/repo 경로]` | 내 Claude 설정이나 다른 플러그인 구조를 이해하고 싶을 때 | `/re-agent ~/.claude` |
 
-**Phase 2·3 명령어 (골격 구현 완료 · 라이브 미검증):**
+**Phase 2·3 명령어:**
 
 | 명령어 | 상태 | 설명 |
 |---|---|---|
-| `/re-android [APK경로]` | 🚧 골격 완료(라이브 미검증) | Android 앱 분석 |
+| `/re-android [APK경로]` | ✅ 실사용 라이브 검증 완료(2026-07-13) | Android 앱 분석 |
 | `/re-binary [파일경로]` | 🚧 골격 완료(라이브 미검증) | 바이너리/실행파일 분석 |
 
 ---
@@ -309,7 +309,7 @@ selftest 출력에서 SHA-256 해시를 복사 →
           ↓
 [3단계] 분석 시작 (읽기 전용)
   - 파일 읽기만 (절대 실행 안 함)
-  - 경로 조작 (../, 심볼릭 링크) 자동 차단
+  - 경로 조작 (../, 심볼릭 링크) 차단 시도 — **AI(1층) 판단 기반**(코드로 100% 강제되는 것은 아님, 2026-07-13 보안점검에서 확인)
   - 비밀번호 · 키 발견 시 자동 마스킹
           ↓
 [4단계] 표준 보고서 출력
@@ -382,14 +382,14 @@ SoDam-Reverse-Eng/
 │   ├── re-report.md
 │   ├── re-selftest.md
 │   ├── re-agent.md              ← AI 에이전트 구조 분석
-│   ├── re-android.md            ← 골격 완료(라이브 미검증)
+│   ├── re-android.md            ← 실사용 라이브 검증 완료
 │   └── re-binary.md             ← 골격 완료(라이브 미검증)
 │
 ├── skills/                      ← 분석 AI 로직
 │   ├── re-router/               ← 1층 안전규칙 + 요청 분류
 │   ├── re-analyze-mycode/       ← 소스코드 분석
 │   ├── re-report/               ← 보고서 생성
-│   ├── re-analyze-android/      ← 골격 완료(라이브 미검증)
+│   ├── re-analyze-android/      ← 실사용 라이브 검증 완료
 │   └── re-analyze-binary/       ← 골격 완료(라이브 미검증)
 │
 ├── hooks/                       ← 안전장치 (2층 · 3층)
@@ -398,7 +398,7 @@ SoDam-Reverse-Eng/
 │   └── hooks.json               ← hook 설정
 │
 ├── references/                  ← 데이터·규칙 파일
-│   ├── deny-corpus.json         ← 위험 패턴 (키워드 48개 + 정규식 5개)
+│   ├── deny-corpus.json         ← 위험 패턴 (키워드 60개 + 정규식 7개)
 │   ├── mask-patterns.json       ← 마스킹 패턴 15개
 │   ├── trust-catalog.md         ← 신뢰 도구 카탈로그 (15개 repo)
 │   ├── report-template.md       ← 보고서 표준 양식
@@ -452,7 +452,7 @@ SoDam-Reverse-Eng/
 | 라이선스 원문 | `LICENSE` | Apache-2.0 전문 |
 | 저작권 고지 | `NOTICE` | 서드파티 고지 |
 | 개발 진행 상태 | `CHECKPOINT.md` | 개발자용 체크포인트 |
-| 위험 패턴 DB | `references/deny-corpus.json` | 키워드 48개 + 정규식 5개 |
+| 위험 패턴 DB | `references/deny-corpus.json` | 키워드 60개 + 정규식 7개 |
 | 마스킹 패턴 | `references/mask-patterns.json` | 15개 마스킹 규칙 |
 | 신뢰 도구 목록 | `references/trust-catalog.md` | 15개 도구 신뢰등급 |
 | 보고서 표준 양식 | `references/report-template.md` | 보고서 형식 정의 |
@@ -661,12 +661,23 @@ node scripts/re-inject-harness.mjs
 </details>
 
 <details>
-<summary><strong>Phase 2 착수 — 안드로이드 분석 골격 (⚠️ 라이브 미검증)</strong></summary>
+<summary><strong>Phase 2 착수 — 안드로이드 분석 골격 (당시 라이브 미검증 · 이후 아래 항목에서 검증 완료됨)</strong></summary>
 
-- **안전 우선**: 안드로이드 위험 패턴으로 차단 코퍼스 확장 → **키워드 48개 + 정규식 5개**
-- `re-analyze-android` 스킬 + `/re-android` 명령 **골격** 추가(동의 게이트 강화·읽기 전용, 아직 사용 불가)
+- **안전 우선**: 안드로이드 위험 패턴으로 차단 코퍼스 확장(착수 당시 기준)
+- `re-analyze-android` 스킬 + `/re-android` 명령 **골격** 추가(동의 게이트 강화·읽기 전용)
 - GUIDE에 JADX·Apktool·Java 17+ 설치 안내(2-6절) 추가
-- ⚠️ 실제 디컴파일 동작은 도구 설치 환경에서 **라이브 검증 예정**(현재 골격). 안전·동의·보고서 규칙은 Phase 1과 동일
+- 이 시점엔 도구 설치 환경에서의 라이브 검증이 아직 안 된 골격 단계였음 — **2026-07-13에 아래 항목대로 실사용 검증 완료**
+
+</details>
+
+<details>
+<summary><strong>Phase 1 + Phase 2(안드로이드) 실사용 라이브 E2E 검증 완료 (2026-07-13)</strong></summary>
+
+- 플러그인을 **처음부터 실제로 설치**(`/plugin marketplace add` → `/plugin install` → `/reload-plugins`)해 마켓 설치 흐름 자체를 실측 검증
+- Phase 1: `/re-start`로 실제 코드 파일 분석 → 동의 게이트 2문항 통과 → 진짜 보고서 생성 → API 키·비밀번호 마스킹(`••••`) 정상 확인 → 우회 요청 거부 확인
+- Phase 2(안드로이드): Java 17·JADX·Apktool 실제 설치 → `/re-android`로 실제 APK(F-Droid 오픈소스 앱) 분석 → 동의 게이트 3문항 통과 → 권한·네트워크통신·근거위치 포함 실제 보고서 생성 → 라이선스 우회 요청 거부 확인
+- deny-corpus를 **키워드 60개 + 정규식 7개**로 확장(4차 레드팀 감사 반영)
+- 발견된 결함(개발 중 문서화, 사용자 영향 없음): deny-hook이 "크랙 없음"류의 **정상 서술**을 과차단해 보고서 일부 내용이 누락된 사례 1건 확인 — 문맥 인식 개선을 백로그로 등록(다음 릴리스에서 개선 예정)
 
 </details>
 

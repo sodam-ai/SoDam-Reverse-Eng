@@ -256,9 +256,14 @@ A message saying "RE rules N injected successfully" means success.
 > **You only need this if you plan to analyze APKs (Android apps) with `/re-android`.**
 > If you only use Phase 1 source-code analysis (`/re-start`), you can **skip this.**
 >
-> ⚠️ **Current status: scaffolding (not yet live-verified).** Android analysis has not yet been
-> verified end-to-end on a machine with these tools installed. The safety, consent, and report
-> rules operate the same as in Phase 1.
+> ✅ **Current status: live-verified with real usage (2026-07-13).** We installed Java, JADX, and
+> Apktool for real and confirmed the full `/re-android` flow (consent gate → decompilation →
+> report generation) end-to-end on an open-source F-Droid app.
+>
+> 💡 **The most common real-world snag:** if you install JADX/Apktool but **forget to register
+> PATH**, the tools exist on disk but SoDam-Reverse still reports them as "not installed." Follow
+> the "Register PATH" step under each tool below, and if you just registered PATH, **fully quit
+> and restart Claude Code** before checking again.
 >
 > 🛡️ **Safety note:** These tools are for understanding an **APK you built or are authorized to
 > analyze**, for defense and learning. They are not for cracking or payment/license bypass, and
@@ -281,17 +286,46 @@ Android APK analysis needs **3 free tools**. Install **Java first** (JADX and Ap
 
 #### Tool 2: JADX (APK → Java code)
 
-- **Official (recommended):** [github.com/skylot/jadx/releases](https://github.com/skylot/jadx/releases) → download the latest `jadx-x.x.x.zip`, unzip, run `bin\jadx-gui.bat`
-- **If you use a package manager (optional):** `scoop install jadx` or `choco install jadx` (follow each manager's package/bucket guidance)
-- **Verify:** `jadx --version` (or `bin\jadx.bat --version` from the unzipped folder)
+- **Official (recommended):** [github.com/skylot/jadx/releases](https://github.com/skylot/jadx/releases) → download the latest release.
+  If several files are listed, get **`jadx-x.x.x.zip`** (the cross-platform CLI+GUI bundle) — the
+  `jadx-gui-*.zip` builds are GUI-only and may lack the command-line tool.
+- When unzipping, choose the destination explicitly (e.g. `C:\jadx`) instead of accepting the
+  default suggested folder name, to avoid an extra nested folder.
+- **If you use a package manager (optional):** `scoop install jadx` or `choco install jadx`
+  (follow each manager's package/bucket guidance — this path may auto-register PATH, but we have
+  not directly verified that ourselves as of 2026-07-13).
+
+**Register PATH (required for a manual install):**
+1. In Windows search, type **"environment variables"** → click **"Edit the system environment variables"**
+2. Click **"Environment Variables..."**
+3. Under "User variables", select **`Path`** → click **"Edit"**
+4. Click **"New"** → enter the `bin` subfolder of where you unzipped JADX (e.g. `C:\jadx\bin`) → OK → OK → OK
+5. **Fully quit and restart Claude Code** (PATH changes are only picked up after a restart)
+
+- **Verify:** `jadx --version`
 
 #### Tool 3: Apktool (resources and manifest)
 
-- **Official (recommended):** follow the Windows instructions at [apktool.org/docs/install](https://apktool.org/docs/install) — place `apktool.bat` and `apktool.jar` in the same folder and add that folder to PATH
+- **Official (recommended):** follow the Windows instructions at [apktool.org/docs/install](https://apktool.org/docs/install) —
+  download the wrapper script (`apktool.bat`) and the latest jar, **rename the jar to exactly
+  `apktool.jar`**, and place both files in the same folder (e.g. `C:\apktool`).
 - **If you use a package manager (optional):** `choco install apktool` or `scoop install apktool`
+  (not directly verified by us as of 2026-07-13)
+
+**Register PATH (same method as JADX):**
+1. Windows search → **"environment variables"** → **"Edit the system environment variables"** → "Environment Variables..."
+2. Under "User variables", select **`Path`** → **"Edit"** → **"New"**
+3. Enter the folder that holds `apktool.bat`/`apktool.jar` (e.g. `C:\apktool`) → OK → OK → OK
+4. **Fully quit and restart Claude Code**
+
 - **Verify:** `apktool --version`
 
 > Versions and commands may change over time. The **official pages above are always authoritative** — if installation stalls, follow their latest instructions.
+>
+> ⚠️ **Still not recognized after registering PATH?** A new terminal window alone may not be
+> enough — you need to **fully quit (not just close the window) and relaunch the Claude Code
+> application itself** for it to pick up the new PATH (a common real cause we confirmed during
+> 2026-07-13 live testing).
 
 #### After Installation
 
@@ -532,7 +566,7 @@ Vague answers like "probably" or "I think so" are not treated as agreement.
 
 | Command | Added in | Description |
 |---|---|---|
-| `/re-android` | scaffolding complete (not yet live-verified) | Android APK file analysis |
+| `/re-android` | ✅ Live-verified (2026-07-13) | Android APK file analysis |
 | `/re-binary` | scaffolding complete (not yet live-verified) | Executable file (.exe, etc.) analysis |
 
 ---
@@ -700,7 +734,7 @@ AI tries to write code
      Yes: Immediately block and notify user
 ```
 
-**Blocked patterns (48 keywords + 5 regex):**
+**Blocked patterns (60 keywords + 7 regex):**
 File writes and executions containing dangerous keywords related to crack, keygen, bypass, patch, etc. are blocked.
 
 **fail-closed principle:**
@@ -823,7 +857,7 @@ Contains the AI logic where actual analysis takes place.
 | `re-router/` | Layer 1 safety rules and request classification | Active |
 | `re-analyze-mycode/` | Source code analysis | Active |
 | `re-report/` | Report generation | Active |
-| `re-analyze-android/` | Android APK analysis | scaffolding complete (not yet live-verified) |
+| `re-analyze-android/` | Android APK analysis | live-verified |
 | `re-analyze-binary/` | Executable analysis | scaffolding complete (not yet live-verified) |
 
 #### hooks/ — Safety System
@@ -845,7 +879,7 @@ This means paths never need to be adjusted on any computer.
 
 | File | Contents |
 |---|---|
-| `deny-corpus.json` | 48 keyword + 5 regex patterns to block |
+| `deny-corpus.json` | 60 keyword + 7 regex patterns to block |
 | `mask-patterns.json` | 15 sensitive information masking patterns |
 | `trust-catalog.md` | 15 trusted external tools |
 | `report-template.md` | Standard report format |
@@ -948,14 +982,14 @@ SoDam-Reverse-Eng/                   <- Plugin root folder
 |   +-- re-report.md
 |   +-- re-selftest.md
 |   +-- re-agent.md                  <- AI agent structure analysis
-|   +-- re-android.md                <- scaffolding complete (not yet live-verified)
+|   +-- re-android.md                <- live-verified
 |   +-- re-binary.md                 <- scaffolding complete (not yet live-verified)
 |
 +-- skills/                          <- 5 AI logic modules
 |   +-- re-router/SKILL.md           <- Layer 1 safety rules
 |   +-- re-analyze-mycode/SKILL.md   <- Source code analysis
 |   +-- re-report/SKILL.md           <- Report generation
-|   +-- re-analyze-android/          <- scaffolding complete (not yet live-verified)
+|   +-- re-analyze-android/          <- live-verified
 |   +-- re-analyze-binary/           <- scaffolding complete (not yet live-verified)
 |
 +-- hooks/                           <- Safety system
@@ -1521,12 +1555,23 @@ The creator (SoDam AI Studio) is not responsible for:
 </details>
 
 <details>
-<summary><strong>Phase 2 Start — Android Analysis Scaffolding (⚠️ Not Live-Verified)</strong></summary>
+<summary><strong>Phase 2 Start — Android Analysis Scaffolding (not live-verified at the time · verified later, see below)</strong></summary>
 
-- **Safety first**: expanded the block corpus with Android danger patterns → **48 keywords + 5 regex**
-- Added `re-analyze-android` skill + `/re-android` command scaffolding (stronger consent gate, read-only; not yet usable)
+- **Safety first**: expanded the block corpus with Android danger patterns (as of this point in time)
+- Added `re-analyze-android` skill + `/re-android` command scaffolding (stronger consent gate, read-only)
 - Added the JADX/Apktool/Java 17+ install guide in section 2-6
-- ⚠️ Actual decompilation is **pending live verification** on a machine with the tools (currently scaffolding). Safety, consent, and report rules operate the same as Phase 1.
+- At this stage, live verification with the actual tools installed hadn't happened yet — **completed on 2026-07-13, see the entry below**
+
+</details>
+
+<details>
+<summary><strong>Phase 1 + Phase 2 (Android) Live E2E Verification Complete (2026-07-13)</strong></summary>
+
+- Installed the plugin **from scratch, the real way** (`/plugin marketplace add` → `/plugin install` → `/reload-plugins`), live-verifying the marketplace install flow itself
+- Phase 1: ran `/re-start` on a real code file → passed the 2-question consent gate → got a genuine report → confirmed API keys/passwords were masked (`••••`) → confirmed a bypass request was refused
+- Phase 2 (Android): installed Java 17, JADX, and Apktool for real (hit and documented real PATH-registration friction, now reflected in the install guide above) → ran `/re-android` on a real APK (an open-source app from F-Droid) → passed the 3-question consent gate → got a genuine report covering permissions, network activity, and evidence locations → confirmed a license-bypass request was refused
+- Expanded the deny-corpus to **60 keywords + 7 regex patterns** (from the 4th-round red-team audit)
+- One defect found during development (documented for transparency): the deny-hook over-blocked a legitimate sentence describing the *absence* of cracking code, causing that observation to be dropped from one report — logged as a backlog item for context-aware matching in a future release
 
 </details>
 

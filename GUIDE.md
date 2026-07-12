@@ -257,8 +257,12 @@ node scripts/re-inject-harness.mjs
 > **이 항목은 `/re-android`로 APK(안드로이드 앱)를 분석할 때만 필요합니다.**
 > 소스코드만 분석하는 Phase 1 기능(`/re-start`)만 쓰신다면 **건너뛰어도 됩니다.**
 >
-> ⚠️ **현재 상태: 골격(라이브 미검증).** 안드로이드 분석 기능은 아래 도구가 설치된 환경에서
-> 실제 동작 검증이 아직 끝나지 않았습니다. 안전·동의·보고서 규칙은 Phase 1과 동일하게 작동합니다.
+> ✅ **현재 상태: 실사용 라이브 검증 완료(2026-07-13).** Java·JADX·Apktool을 실제로 설치하고
+> F-Droid 오픈소스 앱으로 `/re-android` 전 과정(동의 게이트 → 디컴파일 → 보고서 생성)을 실측 확인했습니다.
+>
+> 💡 **실제 설치 중 자주 겪는 문제:** JADX·Apktool을 설치만 하고 **PATH 등록을 빠뜨리면** 도구가 있어도
+> "설치 안 됨"으로 인식됩니다. 아래 각 도구 설명의 "PATH에 등록하기" 단계를 반드시 따라 하고,
+> PATH를 새로 등록했다면 **Claude Code를 완전히 종료 후 재시작**해야 인식됩니다.
 >
 > 🛡️ **안전 고지:** 이 도구들은 **본인이 만들었거나 분석 허가를 받은 APK**를 방어·학습 목적으로
 > 이해하기 위한 것입니다. 크랙·결제/라이선스 우회를 돕는 도구가 아니며, 그런 요청은 여전히 거절됩니다.
@@ -281,20 +285,46 @@ node scripts/re-inject-harness.mjs
 
 #### 도구 2: JADX (APK → 자바 코드 복원)
 
-- **공식(권장):** [github.com/skylot/jadx/releases](https://github.com/skylot/jadx/releases) → 최신 `jadx-x.x.x.zip` 내려받아 압축 해제 → `bin\jadx-gui.bat` 실행
+- **공식(권장):** [github.com/skylot/jadx/releases](https://github.com/skylot/jadx/releases) → 최신 `jadx-x.x.x.zip` 내려받기.
+  릴리스 목록에 파일이 여러 개면 **`jadx-x.x.x.zip`**(cross-platform cli and gui bundle)을 받으세요 —
+  `jadx-gui-*.zip`류는 GUI 전용이라 명령줄 도구가 없을 수 있습니다.
+- 압축을 풀 때 위치를 직접 지정하세요(예: `C:\jadx`) — 기본 제안 폴더명을 그대로 두면 폴더가
+  이중으로 겹칠 수 있으니 주의하세요.
 - **패키지 매니저가 있다면(선택):** `scoop install jadx` 또는 `choco install jadx`
-  (패키지명·버킷은 각 매니저 안내를 따르세요)
-- **확인:** `jadx --version` (또는 압축 푼 `bin\jadx.bat --version`)
+  (패키지명·버킷은 각 매니저 안내를 따르세요 — 이 경로는 PATH를 자동 등록해줄 수 있으나, 2026-07-13
+  기준 이 프로젝트에서 직접 실측 검증하지는 않았습니다)
+
+**PATH에 등록하기(수동 설치 시 필수):**
+1. Windows 검색창에 **"환경 변수"** 입력 → **"시스템 환경 변수 편집"** 클릭
+2. "환경 변수(N)..." 버튼 클릭
+3. "사용자 변수" 목록에서 **`Path`** 선택 → **"편집"** 클릭
+4. **"새로 만들기"** 클릭 → JADX를 푼 폴더의 `bin` 하위경로 입력(예: `C:\jadx\bin`) → 확인 → 확인 → 확인
+5. **Claude Code를 완전히 종료 후 재시작**(PATH 변경은 재시작해야 인식됨)
+
+- **확인:** `jadx --version`
 
 #### 도구 3: Apktool (리소스·매니페스트 복원)
 
-- **공식(권장):** [apktool.org/docs/install](https://apktool.org/docs/install) 의 Windows 안내대로
-  `apktool.bat`와 `apktool.jar`를 같은 폴더에 두고 그 폴더를 PATH에 추가
+- **공식(권장):** [apktool.org/docs/install](https://apktool.org/docs/install)의 Windows 안내대로
+  wrapper 스크립트(`apktool.bat`)와 최신 jar 파일을 내려받고, **jar 파일 이름을 반드시 `apktool.jar`로 변경**한 뒤
+  두 파일을 같은 폴더(예: `C:\apktool`)에 둡니다.
 - **패키지 매니저가 있다면(선택):** `choco install apktool` 또는 `scoop install apktool`
+  (2026-07-13 기준 이 프로젝트에서 직접 실측 검증하지는 않았습니다)
+
+**PATH에 등록하기(JADX와 같은 방법):**
+1. Windows 검색창에 **"환경 변수"** 입력 → **"시스템 환경 변수 편집"** → "환경 변수(N)..."
+2. "사용자 변수"의 **`Path`** 선택 → **"편집"** → **"새로 만들기"**
+3. `apktool.bat`·`apktool.jar`를 둔 폴더 경로 입력(예: `C:\apktool`) → 확인 → 확인 → 확인
+4. **Claude Code를 완전히 종료 후 재시작**
+
 - **확인:** `apktool --version`
 
 > 💡 버전·명령은 시간이 지나면 바뀔 수 있습니다. 위 **공식 페이지가 항상 정답**입니다.
 > 설치가 막히면 공식 페이지의 최신 안내를 우선하세요.
+>
+> ⚠️ **PATH 등록 후에도 인식이 안 되면:** 새 터미널 창만으로는 부족할 수 있습니다 — **Claude Code
+> 프로그램 자체를 완전히 종료(Quit)했다가 다시 실행**해야 새 PATH를 확실히 인식합니다(2026-07-13
+> 실사용 테스트에서 실측 확인된 흔한 원인).
 
 #### 설치 후 사용
 
@@ -530,7 +560,7 @@ Pong! /re-ping 정상 작동합니다.
 
 | 명령어 | 추가 시기 | 설명 |
 |---|---|---|
-| `/re-android` | 골격 완료(라이브 미검증) | Android APK 파일 분석 |
+| `/re-android` | ✅ 실사용 라이브 검증 완료(2026-07-13) | Android APK 파일 분석 |
 | `/re-binary` | 골격 완료(라이브 미검증) | 실행 파일(.exe 등) 분석 |
 
 ---
@@ -694,7 +724,7 @@ AI가 코드를 쓰려 함 → deny-hook 감시 → 위험 패턴 감지?
   ↳ 있음: 즉시 차단 + 사용자에게 알림
 ```
 
-**차단 패턴 (키워드 48개 + 정규식 5개):**
+**차단 패턴 (키워드 60개 + 정규식 7개):**
 `crack`, `keygen`, `bypass`, `patch` 관련 등 위험 키워드를 포함한 파일 쓰기/실행을 차단합니다.
 
 **fail-closed 원칙:**
@@ -837,7 +867,7 @@ Claude Code가 실행하는 모든 도구를 감시하고 제어합니다.
 
 | 파일 | 내용 |
 |---|---|
-| `deny-corpus.json` | 차단할 위험 패턴 (키워드 48개 + 정규식 5개) |
+| `deny-corpus.json` | 차단할 위험 패턴 (키워드 60개 + 정규식 7개) |
 | `mask-patterns.json` | 마스킹할 민감 정보 패턴 15개 |
 | `trust-catalog.md` | 신뢰하는 외부 도구 목록 15개 |
 | `report-template.md` | 보고서 표준 양식 |
@@ -940,14 +970,14 @@ SoDam-Reverse-Eng/                   ← 플러그인 루트 폴더
 │   ├── re-report.md
 │   ├── re-selftest.md
 │   ├── re-agent.md                  ← AI 에이전트 구조 분석
-│   ├── re-android.md                ← 골격 완료(라이브 미검증)
+│   ├── re-android.md                ← 실사용 라이브 검증 완료
 │   └── re-binary.md                 ← 골격 완료(라이브 미검증)
 │
 ├── skills/                          ← AI 로직 5개
 │   ├── re-router/SKILL.md           ← 1층 안전규칙
 │   ├── re-analyze-mycode/SKILL.md   ← 소스코드 분석
 │   ├── re-report/SKILL.md           ← 보고서 생성
-│   ├── re-analyze-android/          ← 골격 완료(라이브 미검증)
+│   ├── re-analyze-android/          ← 실사용 라이브 검증 완료
 │   └── re-analyze-binary/           ← 골격 완료(라이브 미검증)
 │
 ├── hooks/                           ← 안전장치
@@ -1542,12 +1572,23 @@ Copyright (c) 2026 SoDam AI Studio
 </details>
 
 <details>
-<summary><strong>Phase 2 착수 — 안드로이드 분석 골격 (⚠️ 라이브 미검증)</strong></summary>
+<summary><strong>Phase 2 착수 — 안드로이드 분석 골격 (당시 라이브 미검증 · 이후 아래 항목에서 검증 완료됨)</strong></summary>
 
-- **안전 우선**: 안드로이드 위험 패턴으로 차단 코퍼스 확장 → **키워드 48개 + 정규식 5개**
-- `re-analyze-android` 스킬 + `/re-android` 명령 **골격** 추가(동의 게이트 강화·읽기 전용, 아직 사용 불가)
+- **안전 우선**: 안드로이드 위험 패턴으로 차단 코퍼스 확장(착수 당시 기준)
+- `re-analyze-android` 스킬 + `/re-android` 명령 **골격** 추가(동의 게이트 강화·읽기 전용)
 - GUIDE 2-6절에 JADX·Apktool·Java 17+ 설치 안내 추가
-- ⚠️ 실제 디컴파일 동작은 도구 설치 환경에서 **라이브 검증 예정**(현재 골격). 안전·동의·보고서 규칙은 Phase 1과 동일
+- 이 시점엔 도구 설치 환경에서의 라이브 검증이 아직 안 된 골격 단계였음 — **2026-07-13에 아래 항목대로 실사용 검증 완료**
+
+</details>
+
+<details>
+<summary><strong>Phase 1 + Phase 2(안드로이드) 실사용 라이브 E2E 검증 완료 (2026-07-13)</strong></summary>
+
+- 플러그인을 **처음부터 실제로 설치**(`/plugin marketplace add` → `/plugin install` → `/reload-plugins`)해 마켓 설치 흐름 자체를 실측 검증
+- Phase 1: `/re-start`로 실제 코드 파일 분석 → 동의 게이트 2문항 통과 → 진짜 보고서 생성 → API 키·비밀번호 마스킹(`••••`) 정상 확인 → 우회 요청 거부 확인
+- Phase 2(안드로이드): Java 17·JADX·Apktool 실제 설치(PATH 등록 마찰 실측·가이드 반영) → `/re-android`로 실제 APK(F-Droid 오픈소스 앱) 분석 → 동의 게이트 3문항 통과 → 권한·네트워크통신·근거위치 포함 실제 보고서 생성 → 라이선스 우회 요청 거부 확인
+- deny-corpus를 **키워드 60개 + 정규식 7개**로 확장(4차 레드팀 감사 반영)
+- 발견된 결함(개발 중 문서화): deny-hook이 "크랙 없음"류의 **정상 서술**을 과차단해 보고서 일부 내용이 누락된 사례 1건 확인 — 문맥 인식 개선을 백로그로 등록(다음 릴리스에서 개선 예정)
 
 </details>
 

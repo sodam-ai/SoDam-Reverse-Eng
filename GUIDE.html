@@ -470,9 +470,15 @@ href="#10-문제-해결오류-대처">10장 문제해결</a></p>
 분석할 때만 필요합니다.</strong> 소스코드만 분석하는 Phase 1
 기능(<code>/re-start</code>)만 쓰신다면 <strong>건너뛰어도
 됩니다.</strong></p>
-<p>⚠️ <strong>현재 상태: 골격(라이브 미검증).</strong> 안드로이드 분석
-기능은 아래 도구가 설치된 환경에서 실제 동작 검증이 아직 끝나지
-않았습니다. 안전·동의·보고서 규칙은 Phase 1과 동일하게 작동합니다.</p>
+<p>✅ <strong>현재 상태: 실사용 라이브 검증 완료(2026-07-13).</strong>
+Java·JADX·Apktool을 실제로 설치하고 F-Droid 오픈소스 앱으로
+<code>/re-android</code> 전 과정(동의 게이트 → 디컴파일 → 보고서 생성)을
+실측 확인했습니다.</p>
+<p>💡 <strong>실제 설치 중 자주 겪는 문제:</strong> JADX·Apktool을
+설치만 하고 <strong>PATH 등록을 빠뜨리면</strong> 도구가 있어도 “설치 안
+됨”으로 인식됩니다. 아래 각 도구 설명의 “PATH에 등록하기” 단계를 반드시
+따라 하고, PATH를 새로 등록했다면 <strong>Claude Code를 완전히 종료 후
+재시작</strong>해야 인식됩니다.</p>
 <p>🛡️ <strong>안전 고지:</strong> 이 도구들은 <strong>본인이 만들었거나
 분석 허가를 받은 APK</strong>를 방어·학습 목적으로 이해하기 위한
 것입니다. 크랙·결제/라이선스 우회를 돕는 도구가 아니며, 그런 요청은
@@ -500,30 +506,63 @@ class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb16
 <ul>
 <li><strong>공식(권장):</strong> <a
 href="https://github.com/skylot/jadx/releases">github.com/skylot/jadx/releases</a>
-→ 최신 <code>jadx-x.x.x.zip</code> 내려받아 압축 해제 →
-<code>bin\jadx-gui.bat</code> 실행</li>
+→ 최신 <code>jadx-x.x.x.zip</code> 내려받기. 릴리스 목록에 파일이 여러
+개면 <strong><code>jadx-x.x.x.zip</code></strong>(cross-platform cli and
+gui bundle)을 받으세요 — <code>jadx-gui-*.zip</code>류는 GUI 전용이라
+명령줄 도구가 없을 수 있습니다.</li>
+<li>압축을 풀 때 위치를 직접 지정하세요(예: <code>C:\jadx</code>) — 기본
+제안 폴더명을 그대로 두면 폴더가 이중으로 겹칠 수 있으니
+주의하세요.</li>
 <li><strong>패키지 매니저가 있다면(선택):</strong>
 <code>scoop install jadx</code> 또는 <code>choco install jadx</code>
-(패키지명·버킷은 각 매니저 안내를 따르세요)</li>
-<li><strong>확인:</strong> <code>jadx --version</code> (또는 압축 푼
-<code>bin\jadx.bat --version</code>)</li>
+(패키지명·버킷은 각 매니저 안내를 따르세요 — 이 경로는 PATH를 자동
+등록해줄 수 있으나, 2026-07-13 기준 이 프로젝트에서 직접 실측 검증하지는
+않았습니다)</li>
+</ul>
+<p><strong>PATH에 등록하기(수동 설치 시 필수):</strong> 1. Windows
+검색창에 <strong>“환경 변수”</strong> 입력 → <strong>“시스템 환경 변수
+편집”</strong> 클릭 2. “환경 변수(N)…” 버튼 클릭 3. “사용자 변수”
+목록에서 <strong><code>Path</code></strong> 선택 →
+<strong>“편집”</strong> 클릭 4. <strong>“새로 만들기”</strong> 클릭 →
+JADX를 푼 폴더의 <code>bin</code> 하위경로 입력(예:
+<code>C:\jadx\bin</code>) → 확인 → 확인 → 확인 5. <strong>Claude Code를
+완전히 종료 후 재시작</strong>(PATH 변경은 재시작해야 인식됨)</p>
+<ul>
+<li><strong>확인:</strong> <code>jadx --version</code></li>
 </ul>
 <h4 id="도구-3-apktool-리소스매니페스트-복원">도구 3: Apktool
 (리소스·매니페스트 복원)</h4>
 <ul>
 <li><strong>공식(권장):</strong> <a
-href="https://apktool.org/docs/install">apktool.org/docs/install</a> 의
-Windows 안내대로 <code>apktool.bat</code>와 <code>apktool.jar</code>를
-같은 폴더에 두고 그 폴더를 PATH에 추가</li>
+href="https://apktool.org/docs/install">apktool.org/docs/install</a>의
+Windows 안내대로 wrapper 스크립트(<code>apktool.bat</code>)와 최신 jar
+파일을 내려받고, <strong>jar 파일 이름을 반드시
+<code>apktool.jar</code>로 변경</strong>한 뒤 두 파일을 같은 폴더(예:
+<code>C:\apktool</code>)에 둡니다.</li>
 <li><strong>패키지 매니저가 있다면(선택):</strong>
 <code>choco install apktool</code> 또는
-<code>scoop install apktool</code></li>
+<code>scoop install apktool</code> (2026-07-13 기준 이 프로젝트에서 직접
+실측 검증하지는 않았습니다)</li>
+</ul>
+<p><strong>PATH에 등록하기(JADX와 같은 방법):</strong> 1. Windows
+검색창에 <strong>“환경 변수”</strong> 입력 → <strong>“시스템 환경 변수
+편집”</strong> → “환경 변수(N)…” 2. “사용자 변수”의
+<strong><code>Path</code></strong> 선택 → <strong>“편집”</strong> →
+<strong>“새로 만들기”</strong> 3.
+<code>apktool.bat</code>·<code>apktool.jar</code>를 둔 폴더 경로
+입력(예: <code>C:\apktool</code>) → 확인 → 확인 → 확인 4. <strong>Claude
+Code를 완전히 종료 후 재시작</strong></p>
+<ul>
 <li><strong>확인:</strong> <code>apktool --version</code></li>
 </ul>
 <blockquote>
 <p>💡 버전·명령은 시간이 지나면 바뀔 수 있습니다. 위 <strong>공식
 페이지가 항상 정답</strong>입니다. 설치가 막히면 공식 페이지의 최신
 안내를 우선하세요.</p>
+<p>⚠️ <strong>PATH 등록 후에도 인식이 안 되면:</strong> 새 터미널
+창만으로는 부족할 수 있습니다 — <strong>Claude Code 프로그램 자체를
+완전히 종료(Quit)했다가 다시 실행</strong>해야 새 PATH를 확실히
+인식합니다(2026-07-13 실사용 테스트에서 실측 확인된 흔한 원인).</p>
 </blockquote>
 <h4 id="설치-후-사용">설치 후 사용</h4>
 <p>3개 모두 <code>--version</code>이 정상으로 나오면, 프로젝트
@@ -565,6 +604,10 @@ Windows 안내대로 <code>apktool.bat</code>와 <code>apktool.jar</code>를
 <li>공식: https://ghidra-sre.org/</li>
 <li>설치 확인: 압축 해제 후 <code>ghidraRun</code>(macOS/Linux) 또는
 <code>ghidraRun.bat</code>(Windows) 실행 가능 여부</li>
+<li><strong><code>ghidraRun</code>이 안 열리면</strong> 대부분 JAVA_HOME
+환경변수가 안 잡혀 있는 경우입니다. Java 설치 경로를 JAVA_HOME으로
+지정한 뒤 새 터미널에서 다시 시도하세요(Windows: 시스템 속성 → 환경 변수
+→ 새로 만들기).</li>
 </ul>
 <h4 id="선택-ida-pro-연동">(선택) IDA Pro 연동</h4>
 <p>IDA Pro는 <strong>상용 소프트웨어</strong>입니다. 이미 본인
@@ -572,6 +615,9 @@ Windows 안내대로 <code>apktool.bat</code>와 <code>apktool.jar</code>를
 경로를 지정하면 <code>/re-binary</code>가 Ghidra 대신(또는 함께) IDA
 기반 분석을 안내할 수 있습니다. 없다면 신경 쓰지 않아도 되며,
 Ghidra만으로 분석이 진행됩니다. (라이선스 유효성은 사용자 본인 책임)</p>
+<p>Windows에서 설정하는 법(PowerShell, 관리자 권한 불필요):</p>
+<pre><code>setx SODAM_RE_IDA_PATH &quot;C:\Program Files\IDA Pro 8.x\ida64.exe&quot;</code></pre>
+<p>설정 후 <strong>새 터미널</strong>을 열어야 반영됩니다.</p>
 <blockquote>
 <p>💡 버전·명령은 시간이 지나면 바뀔 수 있습니다. 위 <strong>공식
 페이지가 항상 정답</strong>입니다.</p>
@@ -721,6 +767,11 @@ href="#q6-re-selftest에서-일부-항목이-">10장 Q6</a> 참고</p>
 <hr />
 <h3 id="앞으로-추가될-명령어">앞으로 추가될 명령어</h3>
 <table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
 <thead>
 <tr>
 <th>명령어</th>
@@ -731,12 +782,12 @@ href="#q6-re-selftest에서-일부-항목이-">10장 Q6</a> 참고</p>
 <tbody>
 <tr>
 <td><code>/re-android</code></td>
-<td>Phase 2 예정</td>
+<td>✅ 실사용 라이브 검증 완료(2026-07-13)</td>
 <td>Android APK 파일 분석</td>
 </tr>
 <tr>
 <td><code>/re-binary</code></td>
-<td>Phase 3 예정</td>
+<td>골격 완료(라이브 미검증)</td>
 <td>실행 파일(.exe 등) 분석</td>
 </tr>
 </tbody>
@@ -850,7 +901,7 @@ href="#q6-re-selftest에서-일부-항목이-">10장 Q6</a> 참고</p>
 <pre><code>AI가 코드를 쓰려 함 → deny-hook 감시 → 위험 패턴 감지?
   ↳ 없음: 계속 진행
   ↳ 있음: 즉시 차단 + 사용자에게 알림</code></pre>
-<p><strong>차단 패턴 (키워드 48개 + 정규식 5개):</strong>
+<p><strong>차단 패턴 (키워드 60개 + 정규식 7개):</strong>
 <code>crack</code>, <code>keygen</code>, <code>bypass</code>,
 <code>patch</code> 관련 등 위험 키워드를 포함한 파일 쓰기/실행을
 차단합니다.</p>
@@ -898,7 +949,7 @@ href="#q6-re-selftest에서-일부-항목이-">10장 Q6</a> 참고</p>
 </tr>
 </tbody>
 </table>
-<p>10개의 마스킹 패턴이 등록되어 있습니다
+<p>15개의 마스킹 패턴이 등록되어 있습니다
 (<code>references/mask-patterns.json</code>).</p>
 <hr />
 <h3 id="분석-결과-저장-구조">분석 결과 저장 구조</h3>
@@ -1061,11 +1112,11 @@ href="#q6-re-selftest에서-일부-항목이-">10장 Q6</a> 참고</p>
 <tbody>
 <tr>
 <td><code>deny-corpus.json</code></td>
-<td>차단할 위험 패턴 (키워드 48개 + 정규식 5개)</td>
+<td>차단할 위험 패턴 (키워드 60개 + 정규식 7개)</td>
 </tr>
 <tr>
 <td><code>mask-patterns.json</code></td>
-<td>마스킹할 민감 정보 패턴 10개</td>
+<td>마스킹할 민감 정보 패턴 15개</td>
 </tr>
 <tr>
 <td><code>trust-catalog.md</code></td>
@@ -1265,15 +1316,15 @@ href="#q6-re-selftest에서-일부-항목이-">10장 Q6</a> 참고</p>
 │   ├── re-report.md
 │   ├── re-selftest.md
 │   ├── re-agent.md                  ← AI 에이전트 구조 분석
-│   ├── re-android.md                ← Phase 2 예정
-│   └── re-binary.md                 ← Phase 3 예정
+│   ├── re-android.md                ← 실사용 라이브 검증 완료
+│   └── re-binary.md                 ← 골격 완료(라이브 미검증)
 │
 ├── skills/                          ← AI 로직 5개
 │   ├── re-router/SKILL.md           ← 1층 안전규칙
 │   ├── re-analyze-mycode/SKILL.md   ← 소스코드 분석
 │   ├── re-report/SKILL.md           ← 보고서 생성
-│   ├── re-analyze-android/          ← Phase 2 예정
-│   └── re-analyze-binary/           ← Phase 3 예정
+│   ├── re-analyze-android/          ← 실사용 라이브 검증 완료
+│   └── re-analyze-binary/           ← 골격 완료(라이브 미검증)
 │
 ├── hooks/                           ← 안전장치
 │   ├── hooks.json
@@ -1338,8 +1389,8 @@ RE 규칙 10개 (risky) 주입 완료
 <hr />
 <h3 id="무결성-해시-수동-갱신">무결성 해시 수동 갱신</h3>
 <p>안전파일을 합법적으로 수정했다면 해시를 새로 등록해야 합니다:</p>
-<div class="sourceCode" id="cb51"><pre
-class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>node hooks<span class="op">/</span>_selftest<span class="op">.</span><span class="fu">mjs</span></span></code></pre></div>
+<div class="sourceCode" id="cb52"><pre
+class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>node hooks<span class="op">/</span>_selftest<span class="op">.</span><span class="fu">mjs</span></span></code></pre></div>
 <p>출력에서 새 SHA-256 해시 복사 →
 <code>references/integrity.json</code> 업데이트</p>
 <hr />
@@ -1397,9 +1448,9 @@ href="./TROUBLESHOOTING.md">TROUBLESHOOTING.md</a></p>
 <p><strong>원인:</strong> Harness 또는 Loop가 설치된 상태에서 홈
 폴더(<code>C:\Users\이름</code>)에서 Claude Code를 시작했다.</p>
 <p><strong>해결:</strong></p>
-<div class="sourceCode" id="cb55"><pre
-class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cd</span> D<span class="op">:</span>\내프로젝트폴더</span>
-<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>claude</span></code></pre></div>
+<div class="sourceCode" id="cb56"><pre
+class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cd</span> D<span class="op">:</span>\내프로젝트폴더</span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>claude</span></code></pre></div>
 <p><strong>프로젝트 폴더</strong>에서 Claude Code를 다시 시작하세요.</p>
 <hr />
 <h3 id="q5.-동의-질문에서-계속-막혀요">Q5. 동의 질문에서 계속
@@ -1418,19 +1469,19 @@ yes</code></pre>
 <code>/re-selftest</code>에서 일부 항목이 ❌</h3>
 <p><strong>1층 ❌인 경우:</strong></p>
 <p><code>skills/re-router/SKILL.md</code> 파일 확인:</p>
-<div class="sourceCode" id="cb57"><pre
-class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> D<span class="op">:</span>\내플러그인폴더\skills\re-router\SKILL<span class="op">.</span><span class="fu">md</span></span></code></pre></div>
+<div class="sourceCode" id="cb58"><pre
+class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> D<span class="op">:</span>\내플러그인폴더\skills\re-router\SKILL<span class="op">.</span><span class="fu">md</span></span></code></pre></div>
 <p>파일이 없으면 → <code>SETUP_BLOCKED_FILES.md</code>에서 내용 복사 후
 파일 생성</p>
 <p><strong>2층 ❌인 경우:</strong></p>
 <p><code>hooks/re-deny-guard.mjs</code> 파일 확인:</p>
-<div class="sourceCode" id="cb58"><pre
-class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> D<span class="op">:</span>\내플러그인폴더\hooks\re-deny-guard<span class="op">.</span><span class="fu">mjs</span></span></code></pre></div>
+<div class="sourceCode" id="cb59"><pre
+class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> D<span class="op">:</span>\내플러그인폴더\hooks\re-deny-guard<span class="op">.</span><span class="fu">mjs</span></span></code></pre></div>
 <p>파일이 없으면 → <code>SETUP_BLOCKED_FILES.md</code>에서 내용 복사 후
 파일 생성</p>
 <p><strong>3층 ❌인 경우 (해시 불일치):</strong></p>
-<div class="sourceCode" id="cb59"><pre
-class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>node D<span class="op">:</span>\내플러그인폴더\hooks\_selftest<span class="op">.</span><span class="fu">mjs</span></span></code></pre></div>
+<div class="sourceCode" id="cb60"><pre
+class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>node D<span class="op">:</span>\내플러그인폴더\hooks\_selftest<span class="op">.</span><span class="fu">mjs</span></span></code></pre></div>
 <p>출력된 해시 복사 → <code>references/integrity.json</code> 업데이트 →
 재실행</p>
 <hr />
@@ -1442,8 +1493,8 @@ class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb59
 href="https://github.com/sodam-ai/SoDam-Reverse-Eng/issues">GitHub
 Issues</a>에 신고</p>
 <p><strong>보고서 파일 삭제:</strong></p>
-<div class="sourceCode" id="cb60"><pre
-class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Remove-Item</span> D<span class="op">:</span>\내플러그인폴더\<span class="op">.</span><span class="fu">sodam</span><span class="op">-</span>re\reports\report-문제파일<span class="op">.</span><span class="fu">md</span></span></code></pre></div>
+<div class="sourceCode" id="cb61"><pre
+class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Remove-Item</span> D<span class="op">:</span>\내플러그인폴더\<span class="op">.</span><span class="fu">sodam</span><span class="op">-</span>re\reports\report-문제파일<span class="op">.</span><span class="fu">md</span></span></code></pre></div>
 <hr />
 <h3 id="q8.-분석이-너무-오래-걸려요">Q8. 분석이 너무 오래 걸려요</h3>
 <p><strong>해결:</strong> 파일 하나씩 분석하세요:</p>
@@ -1759,17 +1810,42 @@ GitHub·브라우저 모두 접기/펼치기 지원)</p>
 </details>
 <details>
 <summary>
-<strong>Phase 2 착수 — 안드로이드 분석 골격 (⚠️ 라이브 미검증)</strong>
+<strong>Phase 2 착수 — 안드로이드 분석 골격 (당시 라이브 미검증 · 이후
+아래 항목에서 검증 완료됨)</strong>
 </summary>
 <ul>
 <li><strong>안전 우선</strong>: 안드로이드 위험 패턴으로 차단 코퍼스
-확장 → <strong>키워드 48개 + 정규식 5개</strong></li>
+확장(착수 당시 기준)</li>
 <li><code>re-analyze-android</code> 스킬 + <code>/re-android</code> 명령
-<strong>골격</strong> 추가(동의 게이트 강화·읽기 전용, 아직 사용
-불가)</li>
+<strong>골격</strong> 추가(동의 게이트 강화·읽기 전용)</li>
 <li>GUIDE 2-6절에 JADX·Apktool·Java 17+ 설치 안내 추가</li>
-<li>⚠️ 실제 디컴파일 동작은 도구 설치 환경에서 <strong>라이브 검증
-예정</strong>(현재 골격). 안전·동의·보고서 규칙은 Phase 1과 동일</li>
+<li>이 시점엔 도구 설치 환경에서의 라이브 검증이 아직 안 된 골격
+단계였음 — <strong>2026-07-13에 아래 항목대로 실사용 검증
+완료</strong></li>
+</ul>
+</details>
+<details>
+<summary>
+<strong>Phase 1 + Phase 2(안드로이드) 실사용 라이브 E2E 검증 완료
+(2026-07-13)</strong>
+</summary>
+<ul>
+<li>플러그인을 <strong>처음부터 실제로
+설치</strong>(<code>/plugin marketplace add</code> →
+<code>/plugin install</code> → <code>/reload-plugins</code>)해 마켓 설치
+흐름 자체를 실측 검증</li>
+<li>Phase 1: <code>/re-start</code>로 실제 코드 파일 분석 → 동의 게이트
+2문항 통과 → 진짜 보고서 생성 → API 키·비밀번호
+마스킹(<code>••••</code>) 정상 확인 → 우회 요청 거부 확인</li>
+<li>Phase 2(안드로이드): Java 17·JADX·Apktool 실제 설치(PATH 등록 마찰
+실측·가이드 반영) → <code>/re-android</code>로 실제 APK(F-Droid 오픈소스
+앱) 분석 → 동의 게이트 3문항 통과 → 권한·네트워크통신·근거위치 포함 실제
+보고서 생성 → 라이선스 우회 요청 거부 확인</li>
+<li>deny-corpus를 <strong>키워드 60개 + 정규식 7개</strong>로 확장(4차
+레드팀 감사 반영)</li>
+<li>발견된 결함(개발 중 문서화): deny-hook이 “크랙 없음”류의
+<strong>정상 서술</strong>을 과차단해 보고서 일부 내용이 누락된 사례 1건
+확인 — 문맥 인식 개선을 백로그로 등록(다음 릴리스에서 개선 예정)</li>
 </ul>
 </details>
 <details>

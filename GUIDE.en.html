@@ -490,10 +490,17 @@ Analysis Tools — Optional</h3>
 with <code>/re-android</code>.</strong> If you only use Phase 1
 source-code analysis (<code>/re-start</code>), you can <strong>skip
 this.</strong></p>
-<p>⚠️ <strong>Current status: scaffolding (not yet
-live-verified).</strong> Android analysis has not yet been verified
-end-to-end on a machine with these tools installed. The safety, consent,
-and report rules operate the same as in Phase 1.</p>
+<p>✅ <strong>Current status: live-verified with real usage
+(2026-07-13).</strong> We installed Java, JADX, and Apktool for real and
+confirmed the full <code>/re-android</code> flow (consent gate →
+decompilation → report generation) end-to-end on an open-source F-Droid
+app.</p>
+<p>💡 <strong>The most common real-world snag:</strong> if you install
+JADX/Apktool but <strong>forget to register PATH</strong>, the tools
+exist on disk but SoDam-Reverse still reports them as “not installed.”
+Follow the “Register PATH” step under each tool below, and if you just
+registered PATH, <strong>fully quit and restart Claude Code</strong>
+before checking again.</p>
 <p>🛡️ <strong>Safety note:</strong> These tools are for understanding an
 <strong>APK you built or are authorized to analyze</strong>, for defense
 and learning. They are not for cracking or payment/license bypass, and
@@ -519,13 +526,31 @@ class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb16
 <ul>
 <li><strong>Official (recommended):</strong> <a
 href="https://github.com/skylot/jadx/releases">github.com/skylot/jadx/releases</a>
-→ download the latest <code>jadx-x.x.x.zip</code>, unzip, run
-<code>bin\jadx-gui.bat</code></li>
+→ download the latest release. If several files are listed, get
+<strong><code>jadx-x.x.x.zip</code></strong> (the cross-platform CLI+GUI
+bundle) — the <code>jadx-gui-*.zip</code> builds are GUI-only and may
+lack the command-line tool.</li>
+<li>When unzipping, choose the destination explicitly
+(e.g. <code>C:\jadx</code>) instead of accepting the default suggested
+folder name, to avoid an extra nested folder.</li>
 <li><strong>If you use a package manager (optional):</strong>
 <code>scoop install jadx</code> or <code>choco install jadx</code>
-(follow each manager’s package/bucket guidance)</li>
-<li><strong>Verify:</strong> <code>jadx --version</code> (or
-<code>bin\jadx.bat --version</code> from the unzipped folder)</li>
+(follow each manager’s package/bucket guidance — this path may
+auto-register PATH, but we have not directly verified that ourselves as
+of 2026-07-13).</li>
+</ul>
+<p><strong>Register PATH (required for a manual install):</strong> 1. In
+Windows search, type <strong>“environment variables”</strong> → click
+<strong>“Edit the system environment variables”</strong> 2. Click
+<strong>“Environment Variables…”</strong> 3. Under “User variables”,
+select <strong><code>Path</code></strong> → click
+<strong>“Edit”</strong> 4. Click <strong>“New”</strong> → enter the
+<code>bin</code> subfolder of where you unzipped JADX
+(e.g. <code>C:\jadx\bin</code>) → OK → OK → OK 5. <strong>Fully quit and
+restart Claude Code</strong> (PATH changes are only picked up after a
+restart)</p>
+<ul>
+<li><strong>Verify:</strong> <code>jadx --version</code></li>
 </ul>
 <h4 id="tool-3-apktool-resources-and-manifest">Tool 3: Apktool
 (resources and manifest)</h4>
@@ -533,17 +558,34 @@ href="https://github.com/skylot/jadx/releases">github.com/skylot/jadx/releases</
 <li><strong>Official (recommended):</strong> follow the Windows
 instructions at <a
 href="https://apktool.org/docs/install">apktool.org/docs/install</a> —
-place <code>apktool.bat</code> and <code>apktool.jar</code> in the same
-folder and add that folder to PATH</li>
+download the wrapper script (<code>apktool.bat</code>) and the latest
+jar, <strong>rename the jar to exactly
+<code>apktool.jar</code></strong>, and place both files in the same
+folder (e.g. <code>C:\apktool</code>).</li>
 <li><strong>If you use a package manager (optional):</strong>
-<code>choco install apktool</code> or
-<code>scoop install apktool</code></li>
+<code>choco install apktool</code> or <code>scoop install apktool</code>
+(not directly verified by us as of 2026-07-13)</li>
+</ul>
+<p><strong>Register PATH (same method as JADX):</strong> 1. Windows
+search → <strong>“environment variables”</strong> → <strong>“Edit the
+system environment variables”</strong> → “Environment Variables…” 2.
+Under “User variables”, select <strong><code>Path</code></strong> →
+<strong>“Edit”</strong> → <strong>“New”</strong> 3. Enter the folder
+that holds <code>apktool.bat</code>/<code>apktool.jar</code>
+(e.g. <code>C:\apktool</code>) → OK → OK → OK 4. <strong>Fully quit and
+restart Claude Code</strong></p>
+<ul>
 <li><strong>Verify:</strong> <code>apktool --version</code></li>
 </ul>
 <blockquote>
 <p>Versions and commands may change over time. The <strong>official
 pages above are always authoritative</strong> — if installation stalls,
 follow their latest instructions.</p>
+<p>⚠️ <strong>Still not recognized after registering PATH?</strong> A
+new terminal window alone may not be enough — you need to <strong>fully
+quit (not just close the window) and relaunch the Claude Code
+application itself</strong> for it to pick up the new PATH (a common
+real cause we confirmed during 2026-07-13 live testing).</p>
 </blockquote>
 <h4 id="after-installation">After Installation</h4>
 <p>Once all 3 respond to <code>--version</code>, from your project
@@ -586,6 +628,10 @@ by the NSA)</h4>
 <li>Official: https://ghidra-sre.org/</li>
 <li>Verify: after extracting, <code>ghidraRun</code> (macOS/Linux) or
 <code>ghidraRun.bat</code> (Windows) should launch</li>
+<li><strong>If <code>ghidraRun</code> won’t launch</strong>, it’s
+usually a missing JAVA_HOME environment variable. Point JAVA_HOME at
+your Java install path, then retry from a new terminal (Windows: System
+Properties → Environment Variables → New).</li>
 </ul>
 <h4 id="optional-ida-pro-integration">(Optional) IDA Pro
 integration</h4>
@@ -595,6 +641,10 @@ your IDA install path, and <code>/re-binary</code> can offer IDA-based
 analysis instead of (or alongside) Ghidra. If not, you don’t need to
 worry about this — analysis proceeds with Ghidra alone. (License
 validity is your own responsibility.)</p>
+<p>How to set it on Windows (PowerShell, no admin rights needed):</p>
+<pre><code>setx SODAM_RE_IDA_PATH &quot;C:\Program Files\IDA Pro 8.x\ida64.exe&quot;</code></pre>
+<p>Open a <strong>new terminal</strong> after setting it for the change
+to take effect.</p>
 <blockquote>
 <p>Versions and commands may change over time. The <strong>official
 pages above are always authoritative</strong>.</p>
@@ -774,12 +824,12 @@ href="#q6-re-selftest-shows-some-items-as-ng">Chapter 10 Q6</a></p>
 <tbody>
 <tr>
 <td><code>/re-android</code></td>
-<td>Phase 2 planned</td>
+<td>✅ Live-verified (2026-07-13)</td>
 <td>Android APK file analysis</td>
 </tr>
 <tr>
 <td><code>/re-binary</code></td>
-<td>Phase 3 planned</td>
+<td>scaffolding complete (not yet live-verified)</td>
 <td>Executable file (.exe, etc.) analysis</td>
 </tr>
 </tbody>
@@ -907,7 +957,7 @@ time.</p>
   -&gt; Dangerous pattern detected?
      No:  Proceed normally
      Yes: Immediately block and notify user</code></pre>
-<p><strong>Blocked patterns (48 keywords + 5 regex):</strong> File
+<p><strong>Blocked patterns (60 keywords + 7 regex):</strong> File
 writes and executions containing dangerous keywords related to crack,
 keygen, bypass, patch, etc. are blocked.</p>
 <p><strong>fail-closed principle:</strong> If the hook itself has an
@@ -1083,12 +1133,12 @@ Definitions</h4>
 <tr>
 <td><code>re-analyze-android/</code></td>
 <td>Android APK analysis</td>
-<td>Phase 2 planned</td>
+<td>live-verified</td>
 </tr>
 <tr>
 <td><code>re-analyze-binary/</code></td>
 <td>Executable analysis</td>
-<td>Phase 3 planned</td>
+<td>scaffolding complete (not yet live-verified)</td>
 </tr>
 </tbody>
 </table>
@@ -1133,11 +1183,11 @@ Files</h4>
 <tbody>
 <tr>
 <td><code>deny-corpus.json</code></td>
-<td>48 keyword + 5 regex patterns to block</td>
+<td>60 keyword + 7 regex patterns to block</td>
 </tr>
 <tr>
 <td><code>mask-patterns.json</code></td>
-<td>10 sensitive information masking patterns</td>
+<td>15 sensitive information masking patterns</td>
 </tr>
 <tr>
 <td><code>trust-catalog.md</code></td>
@@ -1339,15 +1389,15 @@ Guide</h2>
 |   +-- re-report.md
 |   +-- re-selftest.md
 |   +-- re-agent.md                  &lt;- AI agent structure analysis
-|   +-- re-android.md                &lt;- Phase 2 planned
-|   +-- re-binary.md                 &lt;- Phase 3 planned
+|   +-- re-android.md                &lt;- live-verified
+|   +-- re-binary.md                 &lt;- scaffolding complete (not yet live-verified)
 |
 +-- skills/                          &lt;- 5 AI logic modules
 |   +-- re-router/SKILL.md           &lt;- Layer 1 safety rules
 |   +-- re-analyze-mycode/SKILL.md   &lt;- Source code analysis
 |   +-- re-report/SKILL.md           &lt;- Report generation
-|   +-- re-analyze-android/          &lt;- Phase 2 planned
-|   +-- re-analyze-binary/           &lt;- Phase 3 planned
+|   +-- re-analyze-android/          &lt;- live-verified
+|   +-- re-analyze-binary/           &lt;- scaffolding complete (not yet live-verified)
 |
 +-- hooks/                           &lt;- Safety system
 |   +-- hooks.json
@@ -1415,8 +1465,8 @@ are up to date <strong>When to run:</strong> Recommended quarterly</p>
 <h3 id="manual-integrity-hash-update">Manual Integrity Hash Update</h3>
 <p>If you legitimately modified safety files, you need to re-register
 the hash:</p>
-<div class="sourceCode" id="cb51"><pre
-class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>node hooks<span class="op">/</span>_selftest<span class="op">.</span><span class="fu">mjs</span></span></code></pre></div>
+<div class="sourceCode" id="cb52"><pre
+class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>node hooks<span class="op">/</span>_selftest<span class="op">.</span><span class="fu">mjs</span></span></code></pre></div>
 <p>Copy the new SHA-256 hash from the output and update
 <code>references/integrity.json</code>.</p>
 <hr />
@@ -1477,9 +1527,9 @@ installed)</h3>
 <p><strong>Cause:</strong> Claude Code was started from the home folder
 (<code>C:\Users\name</code>).</p>
 <p><strong>Fix:</strong></p>
-<div class="sourceCode" id="cb54"><pre
-class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cd</span> D<span class="op">:</span>\my-project-folder</span>
-<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>claude</span></code></pre></div>
+<div class="sourceCode" id="cb55"><pre
+class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cd</span> D<span class="op">:</span>\my-project-folder</span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>claude</span></code></pre></div>
 <p>Restart Claude Code from your project folder.</p>
 <hr />
 <h3 id="q5.-consent-question-keeps-prompting">Q5. Consent question keeps
@@ -1505,8 +1555,8 @@ create the file.</p>
 missing, copy the content from <code>SETUP_BLOCKED_FILES.md</code> and
 create the file.</p>
 <p><strong>If Layer 3 shows NG (hash mismatch):</strong></p>
-<div class="sourceCode" id="cb56"><pre
-class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>node hooks\_selftest<span class="op">.</span><span class="fu">mjs</span></span></code></pre></div>
+<div class="sourceCode" id="cb57"><pre
+class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>node hooks\_selftest<span class="op">.</span><span class="fu">mjs</span></span></code></pre></div>
 <p>Copy the output hash, update <code>references/integrity.json</code>,
 then rerun <code>/re-selftest</code>.</p>
 <hr />
@@ -1855,20 +1905,48 @@ accidental commits)</li>
 </details>
 <details>
 <summary>
-<strong>Phase 2 Start — Android Analysis Scaffolding (⚠️ Not
-Live-Verified)</strong>
+<strong>Phase 2 Start — Android Analysis Scaffolding (not live-verified
+at the time · verified later, see below)</strong>
 </summary>
 <ul>
 <li><strong>Safety first</strong>: expanded the block corpus with
-Android danger patterns → <strong>48 keywords + 5 regex</strong></li>
+Android danger patterns (as of this point in time)</li>
 <li>Added <code>re-analyze-android</code> skill +
 <code>/re-android</code> command scaffolding (stronger consent gate,
-read-only; not yet usable)</li>
+read-only)</li>
 <li>Added the JADX/Apktool/Java 17+ install guide in section 2-6</li>
-<li>⚠️ Actual decompilation is <strong>pending live
-verification</strong> on a machine with the tools (currently
-scaffolding). Safety, consent, and report rules operate the same as
-Phase 1.</li>
+<li>At this stage, live verification with the actual tools installed
+hadn’t happened yet — <strong>completed on 2026-07-13, see the entry
+below</strong></li>
+</ul>
+</details>
+<details>
+<summary>
+<strong>Phase 1 + Phase 2 (Android) Live E2E Verification Complete
+(2026-07-13)</strong>
+</summary>
+<ul>
+<li>Installed the plugin <strong>from scratch, the real way</strong>
+(<code>/plugin marketplace add</code> → <code>/plugin install</code> →
+<code>/reload-plugins</code>), live-verifying the marketplace install
+flow itself</li>
+<li>Phase 1: ran <code>/re-start</code> on a real code file → passed the
+2-question consent gate → got a genuine report → confirmed API
+keys/passwords were masked (<code>••••</code>) → confirmed a bypass
+request was refused</li>
+<li>Phase 2 (Android): installed Java 17, JADX, and Apktool for real
+(hit and documented real PATH-registration friction, now reflected in
+the install guide above) → ran <code>/re-android</code> on a real APK
+(an open-source app from F-Droid) → passed the 3-question consent gate →
+got a genuine report covering permissions, network activity, and
+evidence locations → confirmed a license-bypass request was refused</li>
+<li>Expanded the deny-corpus to <strong>60 keywords + 7 regex
+patterns</strong> (from the 4th-round red-team audit)</li>
+<li>One defect found during development (documented for transparency):
+the deny-hook over-blocked a legitimate sentence describing the
+<em>absence</em> of cracking code, causing that observation to be
+dropped from one report — logged as a backlog item for context-aware
+matching in a future release</li>
 </ul>
 </details>
 <details>
