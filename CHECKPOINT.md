@@ -7,8 +7,8 @@
 
 ## 0. 현재 위치 한눈에 (2026-07-07 실측)
 
-- **브랜치:** `feat/m5-readiness` — 로컬 HEAD = `origin/feat/m5-readiness` = GitHub 라이브 feat **완전 동기화**(`90595fb`, 2026-07-11 재검증: ahead/behind 0/0). *이전 기록 "7커밋 앞섬·미푸시"는 오류였음(정정)*. 미커밋 변경 4건 있음(PDF 삭제, 아래 신규 기록 참조). 보호5파일 diff 0.
-- **Phase 1 MVP:** 코드 완료, 안전 3층 셀프테스트 **6 통과 / 0 실패**. 사람 검증(M5)만 남음.
+- **브랜치:** `feat/m5-readiness` — 로컬 HEAD = `origin/feat/m5-readiness` = GitHub 라이브 feat **완전 동기화**(`f8c1450`, 2026-07-12 재검증: ahead/behind 0/0, `gh api`로 확정). §5-6·§5-7에서 라이브 보호파일 3개(`hooks/re-deny-guard.mjs`·`hooks/_selftest.mjs`·`references/integrity.json`)를 실제로 수정·push했다 — 이제 "보호5파일 diff 0"이 아니라 **실제 안전수정이 반영된 상태가 정상**이다.
+- **Phase 1 MVP:** 코드 완료, 안전 3층 셀프테스트 **8 통과 / 0 실패**(2026-07-12 확장, §5-2 참조). 사람 검증(M5)만 남음.
 - **Phase 2 안드로이드:** **골격 완료 · 라이브 미검증** (Java/JADX/Apktool·테스트 APK 부재로 실동작 미확인).
 - **Phase 2 AI 에이전트 분석 (NEXT-1):** ✅ **완료·독립 레드팀 감사 통과** (`re-analyze-agent`+`re-agent`, 소스레벨·외부도구 0).
   - 1차 보강(자체검증): 프롬프트 인젝션 방어(§0-1) + 거부경로 실측(`agent-injection-demo.md`) + `~/.claude` 루트 하드게이트(실측: 이 PC agents 1,289개·skills 636개).
@@ -264,7 +264,7 @@ git ls-files .PRD                 # 빈값 = .PRD 미추적(정상)
 | **NEXT-1** | Phase 2 나머지 절반 = **AI 코딩 에이전트 구조 분석 모듈** | AI | ✅ **완전 완료** — `re-analyze-agent`+`re-agent` 신규, router 4번 활성, 셀프테스트 6/0 무회귀. 자체검증(3건)→**독립 레드팀 감사**(3건 실제 갭 추가 발견·전부 봉쇄)로 2단계 강화. **문서 4종(README·GUIDE 한/영) 동기화 완료**(PRD §10 의무 이행) — 이 모듈은 여기서 종료, 추가 레드팀 루프는 의도적으로 중단(한계효용 판단, 다음은 Phase C/D). (A4 deny-corpus 추가는 문서 카운트 동기화 회피 위해 의도적 생략) |
 | **NEXT-2** | **Phase 2+3 라이브 검증**(안드로이드 JADX/Apktool + 바이너리 Ghidra) | 사람·환경 | 도구 설치(JADX·Apktool·Java 17+ 및/또는 Ghidra·Java 17+) 후 `/re-android`·`/re-binary`로 실제 분석 + 크랙요청 거부 재현. **이 컴퓨터엔 둘 다 미설치 확인됨(2026-07-11 실측, `java --version`·`ghidraRun` 부재)** |
 | **NEXT-2b** | IDA Pro 옵션 실사용 검증 | **구조적으로 AI 불가** | IDA는 상용 소프트웨어 — 사용자 본인 라이선스 필요. `SODAM_RE_IDA_PATH` 처리 코드는 작성 완료, 실사용 확인은 **영구히 사람 몫**(AI가 대신할 방법 자체가 없음, "보류"가 아니라 구조적 한계) |
-| **NEXT-3** | **GitHub 백업 푸시**(`feat/m5-readiness`→`origin`, main 무변경) | — | ✅ **완료 확인됨**(2026-07-11 재검증: 로컬=origin=GitHub feat 완전 동기화 `90595fb`, ahead/behind 0/0). 이전 "ahead 7·미푸시" 기록은 오류였음(정정) — **재실행/재제안 불요** |
+| **NEXT-3** | **GitHub 백업 푸시**(`feat/m5-readiness`→`origin`, main 무변경) | — | ✅ **완료(2026-07-12 재푸시)**. §5-6·§5-7의 라이브 안전수정(보호파일 3개 포함) 8커밋을 사용자 승인 하에 push, `gh api`로 로컬=origin=GitHub `f8c1450` 완전 동기화 확정 |
 | **NEXT-4** | **Phase 3 골격** (바이너리 ghidra-mcp wrap) | AI | ✅ **완료**(바이너리RE+IDA만, 사용자 범위확정) — `re-analyze-binary`+`/re-binary` 골격, catalog `ghidra-mcp` active. **악성코드는 정책검토 대기로 명시적 보류**(임의 구현 안 함) |
 | **NEXT-4b** | **보호파일 버그 2건 수정**(§5-1 참조) | — | ✅ **완료(2026-07-12, §5-6 참조)**. fail-open은 라이브 반영·검증 완료(6/0). 훅중복(Harness위임)은 반영 후 실제 회귀(위험샘플 무검증 통과)가 발견돼 **의도적으로 롤백** — 위험도 낮은 기존 한계로 되돌림. `integrity.json` 재기록 완료 |
 | **NEXT-5** | **M5 사람몫** (레드팀·베타·법무·공개) | 사람 | 모든 구현 후(연기 확정) — NEXT-2/2b가 완료돼야 도달 |
