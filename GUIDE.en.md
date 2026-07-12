@@ -330,6 +330,9 @@ Binary analysis needs **2 free tools**. Install **Java first** (Ghidra runs on t
 
 - Official: https://ghidra-sre.org/
 - Verify: after extracting, `ghidraRun` (macOS/Linux) or `ghidraRun.bat` (Windows) should launch
+- **If `ghidraRun` won't launch**, it's usually a missing JAVA_HOME environment variable. Point
+  JAVA_HOME at your Java install path, then retry from a new terminal (Windows: System Properties
+  → Environment Variables → New).
 
 #### (Optional) IDA Pro integration
 
@@ -337,6 +340,12 @@ IDA Pro is **commercial software**. If you already own a license, set the `SODAM
 environment variable to your IDA install path, and `/re-binary` can offer IDA-based analysis
 instead of (or alongside) Ghidra. If not, you don't need to worry about this — analysis proceeds
 with Ghidra alone. (License validity is your own responsibility.)
+
+How to set it on Windows (PowerShell, no admin rights needed):
+```
+setx SODAM_RE_IDA_PATH "C:\Program Files\IDA Pro 8.x\ida64.exe"
+```
+Open a **new terminal** after setting it for the change to take effect.
 
 > Versions and commands may change over time. The **official pages above are always authoritative**.
 

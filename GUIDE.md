@@ -330,12 +330,20 @@ node scripts/re-inject-harness.mjs
 
 - 공식: https://ghidra-sre.org/
 - 설치 확인: 압축 해제 후 `ghidraRun`(macOS/Linux) 또는 `ghidraRun.bat`(Windows) 실행 가능 여부
+- **`ghidraRun`이 안 열리면** 대부분 JAVA_HOME 환경변수가 안 잡혀 있는 경우입니다. Java 설치 경로를
+  JAVA_HOME으로 지정한 뒤 새 터미널에서 다시 시도하세요(Windows: 시스템 속성 → 환경 변수 → 새로 만들기).
 
 #### (선택) IDA Pro 연동
 
 IDA Pro는 **상용 소프트웨어**입니다. 이미 본인 라이선스가 있다면, 환경변수 `SODAM_RE_IDA_PATH`에
 IDA 설치 경로를 지정하면 `/re-binary`가 Ghidra 대신(또는 함께) IDA 기반 분석을 안내할 수 있습니다.
 없다면 신경 쓰지 않아도 되며, Ghidra만으로 분석이 진행됩니다. (라이선스 유효성은 사용자 본인 책임)
+
+Windows에서 설정하는 법(PowerShell, 관리자 권한 불필요):
+```
+setx SODAM_RE_IDA_PATH "C:\Program Files\IDA Pro 8.x\ida64.exe"
+```
+설정 후 **새 터미널**을 열어야 반영됩니다.
 
 > 💡 버전·명령은 시간이 지나면 바뀔 수 있습니다. 위 **공식 페이지가 항상 정답**입니다.
 

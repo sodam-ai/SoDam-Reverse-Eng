@@ -120,11 +120,36 @@ node scripts/check-trust-freshness.mjs
 
 ## 12. Phase 2·3 명령어(/re-android·/re-binary)가 안 돼요
 
-Phase 2·3는 아직 구현 전입니다.
-- Phase 2 (안드로이드): Phase 1 마켓 배포 완료 후 구현 예정.
-- Phase 3 (바이너리·Ghidra): Phase 1 + 2 완료 후 구현 예정.
+Phase 2·3는 **골격이 이미 작성돼 있으나, 실제 도구로 라이브 검증된 적은 없는 상태**입니다(이 PC 기준 Java/JADX/Apktool/Ghidra 미설치 확인됨). "구현 전"이 아니라 "라이브 미검증"이 정확한 표현입니다.
 
-지금은 `/re-start <경로>` 를 사용해 소스 코드를 분석하세요.
+- Phase 2(안드로이드): 골격 완료. JADX·Apktool·Java 17+ 설치 필요(GUIDE 2-6절).
+- Phase 3(바이너리): 골격 완료. Ghidra·Java 17+ 설치 필요(GUIDE 2-7절).
+
+도구를 설치했는데도 명령이 실패하면 아래 12-1·12-2를 확인하세요.
+
+지금 바로 시도하고 싶다면 `/re-start <경로>` 로 소스 코드를 분석하세요(도구 설치 없이 바로 가능).
+
+---
+
+## 12-1. 안드로이드 도구 설치했는데 안 돼요
+
+**JADX가 PATH에 없다고 나옴:**
+- 설치 후 압축 해제한 폴더의 `bin` 경로가 시스템 PATH에 등록됐는지 확인(`jadx --version`으로 재확인).
+- PATH 등록 직후엔 **새 터미널**을 열어야 반영됩니다(기존 터미널은 갱신 안 됨).
+
+**Apktool 실행이 안 됨:**
+- `apktool.jar`와 실행용 `apktool.bat`(또는 `apktool`)가 **같은 폴더**에 있어야 합니다. 둘이 다른 폴더에 있으면 실행이 실패합니다.
+
+---
+
+## 12-2. 바이너리(Ghidra) 도구 설치했는데 안 돼요
+
+**`ghidraRun`(또는 `.bat`) 실행이 안 됨:**
+- 대부분 **JAVA_HOME 환경변수 미설정**이 원인입니다. Java 17+ 설치 경로를 JAVA_HOME으로 지정한 뒤 새 터미널에서 재시도하세요.
+- Windows 설정 방법은 GUIDE.md 2-7절 참고.
+
+**IDA Pro 옵션이 인식 안 됨:**
+- `SODAM_RE_IDA_PATH` 환경변수가 정확히 설정됐는지 확인(GUIDE.md 2-7절에 Windows `setx` 명령 안내).
 
 ---
 
