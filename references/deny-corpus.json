@@ -70,6 +70,6 @@
     "(smali|스말리|리패키징|repackag|재서명|re-?sign)\\s*.{0,16}(우회|bypass|결제|payment|라이선스|license|유료|무료로)",
     "(인앱|in-?app|iap|결제|payment|구독|subscription)\\s*.{0,12}(우회|bypass|무료로 풀|크랙|unlock)",
     "(검사|체크|check|인증|라이선스|license|결제|payment)\\s*.{0,12}(건너뛰|생략|스킵|skip|무시|넘어가)",
-    "(license|auth|valid|check|인증|라이선스)\\w*\\s*\\([^)]{0,60}\\)\\s*\\{[^}]{0,60}return\\s+(true|1)\\b"
+    "(license|auth|valid|check|인증|라이선스)\\w*\\s*\\([^)]{0,60}\\)\\s*\\{\\s*return\\s+(true|1)\\s*;?\\s*\\}"
   ]
 }
