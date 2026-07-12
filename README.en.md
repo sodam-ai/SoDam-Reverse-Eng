@@ -439,7 +439,7 @@ SoDam-Reverse-Eng/
 | Copyright Notice | `NOTICE` | Third-party notices |
 | Dev Progress | `CHECKPOINT.md` | Developer milestones |
 | Danger Pattern DB | `references/deny-corpus.json` | 48 keyword + 5 regex patterns |
-| Masking Patterns | `references/mask-patterns.json` | 10 masking rules |
+| Masking Patterns | `references/mask-patterns.json` | 15 masking rules |
 | Trusted Tool List | `references/trust-catalog.md` | 15 tools with trust ratings |
 | Report Template | `references/report-template.md` | Report format definition |
 | Integrity Hashes | `references/integrity.json` | SHA-256 hash store |

@@ -846,7 +846,7 @@ This means paths never need to be adjusted on any computer.
 | File | Contents |
 |---|---|
 | `deny-corpus.json` | 48 keyword + 5 regex patterns to block |
-| `mask-patterns.json` | 10 sensitive information masking patterns |
+| `mask-patterns.json` | 15 sensitive information masking patterns |
 | `trust-catalog.md` | 15 trusted external tools |
 | `report-template.md` | Standard report format |
 | `integrity.json` | SHA-256 hash storage |

@@ -116,6 +116,19 @@ const ti = payload.tool_input || payload.toolInput || {};
 const parts = [ti.command, ti.content, ti.new_string, ti.old_string, ti.file_path, ti.path, ti.prompt, ti.description];
 let haystack = parts.filter((v) => typeof v === 'string').join('\n');
 try { haystack += '\n' + JSON.stringify(ti); } catch {}
+
+// 우회 방지(2026-07-12, 4차 레드팀 감사 반영): 제로폭 문자 제거 + 유니코드 정규화(전각→반각 등) +
+// 라틴 문자와 자주 혼동되는 키릴 유사문자(homoglyph) 치환. 실제 우회 실증(전각문자·제로폭문자·유사문자 삽입)에 대응.
+// \u 이스케이프 코드로만 지정(눈에 안 보이는 문자를 소스에 직접 넣지 않음 — 검증 가능성 확보).
+const ZERO_WIDTH_RE = new RegExp('[\\u200B\\u200C\\u200D\\uFEFF]', 'g');
+const CYRILLIC_MAP = { 'а': 'a', 'е': 'e', 'о': 'o', 'р': 'p', 'с': 'c', 'х': 'x', 'у': 'y', 'і': 'i', 'ѕ': 's', 'А': 'A', 'Е': 'E', 'О': 'O', 'Р': 'P', 'С': 'C', 'Х': 'X' };
+const CYRILLIC_RANGE_RE = new RegExp('[\\u0400-\\u04FF]', 'g');
+function normalizeForMatch(s) {
+  let out = s.normalize('NFKC').replace(ZERO_WIDTH_RE, '');
+  out = out.replace(CYRILLIC_RANGE_RE, (ch) => CYRILLIC_MAP[ch] || ch);
+  return out;
+}
+haystack = normalizeForMatch(haystack);
 const hay = haystack.toLowerCase();
 
 const here = dirname(fileURLToPath(import.meta.url));

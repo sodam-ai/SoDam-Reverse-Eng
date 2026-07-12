@@ -10,7 +10,12 @@
     { "name": "slack_token", "regex": "xox[baprs]-[0-9A-Za-z-]{10,}" },
     { "name": "private_key_block", "regex": "-----BEGIN [A-Z ]*PRIVATE KEY-----" },
     { "name": "jwt", "regex": "eyJ[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+" },
-    { "name": "kv_secret", "regex": "(?i)(password|passwd|secret|token|api[_-]?key|access[_-]?key)\\s*[:=]\\s*['\"]?[^'\"\\s]{6,}" }
+    { "name": "kv_secret", "regex": "(password|passwd|secret|token|api[_-]?key|access[_-]?key)\\s*[:=]\\s*['\"]?[^'\"\\s]{6,}", "flags": "i" },
+    { "name": "webhook_url", "regex": "https://(?:hooks\\.slack\\.com/services|discord(?:app)?\\.com/api/webhooks)/[A-Za-z0-9/_-]+" },
+    { "name": "kr_rrn", "regex": "\\d{6}-[1-4]\\d{6}" },
+    { "name": "credit_card", "regex": "\\d{4}[- ]?\\d{4}[- ]?\\d{4}[- ]?\\d{4}" },
+    { "name": "kr_phone", "regex": "01[016789]-?\\d{3,4}-?\\d{4}" },
+    { "name": "email", "regex": "[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}" }
   ],
   "_mask_with": "••••(마스킹됨)"
 }

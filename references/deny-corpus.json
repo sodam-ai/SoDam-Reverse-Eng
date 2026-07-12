@@ -49,13 +49,27 @@
     "인앱 결제 우회",
     "유료 앱 무료로 풀",
     "license verification bypass",
-    "remove license check"
+    "remove license check",
+    "건너뛰게 해줘",
+    "건너뛰게 코드",
+    "생략하게 해줘",
+    "스킵하게",
+    "정품인증 뚫",
+    "인증 뚫는",
+    "잠금해제 시켜",
+    "잠금 해제 시켜",
+    "언락 시켜줘",
+    "공짜로 풀어줘",
+    "공짜로 열어줘",
+    "공짜로 다 풀어줘"
   ],
   "regex": [
     "(항상|always)\\s*(true|참)\\s*.{0,16}(반환|return).{0,16}(패치|patch|바꿔|nop)",
     "(인증|로그인|라이선스|license|auth)\\s*.{0,12}(우회|bypass|무력화|skip)",
     "(토큰|키|비밀번호|password|secret|credential)\\s*.{0,12}(추출|탈취|덤프|dump|exfiltrat)",
     "(smali|스말리|리패키징|repackag|재서명|re-?sign)\\s*.{0,16}(우회|bypass|결제|payment|라이선스|license|유료|무료로)",
-    "(인앱|in-?app|iap|결제|payment|구독|subscription)\\s*.{0,12}(우회|bypass|무료로 풀|크랙|unlock)"
+    "(인앱|in-?app|iap|결제|payment|구독|subscription)\\s*.{0,12}(우회|bypass|무료로 풀|크랙|unlock)",
+    "(검사|체크|check|인증|라이선스|license|결제|payment)\\s*.{0,12}(건너뛰|생략|스킵|skip|무시|넘어가)",
+    "(license|auth|valid|check|인증|라이선스)\\w*\\s*\\([^)]{0,60}\\)\\s*\\{[^}]{0,60}return\\s+(true|1)\\b"
   ]
 }

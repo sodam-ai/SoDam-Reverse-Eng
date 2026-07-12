@@ -399,7 +399,7 @@ SoDam-Reverse-Eng/
 │
 ├── references/                  ← 데이터·규칙 파일
 │   ├── deny-corpus.json         ← 위험 패턴 (키워드 48개 + 정규식 5개)
-│   ├── mask-patterns.json       ← 마스킹 패턴 10개
+│   ├── mask-patterns.json       ← 마스킹 패턴 15개
 │   ├── trust-catalog.md         ← 신뢰 도구 카탈로그 (15개 repo)
 │   ├── report-template.md       ← 보고서 표준 양식
 │   └── integrity.json           ← 안전파일 SHA-256 해시 저장소
@@ -453,7 +453,7 @@ SoDam-Reverse-Eng/
 | 저작권 고지 | `NOTICE` | 서드파티 고지 |
 | 개발 진행 상태 | `CHECKPOINT.md` | 개발자용 체크포인트 |
 | 위험 패턴 DB | `references/deny-corpus.json` | 키워드 48개 + 정규식 5개 |
-| 마스킹 패턴 | `references/mask-patterns.json` | 10개 마스킹 규칙 |
+| 마스킹 패턴 | `references/mask-patterns.json` | 15개 마스킹 규칙 |
 | 신뢰 도구 목록 | `references/trust-catalog.md` | 15개 도구 신뢰등급 |
 | 보고서 표준 양식 | `references/report-template.md` | 보고서 형식 정의 |
 | 무결성 해시 | `references/integrity.json` | SHA-256 해시 저장 |

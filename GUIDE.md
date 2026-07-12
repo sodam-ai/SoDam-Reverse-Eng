@@ -733,7 +733,7 @@ hook 자체에 오류가 생기면 → "통과"가 아닌 **즉시 중단**입�
 | `token = "Bearer xyz..."` | `token = "••••(마스킹됨)"` |
 | `SECRET_KEY = "super_secret"` | `SECRET_KEY = "••••(마스킹됨)"` |
 
-10개의 마스킹 패턴이 등록되어 있습니다 (`references/mask-patterns.json`).
+15개의 마스킹 패턴이 등록되어 있습니다 (`references/mask-patterns.json`).
 
 ---
 
@@ -838,7 +838,7 @@ Claude Code가 실행하는 모든 도구를 감시하고 제어합니다.
 | 파일 | 내용 |
 |---|---|
 | `deny-corpus.json` | 차단할 위험 패턴 (키워드 48개 + 정규식 5개) |
-| `mask-patterns.json` | 마스킹할 민감 정보 패턴 10개 |
+| `mask-patterns.json` | 마스킹할 민감 정보 패턴 15개 |
 | `trust-catalog.md` | 신뢰하는 외부 도구 목록 15개 |
 | `report-template.md` | 보고서 표준 양식 |
 | `integrity.json` | 안전파일 SHA-256 해시 저장소 |
