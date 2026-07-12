@@ -530,8 +530,8 @@ Pong! /re-ping 정상 작동합니다.
 
 | 명령어 | 추가 시기 | 설명 |
 |---|---|---|
-| `/re-android` | Phase 2 예정 | Android APK 파일 분석 |
-| `/re-binary` | Phase 3 예정 | 실행 파일(.exe 등) 분석 |
+| `/re-android` | 골격 완료(라이브 미검증) | Android APK 파일 분석 |
+| `/re-binary` | 골격 완료(라이브 미검증) | 실행 파일(.exe 등) 분석 |
 
 ---
 
@@ -940,15 +940,15 @@ SoDam-Reverse-Eng/                   ← 플러그인 루트 폴더
 │   ├── re-report.md
 │   ├── re-selftest.md
 │   ├── re-agent.md                  ← AI 에이전트 구조 분석
-│   ├── re-android.md                ← Phase 2 예정
-│   └── re-binary.md                 ← Phase 3 예정
+│   ├── re-android.md                ← 골격 완료(라이브 미검증)
+│   └── re-binary.md                 ← 골격 완료(라이브 미검증)
 │
 ├── skills/                          ← AI 로직 5개
 │   ├── re-router/SKILL.md           ← 1층 안전규칙
 │   ├── re-analyze-mycode/SKILL.md   ← 소스코드 분석
 │   ├── re-report/SKILL.md           ← 보고서 생성
-│   ├── re-analyze-android/          ← Phase 2 예정
-│   └── re-analyze-binary/           ← Phase 3 예정
+│   ├── re-analyze-android/          ← 골격 완료(라이브 미검증)
+│   └── re-analyze-binary/           ← 골격 완료(라이브 미검증)
 │
 ├── hooks/                           ← 안전장치
 │   ├── hooks.json

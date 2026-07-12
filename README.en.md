@@ -380,15 +380,15 @@ SoDam-Reverse-Eng/
 │   ├── re-report.md             ← /re-report
 │   ├── re-selftest.md           ← /re-selftest
 │   ├── re-agent.md              ← /re-agent (AI agent structure analysis)
-│   ├── re-android.md            ← Phase 2 (stub)
-│   └── re-binary.md             ← Phase 3 (stub)
+│   ├── re-android.md            ← scaffolding complete (not yet live-verified)
+│   └── re-binary.md             ← scaffolding complete (not yet live-verified)
 │
 ├── skills/                      ← AI analysis logic
 │   ├── re-router/               ← Layer 1 safety rules + request routing
 │   ├── re-analyze-mycode/       ← Source code analysis
 │   ├── re-report/               ← Report generation
-│   ├── re-analyze-android/      ← Phase 2 (stub)
-│   └── re-analyze-binary/       ← Phase 3 (stub)
+│   ├── re-analyze-android/      ← scaffolding complete (not yet live-verified)
+│   └── re-analyze-binary/       ← scaffolding complete (not yet live-verified)
 │
 ├── hooks/                       ← Safety layers 2 and 3
 │   ├── re-deny-guard.mjs        ← Layer 2: real-time danger blocking

@@ -532,8 +532,8 @@ Vague answers like "probably" or "I think so" are not treated as agreement.
 
 | Command | Added in | Description |
 |---|---|---|
-| `/re-android` | Phase 2 planned | Android APK file analysis |
-| `/re-binary` | Phase 3 planned | Executable file (.exe, etc.) analysis |
+| `/re-android` | scaffolding complete (not yet live-verified) | Android APK file analysis |
+| `/re-binary` | scaffolding complete (not yet live-verified) | Executable file (.exe, etc.) analysis |
 
 ---
 
@@ -823,8 +823,8 @@ Contains the AI logic where actual analysis takes place.
 | `re-router/` | Layer 1 safety rules and request classification | Active |
 | `re-analyze-mycode/` | Source code analysis | Active |
 | `re-report/` | Report generation | Active |
-| `re-analyze-android/` | Android APK analysis | Phase 2 planned |
-| `re-analyze-binary/` | Executable analysis | Phase 3 planned |
+| `re-analyze-android/` | Android APK analysis | scaffolding complete (not yet live-verified) |
+| `re-analyze-binary/` | Executable analysis | scaffolding complete (not yet live-verified) |
 
 #### hooks/ — Safety System
 
@@ -948,15 +948,15 @@ SoDam-Reverse-Eng/                   <- Plugin root folder
 |   +-- re-report.md
 |   +-- re-selftest.md
 |   +-- re-agent.md                  <- AI agent structure analysis
-|   +-- re-android.md                <- Phase 2 planned
-|   +-- re-binary.md                 <- Phase 3 planned
+|   +-- re-android.md                <- scaffolding complete (not yet live-verified)
+|   +-- re-binary.md                 <- scaffolding complete (not yet live-verified)
 |
 +-- skills/                          <- 5 AI logic modules
 |   +-- re-router/SKILL.md           <- Layer 1 safety rules
 |   +-- re-analyze-mycode/SKILL.md   <- Source code analysis
 |   +-- re-report/SKILL.md           <- Report generation
-|   +-- re-analyze-android/          <- Phase 2 planned
-|   +-- re-analyze-binary/           <- Phase 3 planned
+|   +-- re-analyze-android/          <- scaffolding complete (not yet live-verified)
+|   +-- re-analyze-binary/           <- scaffolding complete (not yet live-verified)
 |
 +-- hooks/                           <- Safety system
 |   +-- hooks.json

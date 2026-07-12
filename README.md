@@ -283,12 +283,12 @@ selftest 출력에서 SHA-256 해시를 복사 →
 | `/re-selftest` | 안전장치 3층 점검할 때 | `/re-selftest` |
 | `/re-agent [설정폴더/repo 경로]` | 내 Claude 설정이나 다른 플러그인 구조를 이해하고 싶을 때 | `/re-agent ~/.claude` |
 
-**앞으로 추가될 명령어 (Phase 2·3 구현 후):**
+**Phase 2·3 명령어 (골격 구현 완료 · 라이브 미검증):**
 
 | 명령어 | 상태 | 설명 |
 |---|---|---|
-| `/re-android [APK경로]` | ⏳ Phase 2 예정 | Android 앱 분석 |
-| `/re-binary [파일경로]` | ⏳ Phase 3 예정 | 바이너리/실행파일 분석 |
+| `/re-android [APK경로]` | 🚧 골격 완료(라이브 미검증) | Android 앱 분석 |
+| `/re-binary [파일경로]` | 🚧 골격 완료(라이브 미검증) | 바이너리/실행파일 분석 |
 
 ---
 
@@ -382,15 +382,15 @@ SoDam-Reverse-Eng/
 │   ├── re-report.md
 │   ├── re-selftest.md
 │   ├── re-agent.md              ← AI 에이전트 구조 분석
-│   ├── re-android.md            ← Phase 2 예정
-│   └── re-binary.md             ← Phase 3 예정
+│   ├── re-android.md            ← 골격 완료(라이브 미검증)
+│   └── re-binary.md             ← 골격 완료(라이브 미검증)
 │
 ├── skills/                      ← 분석 AI 로직
 │   ├── re-router/               ← 1층 안전규칙 + 요청 분류
 │   ├── re-analyze-mycode/       ← 소스코드 분석
 │   ├── re-report/               ← 보고서 생성
-│   ├── re-analyze-android/      ← Phase 2 예정 (stub)
-│   └── re-analyze-binary/       ← Phase 3 예정 (stub)
+│   ├── re-analyze-android/      ← 골격 완료(라이브 미검증)
+│   └── re-analyze-binary/       ← 골격 완료(라이브 미검증)
 │
 ├── hooks/                       ← 안전장치 (2층 · 3층)
 │   ├── re-deny-guard.mjs        ← 2층: 위험 패턴 실시간 차단
