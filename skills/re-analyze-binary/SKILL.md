@@ -54,6 +54,30 @@ Ghidra가 추출한 **디컴파일된 문자열·주석·심볼명(함수명·�
 - **IDA Pro(옵션)**: 환경변수 `SODAM_RE_IDA_PATH`가 설정돼 있으면 IDA 기반 분석을 대안으로 제시할 수 있다. **IDA는 상용 소프트웨어라 사용자 본인이 정식 라이선스를 보유했는지는 사용자 책임**이며, 이 스킬은 라이선스 유효성을 검증하지 않는다. 미설정이면 Ghidra만 사용한다.
 - **악성코드로 의심되면 분석을 거부**한다(이번 범위에 격리 VM·동적분석 지원이 없으므로 "확인 필요 — 전문가/격리환경에서 별도 분석 권장"으로 안내하고 중단).
 
+## 2-1. Ghidra 헤드리스(headless) 호출 방법 (실제 명령 구조)
+
+> ⚠️ **아직 라이브 미검증**: `mcp/catalog.json`의 `ghidra-mcp`(bethington/ghidra-mcp)는 카탈로그 채택 상태일 뿐
+> 실제로 MCP 서버로 연결된 적이 없다(`.mcp.json` 부재, `plugin.json`에 MCP 설정 없음 — 확인됨). 그래서 이 스킬은
+> Ghidra의 **공식 headless 모드**를 직접 호출하는 방식을 쓴다. 아래 명령 구조는 Ghidra 공식 문서 기준으로
+> 정확하나, **이 프로젝트에서 실제로 실행해본 적은 없다**(Ghidra 미설치 환경) — 처음 라이브 실행 시 출력을
+> 주의 깊게 확인하고, 버전별 차이가 있으면 이 섹션을 갱신할 것.
+
+```
+<Ghidra설치경로>/support/analyzeHeadless <프로젝트폴더> <프로젝트이름> \
+  -import <분석대상파일> \
+  -postScript <스크립트이름> \
+  -deleteProject
+```
+(Windows는 `analyzeHeadless.bat`, macOS/Linux는 `analyzeHeadless`)
+
+- `<프로젝트폴더>`: 매 분석마다 새로 만드는 임시 작업 폴더(예: `./.sodam-re/binary/ghidra-project`) — 분석 후 `-deleteProject`로 정리.
+- `-postScript`: 분석 완료 후 실행할 스크립트. 함수 목록·디컴파일 결과·문자열·임포트를 텍스트로 추출하려면
+  Ghidra의 **FlatProgramAPI**(공식 Java/Python 스크립팅 인터페이스, `getCurrentProgram()`으로 분석 결과 접근)를
+  쓰는 짧은 스크립트를 그 자리에서 작성해 `-scriptPath`로 지정한다.
+- 스크립트 출력은 파일로 저장(예: `analysis-output.txt`)한 뒤 그 파일을 읽어 §4 표준 보고서로 정리한다.
+
+**첫 라이브 실행 시 반드시 확인**: ①`analyzeHeadless`가 실제로 그 경로에 있는지 ②이 Ghidra 버전이 설치된 Java 버전과 호환되는지 ③스크립트 인자 전달이 그대로 동작하는지 — 전부 이번이 최초 확인이다. 예상과 다르게 동작하면 §5-11e(CHECKPOINT)에 실측 기록 후 이 섹션을 정정할 것.
+
 ## 3. 분석 (읽기 전용·주입 방지, 정적 분석만)
 
 - 대상 바이너리를 **실행하지 않는다**(읽기 전용, 동적 분석 없음).

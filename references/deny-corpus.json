@@ -71,5 +71,16 @@
     "(인앱|in-?app|iap|결제|payment|구독|subscription)\\s*.{0,12}(우회|bypass|무료로 풀|크랙|unlock)",
     "(검사|체크|check|인증|라이선스|license|결제|payment)\\s*.{0,12}(건너뛰|생략|스킵|skip|무시|넘어가)",
     "(license|auth|valid|check|인증|라이선스)\\w*\\s*\\([^)]{0,60}\\)\\s*\\{\\s*return\\s+(true|1)\\s*;?\\s*\\}"
-  ]
+  ],
+  "_ambiguousComment": "2026-07-14(§5-11 수정): 아래 두 필드는 '위험 요청' vs '정상 관찰 서술(크랙/우회가 없다·발견 안됨)'을 구분하는 문맥인식 완화 대상 화이트리스트. 현재 라이브 hooks/re-deny-guard.mjs는 이 필드를 아직 읽지 않음(SETUP_BLOCKED_FILES.md에 코드 준비, 사람 적용 대기) — 이 필드 자체는 지금 추가돼도 라이브 동작에 영향 없음(inert). 토큰/키/비밀번호/개인정보 '추출' 계열과 코드패턴 정규식은 PRD Out-of-Scope 최고위험군이라 의도적으로 제외(완화 대상 아님).",
+  "ambiguousKeywords": [
+    "크랙", "결제 우회", "라이선스 우회", "라이센스 우회", "drm 우회",
+    "인증 우회", "로그인 우회", "비밀번호 우회", "패스워드 우회",
+    "인증 분기 위치", "라이선스 체크 우회",
+    "license bypass", "drm bypass", "bypass authentication", "authentication bypass", "auth bypass",
+    "license verification bypass", "license check bypass",
+    "라이선스 검증 우회", "라이선스 검증 제거", "lvl 우회", "결제 검증 우회",
+    "인앱결제 우회", "인앱 결제 우회"
+  ],
+  "ambiguousRegexIndices": [1, 4, 5]
 }
