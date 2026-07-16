@@ -363,6 +363,18 @@ node scripts/re-inject-harness.mjs
 - **`ghidraRun`이 안 열리면** 대부분 JAVA_HOME 환경변수가 안 잡혀 있는 경우입니다. Java 설치 경로를
   JAVA_HOME으로 지정한 뒤 새 터미널에서 다시 시도하세요(Windows: 시스템 속성 → 환경 변수 → 새로 만들기).
 
+#### (대안) Java·Ghidra 설치가 부담스럽다면: LIEF 경량 분석
+
+Ghidra는 설치가 다소 무겁습니다(Java+Ghidra 두 단계). 대신 **Python + LIEF**(무료 오픈소스 라이브러리) 하나만 설치하면 더 가볍게 분석할 수 있습니다.
+
+```
+pip install lief
+```
+
+- 얻을 수 있는 것: 파일 형식(PE/ELF/Mach-O)·섹션 목록·임포트/익스포트 함수명
+- **못 하는 것**: 함수 내부 로직 설명(디스어셈블)은 Ghidra만 가능 — LIEF는 "구조만" 보여줍니다.
+- ⚠️ 이 경로는 이 프로젝트에서 실제로 실행해본 적 없는 **라이브 미검증** 상태입니다(2026-07-16 신설).
+
 #### (선택) IDA Pro 연동
 
 IDA Pro는 **상용 소프트웨어**입니다. 이미 본인 라이선스가 있다면, 환경변수 `SODAM_RE_IDA_PATH`에

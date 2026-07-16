@@ -51,8 +51,34 @@ Ghidra가 추출한 **디컴파일된 문자열·주석·심볼명(함수명·�
 ## 2. 도구 확인 (fail-closed)
 
 - **Ghidra**(무료, NSA·Apache-2.0) + **Java 17+** 필요. 설치 여부를 확인하고, 없으면 **설치 안내만** 하고 **분석은 시작하지 않는다**(도구 없이 추정 보고서 금지 = fail-closed). 설치 방법은 GUIDE 참조.
+- **LIEF 경량 분석(옵션, §2-2 참조)**: Ghidra·Java 설치가 부담스러우면 **Python + LIEF**만으로도 파일 구조(헤더·섹션·임포트/익스포트) 수준의 가벼운 분석이 가능하다. 디스어셈블·디컴파일은 못 하지만 설치 마찰이 훨씬 적다.
 - **IDA Pro(옵션)**: 환경변수 `SODAM_RE_IDA_PATH`가 설정돼 있으면 IDA 기반 분석을 대안으로 제시할 수 있다. **IDA는 상용 소프트웨어라 사용자 본인이 정식 라이선스를 보유했는지는 사용자 책임**이며, 이 스킬은 라이선스 유효성을 검증하지 않는다. 미설정이면 Ghidra만 사용한다.
+- **셋 다 없으면**: Ghidra·LIEF·IDA 중 아무것도 준비 안 됐으면 설치 안내만 하고 분석을 시작하지 않는다(fail-closed). 사용자가 원하는 깊이(가벼운 구조 분석만 vs 완전한 디스어셈블)에 따라 무엇을 먼저 설치할지 안내한다.
 - **악성코드로 의심되면 분석을 거부**한다(이번 범위에 격리 VM·동적분석 지원이 없으므로 "확인 필요 — 전문가/격리환경에서 별도 분석 권장"으로 안내하고 중단).
+
+## 2-2. LIEF 경량 분석 (옵션 — Ghidra 없이도 가능한 대안, 라이브 미검증)
+
+> **왜 LIEF인가(PRD 근거)**: `.PRD/00_PRD_DIRECTION.md` G3("LIEF 기반 경량 분석 존재 → '바이너리=무겁다' 약점을 일부 완화 가능")에 따른 백로그 항목. PRD가 예로 든 `Ap3x/BinaryAnalysis-MCP`는 **이 세션에서 라이선스를 실시간으로 재검증하지 못해**(수동검토 대상, `mcp/catalog.json`에 `pending-review`로 표기) wrap하지 않는다. 대신 그 밑바탕인 **LIEF 라이브러리 자체**(lief-project/LIEF, 공식 문서 기준 Apache-2.0으로 알려짐 — 단 이 사실도 이번 세션에서 실시간 재확인은 안 됐음)를 직접 감싼다.
+>
+> ⚠️ **아직 라이브 미검증**: 이 컴퓨터엔 Python 자체가 설치돼 있지 않음이 확인됨(`python --version`·`python3 --version`·`pip` 전부 미발견, 2026-07-16 실측). 아래 절차는 LIEF 공식 문서 기준으로 정확하나, **이 프로젝트에서 실제로 실행해본 적은 없다.**
+
+```
+pip install lief
+```
+```python
+import lief, json, sys
+binary = lief.parse(sys.argv[1])  # 사용자 입력을 셸 문자열로 연결하지 않고 인자로만 전달
+result = {
+    "format": str(binary.format),
+    "sections": [s.name for s in binary.sections],
+    "imports": [f"{lib.name}:{e.name}" for lib in getattr(binary, "imports", []) for e in lib.entries] if hasattr(binary, "imports") else [],
+}
+print(json.dumps(result, ensure_ascii=False))
+```
+
+- **LIEF가 제공하는 것**: 파일 형식(PE/ELF/Mach-O) 판별, 섹션 목록, 임포트/익스포트 함수명, 헤더 메타데이터 — 전부 **정적 구조 정보**다.
+- **LIEF가 못 하는 것(중요, 정직하게 표기)**: 디스어셈블·디컴파일·함수별 로직 설명은 불가능하다. Ghidra보다 **훨씬 가볍지만 훨씬 얕다** — §4 표준 보고서의 "함수별 설명"란은 LIEF 경로에서는 "이 분석 방식은 구조 정보만 제공하며, 함수 로직 설명은 Ghidra 경로가 필요합니다"로 명시하고 없는 내용을 지어내지 않는다.
+- **첫 라이브 실행 시 반드시 확인**: ① `pip install lief`가 정상 설치되는지 ② `lief.parse()`가 실제 PE/ELF 파일에서 예외 없이 동작하는지 ③ 이 스크립트 출력 형식이 예상대로 나오는지 — 전부 이번이 최초 확인이다.
 
 ## 2-1. Ghidra 헤드리스(headless) 호출 방법 (실제 명령 구조)
 
