@@ -333,7 +333,7 @@ Once all 3 respond to `--version`, from your project folder:
 ```
 /re-android [APK-file-path]
 ```
-`/re-android` first confirms **ownership/authorization** and **defensive intent** (consent gate),
+`/re-android` first confirms **3 consent-gate questions** (1. do you own/have permission for this app, 2. defensive/educational purpose — no cracking or bypassing, 3. you accept responsibility for the results),
 then, if the tools are missing, it **does not start analysis and points you back to this install
 section** (fail-closed).
 
@@ -389,9 +389,15 @@ Once Java and Ghidra are ready, from your project folder:
 ```
 /re-binary [executable-path]
 ```
-`/re-binary` first confirms **ownership/authorization** and **defensive intent** (consent gate),
+`/re-binary` first confirms **3 consent-gate questions** (1. do you own/have permission for this file, 2. defensive/educational purpose — no cracking or bypassing, 3. you accept responsibility for the results),
 then, if the tools are missing, it **does not start analysis and points you back to this install
 section** (fail-closed).
+
+**How does it call Ghidra internally?** It uses Ghidra's official **headless mode**:
+```
+<Ghidra-install-path>/support/analyzeHeadless <temp-project-folder> <project-name> -import <target-file> -postScript <extraction-script> -deleteProject
+```
+The temporary project is deleted automatically once analysis finishes. ⚠️ This invocation pattern matches Ghidra's official documentation, but **it has not actually been run in this project yet** (written on a machine without Ghidra installed) — you may be the first person to run it live. If it behaves differently than expected, please capture the exact output and let us know.
 
 ---
 
@@ -424,7 +430,9 @@ When installed, Reverse's dangerous pattern blocking rules are shared with Harne
 node scripts/re-inject-harness.mjs
 ```
 
-**Effect:** One hook covers rules for both plugins (no duplication).
+**Effect:** Reverse's danger patterns are actually merged into Harness's shared rules (`safety-rules.json`) — verify with `node scripts/check-family.mjs`.
+
+**⚠️ Known limitation (disclosed honestly):** the rules are shared, but **Reverse still registers its own separate hook**. (A feature to skip Reverse's own check when Harness is present was attempted on 2026-07-12, but an isolated test found it let a dangerous request through unchecked — a real safety gap — so it was reverted.) As a result, a single dangerous request may trigger **two block messages, one from each hook** — it's redundant but **not a safety issue**, since the same danger is simply caught twice rather than once.
 
 **Important:** If Harness and Loop are installed, starting Claude Code from `C:\Users\name` (home folder)
 may block even normal operations. Always start from **your project folder**.
@@ -857,8 +865,9 @@ Contains the AI logic where actual analysis takes place.
 | `re-router/` | Layer 1 safety rules and request classification | Active |
 | `re-analyze-mycode/` | Source code analysis | Active |
 | `re-report/` | Report generation | Active |
+| `re-analyze-agent/` | AI coding agent structure analysis (Claude config, plugins, etc.) | live-verified |
 | `re-analyze-android/` | Android APK analysis | live-verified |
-| `re-analyze-binary/` | Executable analysis | scaffolding complete (not yet live-verified) |
+| `re-analyze-binary/` | Executable analysis (Ghidra) | scaffolding complete (not yet live-verified) |
 
 #### hooks/ — Safety System
 
@@ -976,19 +985,20 @@ SoDam-Reverse-Eng/                   <- Plugin root folder
 |   +-- plugin.json
 |   +-- marketplace.json
 |
-+-- commands/                        <- 5 commands (+ 2 planned)
++-- commands/                        <- 7 commands (4 complete + 2 live-verified + 1 scaffolding)
 |   +-- re-ping.md
 |   +-- re-start.md
 |   +-- re-report.md
 |   +-- re-selftest.md
-|   +-- re-agent.md                  <- AI agent structure analysis
+|   +-- re-agent.md                  <- live-verified
 |   +-- re-android.md                <- live-verified
 |   +-- re-binary.md                 <- scaffolding complete (not yet live-verified)
 |
-+-- skills/                          <- 5 AI logic modules
++-- skills/                          <- 6 AI logic modules
 |   +-- re-router/SKILL.md           <- Layer 1 safety rules
 |   +-- re-analyze-mycode/SKILL.md   <- Source code analysis
 |   +-- re-report/SKILL.md           <- Report generation
+|   +-- re-analyze-agent/            <- live-verified
 |   +-- re-analyze-android/          <- live-verified
 |   +-- re-analyze-binary/           <- scaffolding complete (not yet live-verified)
 |
@@ -1038,7 +1048,7 @@ node scripts/re-inject-harness.mjs
 ```
 
 **Purpose:** Register RE danger patterns in Harness safety-rules
-**Effect:** One hook covers both Harness and Reverse rules (no duplication)
+**Effect:** Reverse's rules are actually merged into Harness's shared rules (Reverse's own hook still runs separately, though — see the "Known limitation" note in §3; a dangerous request may show 2 block messages, which is redundant but not unsafe)
 **When to run:** Once after Harness is installed
 
 **Expected output:**
@@ -1345,13 +1355,13 @@ Major languages including JavaScript, Python, Java, C/C++, Go, Rust, PHP, and Ty
 
 **Q14. Can APK files (Android apps) be analyzed?**
 
-Support is planned for Phase 2. Currently only source code files are supported.
+Yes. Use `/re-android [APK path]`. This was fully live-tested end-to-end on 2026-07-13 with a real APK (an open-source app from F-Droid) — install, consent gate, decompilation, and report saving all confirmed working. You'll need Java 17+, JADX, and Apktool installed first (see §2-6).
 
 ---
 
 **Q15. Can .exe files (executables) be analyzed?**
 
-Support is planned for Phase 3. Currently only source code files are supported.
+The `/re-binary [file path]` command and analysis logic already exist. However, the actual Ghidra disassembly step still needs to be live-verified on a machine with Ghidra and Java installed ("scaffolding complete, not yet live-verified" — see §2-7). The command itself isn't missing; only the live execution check remains.
 
 ---
 

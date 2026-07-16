@@ -432,7 +432,7 @@ Context → Agentic → Prompt → <strong>Reverse (this one)</strong></p>
 <tr>
 <td><strong>SoDam-Harness</strong></td>
 <td>Safety belt · backup</td>
-<td>Shares RE patterns → one hook covers both (no duplication)</td>
+<td>RE patterns are actually merged into Harness's shared rules (Reverse's own hook still runs separately — see "Known limitation" below)</td>
 </tr>
 <tr>
 <td><strong>SoDam-Loop</strong></td>
@@ -464,8 +464,18 @@ folder</strong> (<code>D:\my-project\</code> etc.).</p>
 </blockquote>
 <p><strong>If Harness is installed — run once:</strong></p>
 <pre><code>node scripts/re-inject-harness.mjs</code></pre>
-<p>→ RE danger patterns are added to Harness safety rules and the hook
-is shared (no duplication).</p>
+<p>→ RE danger patterns are actually added to Harness's shared safety
+rules.</p>
+<blockquote>
+<p>⚠️ <strong>Known limitation:</strong> the rules are shared, but
+Reverse still registers its own separate hook (a feature to skip
+Reverse's own check when Harness is present was attempted on
+2026-07-12, but was reverted after an isolated test found it let a
+dangerous request through unchecked). A single dangerous request may
+therefore trigger 2 block messages — redundant, but not a safety
+issue, since the same danger is simply caught twice. See
+<a href="./GUIDE.en.html">GUIDE.en.html</a> §3 for details.</p>
+</blockquote>
 <hr />
 <h2 id="prerequisites-free-2-items">5. Prerequisites (Free, 2
 Items)</h2>
@@ -808,6 +818,7 @@ Structure</h2>
 │   ├── re-router/               ← Layer 1 safety rules + request routing
 │   ├── re-analyze-mycode/       ← Source code analysis
 │   ├── re-report/               ← Report generation
+│   ├── re-analyze-agent/        ← live-verified
 │   ├── re-analyze-android/      ← live-verified
 │   └── re-analyze-binary/       ← scaffolding complete (not yet live-verified)
 │

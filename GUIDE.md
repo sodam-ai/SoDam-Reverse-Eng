@@ -332,7 +332,7 @@ node scripts/re-inject-harness.mjs
 ```
 /re-android [APK파일경로]
 ```
-`/re-android`는 먼저 **소유·허가 여부**와 **방어 목적**을 확인(동의 게이트)한 뒤,
+`/re-android`는 먼저 **동의 게이트 3문항**(①본인 소유/허가 ②방어·학습 목적(크랙·우회 안 함) ③책임은 사용자)을 확인한 뒤,
 도구가 없으면 **분석을 시작하지 않고 이 설치 안내로 되돌려 보냅니다**(fail-closed).
 
 ---
@@ -383,8 +383,14 @@ Java와 Ghidra가 준비되면, 프로젝트 폴더에서:
 ```
 /re-binary [실행파일경로]
 ```
-`/re-binary`는 먼저 **소유·허가 여부**와 **방어 목적**을 확인(동의 게이트)한 뒤,
+`/re-binary`는 먼저 **동의 게이트 3문항**(①본인 소유/허가 ②방어·학습 목적(크랙·우회 안 함) ③책임은 사용자)을 확인한 뒤,
 도구가 없으면 **분석을 시작하지 않고 이 설치 안내로 되돌려 보냅니다**(fail-closed).
+
+**내부적으로 어떻게 Ghidra를 호출하나요?** Ghidra의 공식 **headless(무설정) 모드**를 사용합니다:
+```
+<Ghidra설치경로>/support/analyzeHeadless <임시프로젝트폴더> <프로젝트이름> -import <분석대상파일> -postScript <추출스크립트> -deleteProject
+```
+분석이 끝나면 임시 프로젝트는 자동 삭제됩니다. ⚠️ 이 호출 방식은 Ghidra 공식 문서 기준으로는 정확하지만, **이 프로젝트에서 실제로 실행해본 적은 아직 없습니다**(Ghidra 미설치 환경에서 작성됨) — 여러분이 처음 실행하는 분이 될 수 있습니다. 예상과 다르게 동작하면 화면 내용을 그대로 캡처해 알려주세요.
 
 ---
 
@@ -417,7 +423,9 @@ Harness는 Reverse의 "안전 규칙 선생님" 역할입니다.
 node scripts/re-inject-harness.mjs
 ```
 
-**효과:** hook 하나가 두 플러그인의 규칙을 모두 담당합니다 (중복 없음).
+**효과:** Reverse의 위험 패턴 규칙이 Harness의 공유 규칙(`safety-rules.json`)에 실제로 추가됩니다(확인: `node scripts/check-family.mjs`).
+
+**⚠️ 알려진 한계(정직하게 안내)**: 규칙은 공유되지만, **hook 자체는 Reverse가 별도로 계속 등록**합니다. (Harness가 있으면 Reverse가 자체 검사를 생략하는 기능을 2026-07-12에 시도했으나, 격리 테스트에서 위험 요청이 검사 없이 통과하는 실제 안전 공백이 발견돼 되돌렸습니다.) 그 결과 위험한 요청 1건에 Harness·Reverse 두 hook이 각각 반응해 **차단 메시지가 2번 뜰 수 있습니다** — 번거롭지만 **같은 위험을 두 번 잡는 것뿐이라 안전에는 영향이 없습니다**(위험이 새는 방향의 문제가 아님).
 
 **중요:** Harness·Loop가 설치된 경우, `C:\Users\이름` 홈 폴더에서
 Claude Code를 시작하면 정상 작업도 막힐 수 있습니다.
@@ -845,8 +853,9 @@ Git으로 코드를 관리해도 **분석 결과가 업로드되지 않습니다
 | `re-router/` | 1층 안전규칙 + 요청 분류 | ✅ 활성 |
 | `re-analyze-mycode/` | 소스코드 분석 | ✅ 활성 |
 | `re-report/` | 보고서 생성 | ✅ 활성 |
-| `re-analyze-android/` | Android APK 분석 | ⏳ Phase 2 |
-| `re-analyze-binary/` | 실행파일 분석 | ⏳ Phase 3 |
+| `re-analyze-agent/` | AI 코딩 에이전트 구조 분석(Claude 설정·플러그인 등) | ✅ 라이브 검증 완료 |
+| `re-analyze-android/` | Android APK 분석 | ✅ 실사용 라이브 검증 완료(2026-07-13) |
+| `re-analyze-binary/` | 실행파일 분석(Ghidra) | 🚧 골격 완료(라이브 미검증) |
 
 #### hooks/ — 안전장치
 
@@ -964,19 +973,20 @@ SoDam-Reverse-Eng/                   ← 플러그인 루트 폴더
 │   ├── plugin.json
 │   └── marketplace.json
 │
-├── commands/                        ← 명령어 4개 (+ 예정 2개)
+├── commands/                        ← 명령어 7개(4개 완성+2개 라이브검증완료+1개 골격)
 │   ├── re-ping.md
 │   ├── re-start.md
 │   ├── re-report.md
 │   ├── re-selftest.md
-│   ├── re-agent.md                  ← AI 에이전트 구조 분석
+│   ├── re-agent.md                  ← 라이브 검증 완료
 │   ├── re-android.md                ← 실사용 라이브 검증 완료
 │   └── re-binary.md                 ← 골격 완료(라이브 미검증)
 │
-├── skills/                          ← AI 로직 5개
+├── skills/                          ← AI 로직 6개
 │   ├── re-router/SKILL.md           ← 1층 안전규칙
 │   ├── re-analyze-mycode/SKILL.md   ← 소스코드 분석
 │   ├── re-report/SKILL.md           ← 보고서 생성
+│   ├── re-analyze-agent/            ← 라이브 검증 완료
 │   ├── re-analyze-android/          ← 실사용 라이브 검증 완료
 │   └── re-analyze-binary/           ← 골격 완료(라이브 미검증)
 │
@@ -1026,7 +1036,7 @@ node scripts/re-inject-harness.mjs
 ```
 
 **목적:** Harness의 safety-rules에 RE 위험 패턴을 등록
-**효과:** hook 1개가 Harness + Reverse 규칙 모두 담당 (중복 없음)
+**효과:** Reverse 규칙이 Harness의 공유 규칙에 실제로 추가됨(단, hook 자체는 Reverse가 별도 유지 — §3 "알려진 한계" 참고, 위험한 요청 시 메시지가 2번 뜰 수 있으나 안전에는 영향 없음)
 **실행 시기:** Harness 설치 후 최초 1회
 
 **기대 출력:**
@@ -1356,13 +1366,13 @@ AI가 이해하는 언어라면 대부분 분석 가능합니다.
 
 **Q14. APK 파일(Android 앱)을 분석할 수 있나요?**
 
-Phase 2에서 지원 예정입니다. 현재는 소스코드 파일만 가능합니다.
+네, 가능합니다. `/re-android [APK경로]`로 분석하며, 2026-07-13에 실제 APK(F-Droid 오픈소스 앱)로 설치→동의게이트→디컴파일→보고서 저장까지 전 과정 실사용 검증을 마쳤습니다. 사전에 Java 17+·JADX·Apktool 설치가 필요합니다(§2-6 참고).
 
 ---
 
 **Q15. exe 파일(실행파일)을 분석할 수 있나요?**
 
-Phase 3에서 지원 예정입니다. 현재는 소스코드 파일만 가능합니다.
+`/re-binary [파일경로]` 명령과 분석 로직은 이미 완성돼 있습니다. 다만 실제 Ghidra 디스어셈블 동작은 이 컴퓨터에 Ghidra·Java가 설치된 환경에서의 라이브 검증이 아직 남아있습니다("골격 완료·라이브 미검증" 상태 — §2-7 참고). 명령 자체가 없는 게 아니라, 실제 실행 확인이 남은 단계입니다.
 
 ---
 

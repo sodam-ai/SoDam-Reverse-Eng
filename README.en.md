@@ -89,7 +89,7 @@ SoDam-Reverse is the **youngest** of 6 sibling plugins. Installing siblings make
 
 | Sibling Plugin | Role | With Reverse |
 |---|---|---|
-| **SoDam-Harness** | Safety belt · backup | Shares RE patterns → one hook covers both (no duplication) |
+| **SoDam-Harness** | Safety belt · backup | RE patterns are actually merged into Harness's shared rules (Reverse's own hook still runs separately — see "Known limitation" below) |
 | **SoDam-Loop** | Safe repetition control | Keeps repeated analysis loops safe |
 | **SoDam-Context** | CLAUDE.md health check | Auto-detects scope violations |
 | **SoDam-Agentic** | Planning · easy review | Re-reads reports for non-developer readability |
@@ -102,7 +102,8 @@ SoDam-Reverse is the **youngest** of 6 sibling plugins. Installing siblings make
 ```
 node scripts/re-inject-harness.mjs
 ```
-→ RE danger patterns are added to Harness safety rules and the hook is shared (no duplication).
+→ RE danger patterns are actually added to Harness's shared safety rules.
+> ⚠️ **Known limitation:** the rules are shared, but Reverse still registers its own separate hook (a feature to skip Reverse's own check when Harness is present was attempted on 2026-07-12, but was reverted after an isolated test found it let a dangerous request through unchecked). A single dangerous request may therefore trigger 2 block messages — redundant, but not a safety issue, since the same danger is simply caught twice. See [GUIDE.en.md](./GUIDE.en.md) §3 for details.
 
 ---
 
@@ -387,6 +388,7 @@ SoDam-Reverse-Eng/
 │   ├── re-router/               ← Layer 1 safety rules + request routing
 │   ├── re-analyze-mycode/       ← Source code analysis
 │   ├── re-report/               ← Report generation
+│   ├── re-analyze-agent/        ← live-verified
 │   ├── re-analyze-android/      ← live-verified
 │   └── re-analyze-binary/       ← scaffolding complete (not yet live-verified)
 │

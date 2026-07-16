@@ -90,7 +90,7 @@ SoDam-Reverse는 6형제 플러그인 중 **막내**입니다. 형제들과 함�
 
 | 형제 플러그인 | 역할 | Reverse와 함께 쓰면 |
 |---|---|---|
-| **SoDam-Harness** | 안전벨트 · 백업 | RE 위험 패턴 공유 → hook 1개가 모두 담당 (중복 없음) |
+| **SoDam-Harness** | 안전벨트 · 백업 | RE 위험 패턴을 Harness 공유규칙에 실제 추가(단, hook 자체는 별도 등록 유지 — 아래 "알려진 한계" 참고) |
 | **SoDam-Loop** | 반복 작업 안전 제어 | 반복 분석 루프도 안전하게 |
 | **SoDam-Context** | CLAUDE.md 건강검진 | 분석 범위 이탈 자동 감지 |
 | **SoDam-Agentic** | 계획 · 쉬운 검토 | 보고서를 비개발자 눈높이로 재검수 |
@@ -104,7 +104,8 @@ SoDam-Reverse는 6형제 플러그인 중 **막내**입니다. 형제들과 함�
 ```
 node scripts/re-inject-harness.mjs
 ```
-→ RE 위험 패턴이 Harness 안전규칙에 추가되어 hook을 공유합니다 (중복 없음).
+→ RE 위험 패턴이 Harness 안전규칙에 실제로 추가됩니다.
+> ⚠️ **알려진 한계**: 규칙은 공유되지만 hook 자체는 Reverse가 별도로 계속 등록합니다(Harness 존재 시 자체검사를 생략하는 기능을 2026-07-12에 시도했으나 위험 요청이 무검증 통과하는 실제 회귀가 발견돼 되돌림). 그래서 위험한 요청 1건에 차단 메시지가 2번 뜰 수 있으나, 같은 위험을 두 번 잡는 것뿐이라 안전에는 영향 없습니다. 자세한 설명은 [GUIDE.md](./GUIDE.md) 3장 참고.
 
 ---
 
@@ -389,6 +390,7 @@ SoDam-Reverse-Eng/
 │   ├── re-router/               ← 1층 안전규칙 + 요청 분류
 │   ├── re-analyze-mycode/       ← 소스코드 분석
 │   ├── re-report/               ← 보고서 생성
+│   ├── re-analyze-agent/        ← 라이브 검증 완료
 │   ├── re-analyze-android/      ← 실사용 라이브 검증 완료
 │   └── re-analyze-binary/       ← 골격 완료(라이브 미검증)
 │

@@ -591,9 +591,11 @@ real cause we confirmed during 2026-07-13 live testing).</p>
 <p>Once all 3 respond to <code>--version</code>, from your project
 folder:</p>
 <pre><code>/re-android [APK-file-path]</code></pre>
-<p><code>/re-android</code> first confirms
-<strong>ownership/authorization</strong> and <strong>defensive
-intent</strong> (consent gate), then, if the tools are missing, it
+<p><code>/re-android</code> first confirms <strong>3 consent-gate
+questions</strong> (1. do you own/have permission for this app, 2.
+defensive/educational purpose — no cracking or bypassing, 3. you
+accept responsibility for the results), then, if the tools are
+missing, it
 <strong>does not start analysis and points you back to this install
 section</strong> (fail-closed).</p>
 <hr />
@@ -652,11 +654,23 @@ pages above are always authoritative</strong>.</p>
 <h4 id="after-installation-1">After Installation</h4>
 <p>Once Java and Ghidra are ready, from your project folder:</p>
 <pre><code>/re-binary [executable-path]</code></pre>
-<p><code>/re-binary</code> first confirms
-<strong>ownership/authorization</strong> and <strong>defensive
-intent</strong> (consent gate), then, if the tools are missing, it
+<p><code>/re-binary</code> first confirms <strong>3 consent-gate
+questions</strong> (1. do you own/have permission for this file, 2.
+defensive/educational purpose — no cracking or bypassing, 3. you
+accept responsibility for the results), then, if the tools are
+missing, it
 <strong>does not start analysis and points you back to this install
 section</strong> (fail-closed).</p>
+<p><strong>How does it call Ghidra internally?</strong> It uses
+Ghidra's official <strong>headless mode</strong>:</p>
+<pre><code>&lt;Ghidra-install-path&gt;/support/analyzeHeadless &lt;temp-project-folder&gt; &lt;project-name&gt; -import &lt;target-file&gt; -postScript &lt;extraction-script&gt; -deleteProject</code></pre>
+<p>The temporary project is deleted automatically once analysis
+finishes. ⚠️ This invocation pattern matches Ghidra's official
+documentation, but <strong>it has not actually been run in this
+project yet</strong> (written on a machine without Ghidra installed)
+— you may be the first person to run it live. If it behaves
+differently than expected, please capture the exact output and let us
+know.</p>
 <hr />
 <h2 id="using-sodam-sibling-plugins-together">3. Using SoDam Sibling
 Plugins Together</h2>
@@ -717,8 +731,18 @@ Between Each Sibling and Reverse</h3>
 Reverse’s dangerous pattern blocking rules are shared with Harness.</p>
 <p><strong>Connection method:</strong></p>
 <pre><code>node scripts/re-inject-harness.mjs</code></pre>
-<p><strong>Effect:</strong> One hook covers rules for both plugins (no
-duplication).</p>
+<p><strong>Effect:</strong> Reverse's danger patterns are actually
+merged into Harness's shared rules (<code>safety-rules.json</code>) —
+verify with <code>node scripts/check-family.mjs</code>.</p>
+<p>⚠️ <strong>Known limitation (disclosed honestly):</strong> the
+rules are shared, but <strong>Reverse still registers its own
+separate hook</strong>. (A feature to skip Reverse's own check when
+Harness is present was attempted on 2026-07-12, but an isolated test
+found it let a dangerous request through unchecked — a real safety
+gap — so it was reverted.) As a result, a single dangerous request
+may trigger <strong>two block messages, one from each hook</strong> —
+it's redundant but <strong>not a safety issue</strong>, since the
+same danger is simply caught twice rather than once.</p>
 <p><strong>Important:</strong> If Harness and Loop are installed,
 starting Claude Code from <code>C:\Users\name</code> (home folder) may
 block even normal operations. Always start from <strong>your project
@@ -1131,13 +1155,18 @@ Definitions</h4>
 <td>Active</td>
 </tr>
 <tr>
+<td><code>re-analyze-agent/</code></td>
+<td>AI coding agent structure analysis (Claude config, plugins, etc.)</td>
+<td>live-verified</td>
+</tr>
+<tr>
 <td><code>re-analyze-android/</code></td>
 <td>Android APK analysis</td>
 <td>live-verified</td>
 </tr>
 <tr>
 <td><code>re-analyze-binary/</code></td>
-<td>Executable analysis</td>
+<td>Executable analysis (Ghidra)</td>
 <td>scaffolding complete (not yet live-verified)</td>
 </tr>
 </tbody>
@@ -1383,19 +1412,20 @@ Guide</h2>
 |   +-- plugin.json
 |   +-- marketplace.json
 |
-+-- commands/                        &lt;- 5 commands (+ 2 planned)
++-- commands/                        &lt;- 7 commands (4 complete + 2 live-verified + 1 scaffolding)
 |   +-- re-ping.md
 |   +-- re-start.md
 |   +-- re-report.md
 |   +-- re-selftest.md
-|   +-- re-agent.md                  &lt;- AI agent structure analysis
+|   +-- re-agent.md                  &lt;- live-verified
 |   +-- re-android.md                &lt;- live-verified
 |   +-- re-binary.md                 &lt;- scaffolding complete (not yet live-verified)
 |
-+-- skills/                          &lt;- 5 AI logic modules
++-- skills/                          &lt;- 6 AI logic modules
 |   +-- re-router/SKILL.md           &lt;- Layer 1 safety rules
 |   +-- re-analyze-mycode/SKILL.md   &lt;- Source code analysis
 |   +-- re-report/SKILL.md           &lt;- Report generation
+|   +-- re-analyze-agent/            &lt;- live-verified
 |   +-- re-analyze-android/          &lt;- live-verified
 |   +-- re-analyze-binary/           &lt;- scaffolding complete (not yet live-verified)
 |
@@ -1436,8 +1466,11 @@ Guide</h2>
 <h4 id="re-inject-harness.mjs">re-inject-harness.mjs</h4>
 <pre><code>node scripts/re-inject-harness.mjs</code></pre>
 <p><strong>Purpose:</strong> Register RE danger patterns in Harness
-safety-rules <strong>Effect:</strong> One hook covers both Harness and
-Reverse rules (no duplication) <strong>When to run:</strong> Once after
+safety-rules <strong>Effect:</strong> Reverse's rules are actually
+merged into Harness's shared rules (Reverse's own hook still runs
+separately, though — see the "Known limitation" note in §3; a
+dangerous request may show 2 block messages, which is redundant but
+not unsafe) <strong>When to run:</strong> Once after
 Harness is installed</p>
 <p><strong>Expected output:</strong></p>
 <pre><code>RE rules 8 (catastrophic) injected successfully
@@ -1646,12 +1679,18 @@ PHP, and TypeScript are supported. Most languages the AI understands can
 be analyzed.</p>
 <hr />
 <p><strong>Q14. Can APK files (Android apps) be analyzed?</strong></p>
-<p>Support is planned for Phase 2. Currently only source code files are
-supported.</p>
+<p>Yes. Use <code>/re-android [APK path]</code>. This was fully
+live-tested end-to-end on 2026-07-13 with a real APK (an open-source
+app from F-Droid) — install, consent gate, decompilation, and report
+saving all confirmed working. You'll need Java 17+, JADX, and Apktool
+installed first (see §2-6).</p>
 <hr />
 <p><strong>Q15. Can .exe files (executables) be analyzed?</strong></p>
-<p>Support is planned for Phase 3. Currently only source code files are
-supported.</p>
+<p>The <code>/re-binary [file path]</code> command and analysis logic
+already exist. However, the actual Ghidra disassembly step still
+needs to be live-verified on a machine with Ghidra and Java installed
+("scaffolding complete, not yet live-verified" — see §2-7). The
+command itself isn't missing; only the live execution check remains.</p>
 <hr />
 <p><strong>Q16. The report contains incorrect information.</strong></p>
 <p>AI analysis is not 100% accurate. Review the “Uncertainties” section
