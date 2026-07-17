@@ -417,7 +417,8 @@ Prompt → <strong>Reverse(이것)</strong></p>
 <tr>
 <td><strong>SoDam-Harness</strong></td>
 <td>안전벨트 · 백업</td>
-<td>RE 위험 패턴을 Harness 공유규칙에 실제 추가(단, hook 자체는 별도 등록 유지 — 아래 "알려진 한계" 참고)</td>
+<td>RE 위험 패턴을 Harness 공유규칙에 실제 추가(단, hook 자체는 별도
+등록 유지 — 아래 “알려진 한계” 참고)</td>
 </tr>
 <tr>
 <td><strong>SoDam-Loop</strong></td>
@@ -449,15 +450,13 @@ Claude Code를 시작하면 Harness · Loop guard가 정상 작업까지 막습�
 </blockquote>
 <p><strong>Harness가 설치된 경우 — 한 번만 실행:</strong></p>
 <pre><code>node scripts/re-inject-harness.mjs</code></pre>
-<p>→ RE 위험 패턴이 Harness 안전규칙에 실제로 추가됩니다.</p>
-<blockquote>
-<p>⚠️ <strong>알려진 한계</strong>: 규칙은 공유되지만 hook 자체는
-Reverse가 별도로 계속 등록합니다(Harness 존재 시 자체검사를 생략하는
-기능을 2026-07-12에 시도했으나 위험 요청이 무검증 통과하는 실제 회귀가
-발견돼 되돌림). 그래서 위험한 요청 1건에 차단 메시지가 2번 뜰 수
-있으나, 같은 위험을 두 번 잡는 것뿐이라 안전에는 영향 없습니다. 자세한
-설명은 <a href="./GUIDE.html">GUIDE.html</a> 3장 참고.</p>
-</blockquote>
+<p>→ RE 위험 패턴이 Harness 안전규칙에 실제로 추가됩니다. &gt; ⚠️
+<strong>알려진 한계</strong>: 규칙은 공유되지만 hook 자체는 Reverse가
+별도로 계속 등록합니다(Harness 존재 시 자체검사를 생략하는 기능을
+2026-07-12에 시도했으나 위험 요청이 무검증 통과하는 실제 회귀가 발견돼
+되돌림). 그래서 위험한 요청 1건에 차단 메시지가 2번 뜰 수 있으나, 같은
+위험을 두 번 잡는 것뿐이라 안전에는 영향 없습니다. 자세한 설명은 <a
+href="./GUIDE.md">GUIDE.md</a> 3장 참고.</p>
 <hr />
 <h2 id="사전-준비물-무료-2가지">5. 사전 준비물 (무료, 2가지)</h2>
 <h3 id="준비물-1-node.js-버전-18-이상">준비물 1: Node.js (버전 18
@@ -983,6 +982,15 @@ class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb15
 <p>SHA-256 불일치:</p>
 <pre><code>node hooks/_selftest.mjs</code></pre>
 <p>출력 해시 → <code>references/integrity.json</code> 저장 → 재실행</p>
+<blockquote>
+<p>⚠️ <strong>주의:</strong> <code>integrity.json</code>에 <strong>이미
+값이 들어있는 상태</strong>에서 해시가 달라 ❌가 뜬 경우, 위 명령은
+“불일치(변조 의심)”라고만 알려주고 <strong>새 해시를 화면에 출력하지
+않습니다</strong>(해시 출력은 <code>integrity.json</code>이 비어있을
+때만 나옵니다). 이럴 때는 아래 명령으로 새 해시를 직접 확인하세요:</p>
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>node <span class="op">-</span>e <span class="st">&quot;console.log(require(&#39;crypto&#39;).createHash(&#39;sha256&#39;).update(require(&#39;fs&#39;).readFileSync(&#39;hooks/re-deny-guard.mjs&#39;)).digest(&#39;hex&#39;))&quot;</span></span></code></pre></div>
+</blockquote>
 <hr />
 <h3 id="q8.-보고서에서-비밀번호가-그대로-보여요">Q8. 보고서에서
 비밀번호가 그대로 보여요</h3>
@@ -1266,6 +1274,25 @@ GitHub·브라우저 모두 접기/펼치기 지원)</p>
 검토 대기, 사용자 확정) — 관련 도구는 계속 보류 상태</li>
 <li>⚠️ 실제 디스어셈블 동작은 도구 설치 환경에서 <strong>라이브 검증
 예정</strong>(현재 골격). 안전·동의·보고서 규칙은 Phase 1과 동일</li>
+</ul>
+</details>
+<details>
+<summary>
+<strong>전수 테스트·검증 세션 (2026-07-18)</strong>
+</summary>
+<ul>
+<li>안전 3층(선택기·경계값·실패 케이스 포함) 실행 기반 전수 재검증 —
+회귀 없음(8/0 유지)</li>
+<li>설치 스크립트 전체 사이클(설치→언인스톨→재설치) 바이트 단위 일치
+확인</li>
+<li>발견·수정 1건: <code>scripts/re-inject-harness.mjs</code>의 잘못된
+주석(“<code>/re-selftest</code>가 자동 호출”) 정정</li>
+<li>발견(문서 정정): 무결성 해시가 <strong>이미 등록된 상태에서
+불일치</strong>가 나면 <code>/re-selftest</code>가 새 해시를 출력하지
+않는다는 사실 확인 → 본 문서·GUIDE.md의 관련 안내에 직접 계산 명령
+보강</li>
+<li><code>references/trust-catalog.md</code> 최신화 필요 항목 3건
+발견(1개 보관 처리됨·2개 장기 미갱신) — 별도 정리 예정</li>
 </ul>
 </details>
 <blockquote>

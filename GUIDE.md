@@ -239,6 +239,8 @@ Pong! /re-ping 정상 작동합니다.
 5. 파일 저장
 6. 다시 `/re-selftest` 실행 → 3층 ✅ 확인
 
+> ⚠️ **주의:** 위 절차는 `integrity.json`이 **비어있을 때**(최초 1회) 기준입니다. 이미 값이 들어있는 상태에서 해시가 달라 ❌가 뜨면 `/re-selftest`는 "불일치"라고만 말하고 **새 해시를 화면에 출력하지 않습니다**. 이 경우엔 §9 "무결성 해시 수동 갱신"의 직접 계산 명령을 사용하세요.
+
 ---
 
 ### 2-5. 형제 시너지 설정 (선택 사항)
@@ -576,9 +578,28 @@ Pong! /re-ping 정상 작동합니다.
 
 ---
 
+### `/re-agent` — AI 에이전트 구조 분석
+
+**언제:** 내 Claude Code 설정(플러그인·스킬·에이전트·훅)이나 다른 사람의 플러그인/에이전트 구조가 궁금할 때
+
+**입력 형식:**
+```
+/re-agent [설정폴더 또는 repo 경로]
+```
+
+**예시:**
+```
+/re-agent ~/.claude
+/re-agent D:\어떤플러그인폴더
+```
+
+**특징:** 안드로이드·바이너리와 달리 **외부 도구가 필요 없어**(소스를 직접 읽음) 라이브 검증까지 완료됐습니다. `~/.claude` 전체처럼 대상이 크면, 사용량 보호를 위해 먼저 "폴더 단위로 나눠 진행할까요?" 확인 질문이 뜹니다.
+
+---
+
 ### 앞으로 추가될 명령어
 
-| 명령어 | 추가 시기 | 설명 |
+| 명령어 | 상태 | 설명 |
 |---|---|---|
 | `/re-android` | ✅ 실사용 라이브 검증 완료(2026-07-13) | Android APK 파일 분석 |
 | `/re-binary` | 골격 완료(라이브 미검증) | 실행 파일(.exe 등) 분석 |
@@ -1104,6 +1125,12 @@ node hooks/_selftest.mjs
 
 출력에서 새 SHA-256 해시 복사 → `references/integrity.json` 업데이트
 
+> ⚠️ **`integrity.json`에 이미 값이 있으면** 위 명령이 새 해시를 출력하지 않고 "불일치"라고만 말합니다(해시 출력은 값이 비어있을 때만 나오는 코드 구조 때문). 이럴 땐 아래 명령으로 직접 계산하세요:
+> ```powershell
+> node -e "console.log(require('crypto').createHash('sha256').update(require('fs').readFileSync('hooks/re-deny-guard.mjs')).digest('hex'))"
+> ```
+> 출력된 문자열을 `references/integrity.json`의 `"hooks/re-deny-guard.mjs"` 값으로 저장한 뒤 재실행하세요.
+
 ---
 
 ### 테스트용 예제 파일
@@ -1238,6 +1265,8 @@ node D:\내플러그인폴더\hooks\_selftest.mjs
 ```
 출력된 해시 복사 → `references/integrity.json` 업데이트 → 재실행
 
+> ⚠️ `integrity.json`에 이미 값이 있는 상태의 불일치는 위 명령이 새 해시를 출력하지 않습니다. 이땐 §9 "무결성 해시 수동 갱신"의 직접 계산 명령을 쓰세요.
+
 ---
 
 ### Q7. 보고서에서 비밀번호가 `••••` 가 아니라 그대로 보여요
@@ -1351,8 +1380,7 @@ Claude API 사용료는 Anthropic에서 별도로 청구됩니다.
 
 **Q10. Windows가 아닌 Mac·Linux에서도 쓸 수 있나요?**
 
-Phase 1은 Windows 기준으로 개발됐습니다.
-Mac·Linux 지원은 Phase 2·3에서 추가될 예정입니다.
+이 플러그인의 핵심 로직(Node.js 스크립트·hook)은 특정 OS에 종속되지 않습니다. 다만 이 문서의 설치 안내(PowerShell 명령, PATH 등록 화면 등)는 **Windows 기준으로만 작성·실측 검증**됐습니다. Mac·Linux에서는 `PowerShell` 대신 터미널, `setx` 대신 `export`처럼 명령어 표기를 직접 바꿔야 하며, 이 프로젝트에서 Mac·Linux 환경 자체를 실제로 검증한 적은 아직 없습니다("Windows 검증됨, 다른 OS는 미검증"이 정확한 표현입니다).
 
 ---
 
@@ -1539,13 +1567,17 @@ Copyright (c) 2026 SoDam AI Studio
 
 ### 타사 상표·저작권 고지
 
-| 소프트웨어 | 소유자 | 공식 제휴 여부 |
-|---|---|---|
-| Claude, Claude Code | Anthropic PBC | 아님 |
-| IDA Pro (Phase 3 선택) | Hex-Rays SA | 아님 |
-| Node.js | OpenJS Foundation | 아님 |
+| 소프트웨어 | 소유자 | 라이선스 | 공식 제휴 여부 |
+|---|---|---|---|
+| Claude, Claude Code | Anthropic PBC | 독점(상용) | 아님 |
+| IDA Pro (Phase 3, 선택) | Hex-Rays SA | 독점(상용, 별도 구매 필요) | 아님 |
+| Node.js | OpenJS Foundation | MIT | 아님 |
+| Ghidra (Phase 3) | 미국 국가안보국(NSA) | Apache-2.0 | 아님 |
+| JADX (Phase 2) | skylot 외 커뮤니티 | Apache-2.0 | 아님 |
+| Apktool (Phase 2) | iBotPeaches 외 커뮤니티 | Apache-2.0 | 아님 |
+| LIEF (Phase 3, 선택 대안) | Quarkslab | Apache-2.0 | 아님 |
 
-위 상표들은 각 소유자의 재산이며, 이 플러그인은 공식 제휴·보증 관계가 없습니다.
+위 도구들은 **본 플러그인에 번들되지 않고, 사용자가 각자 공식 경로에서 직접 설치**하는 방식(wrap)으로 연동됩니다(자세한 내용은 [NOTICE](./NOTICE) 참고). 각 도구는 위 소유자·라이선스를 따르며, 이 플러그인과 공식 제휴·보증 관계가 없습니다. 상표는 각 소유자의 재산입니다.
 
 ---
 
@@ -1631,6 +1663,17 @@ Copyright (c) 2026 SoDam AI Studio
 - 안드로이드와 동일한 프롬프트 인젝션 방어(§0-1)를 처음부터 반영
 - **악성코드 방어 분석은 이번 범위에 없음**(플랫폼 정책 검토 대기, 사용자 확정) — 관련 도구는 계속 보류 상태
 - ⚠️ 실제 디스어셈블 동작은 도구 설치 환경에서 **라이브 검증 예정**(현재 골격). 안전·동의·보고서 규칙은 Phase 1과 동일
+
+</details>
+
+<details>
+<summary><strong>전수 테스트·검증 세션 (2026-07-18)</strong></summary>
+
+- 안전 3층(정상·예외·잘못된 입력·경계값·실패 상황 포함) 실행 기반 전수 재검증 — 회귀 없음(8/0 유지)
+- 설치 스크립트 전체 사이클(설치→언인스톨→재설치) 바이트 단위 일치 확인, 6형제 연동 스크립트 3종 정상 확인
+- 발견·수정 1건: `scripts/re-inject-harness.mjs`의 잘못된 주석 정정(로직 변경 없음)
+- **문서 정확성 보강**: 무결성 해시가 이미 등록된 상태에서 불일치가 나면 `/re-selftest`가 새 해시를 출력하지 않는다는 사실을 발견 → 본 문서 §2-4·§9·§10 Q6에 직접 계산 명령 보강, `/re-agent` 명령 상세 안내 누락 보완(§4), 타사 도구 라이선스 표에 JADX·Apktool·Ghidra·LIEF 추가(§12), Mac·Linux 지원 관련 Q10 답변을 더 정확하게 정정(§11)
+- `references/trust-catalog.md` 최신화 필요 항목 3건 발견(안전 영향 없음, 별도 정리 예정)
 
 </details>
 

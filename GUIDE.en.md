@@ -238,6 +238,8 @@ For the Layer 3 integrity check to work properly, you need to register the hash.
 5. Save the file
 6. Run `/re-selftest` again → confirm Layer 3 shows OK
 
+> ⚠️ **Note:** This procedure applies when `integrity.json` is **empty** (first-time setup). If it already has a value and the hash differs (NG), `/re-selftest` only reports "mismatch" and does **not** print the new hash. In that case, use the direct-computation command in §9 "Manual Integrity Hash Update".
+
 ---
 
 ### 2-5. Family Synergy Setup (Optional)
@@ -570,9 +572,28 @@ Vague answers like "probably" or "I think so" are not treated as agreement.
 
 ---
 
+### `/re-agent` — AI Agent Structure Analysis
+
+**When to use:** When you want to understand your own Claude Code setup (plugins, skills, agents, hooks) or another person's plugin/agent structure.
+
+**Input format:**
+```
+/re-agent [config-folder or repo path]
+```
+
+**Examples:**
+```
+/re-agent ~/.claude
+/re-agent D:\some-plugin-folder
+```
+
+**Notable trait:** Unlike Android and binary analysis, this needs **no external tools** (it reads source directly), so it is fully live-verified. If the target is large (e.g. the entire `~/.claude` root), a confirmation gate ("split this into smaller folders?") appears first to protect against runaway token usage.
+
+---
+
 ### Commands Coming Soon
 
-| Command | Added in | Description |
+| Command | Status | Description |
 |---|---|---|
 | `/re-android` | ✅ Live-verified (2026-07-13) | Android APK file analysis |
 | `/re-binary` | scaffolding complete (not yet live-verified) | Executable file (.exe, etc.) analysis |
@@ -782,7 +803,7 @@ Sensitive information found in code is automatically masked:
 | `token = "Bearer xyz..."` | `token = "(masked)"` |
 | `SECRET_KEY = "super_secret"` | `SECRET_KEY = "(masked)"` |
 
-10 masking patterns are registered (`references/mask-patterns.json`).
+15 masking patterns are registered (`references/mask-patterns.json`).
 
 ---
 
@@ -1104,6 +1125,12 @@ node hooks/_selftest.mjs
 
 Copy the new SHA-256 hash from the output and update `references/integrity.json`.
 
+> ⚠️ **If `references/integrity.json` already has a value**, the command above will only report "mismatch" and will **not** print the new hash (it only prints when the entry is empty). In that case, compute it directly:
+> ```powershell
+> node -e "console.log(require('crypto').createHash('sha256').update(require('fs').readFileSync('hooks/re-deny-guard.mjs')).digest('hex'))"
+> ```
+> Save the printed value as the `"hooks/re-deny-guard.mjs"` entry in `references/integrity.json`, then rerun.
+
 ---
 
 ### Example Files for Testing
@@ -1224,6 +1251,8 @@ node hooks\_selftest.mjs
 ```
 Copy the output hash, update `references/integrity.json`, then rerun `/re-selftest`.
 
+> ⚠️ If `integrity.json` already had a value before the mismatch, the command above won't print a new hash — see §9 "Manual Integrity Hash Update" for the direct-computation fallback.
+
 ---
 
 ### Q7. Password appears in plain text in the report
@@ -1330,7 +1359,7 @@ Confirm that masking was applied correctly before sharing. Review whether the re
 
 **Q10. Does it work on Mac or Linux?**
 
-Phase 1 was developed with Windows as the baseline. Mac and Linux support is planned for Phases 2 and 3.
+The plugin's core logic (Node.js scripts and hooks) is not OS-specific. However, this guide's install instructions (PowerShell commands, PATH-registration screens, etc.) have only been **written and live-tested on Windows**. On Mac/Linux you would need to translate the commands yourself (e.g. a regular terminal instead of PowerShell, `export` instead of `setx`), and this project has not actually verified a Mac/Linux environment yet. The accurate statement is "verified on Windows, unverified on other OSes" — not that other OSes are unsupported by design.
 
 ---
 
@@ -1509,13 +1538,17 @@ If a `NOTICE` file exists, include it when distributing.
 
 ### Third-Party Trademark and Copyright Notice
 
-| Software | Owner | Official Affiliation? |
-|---|---|---|
-| Claude, Claude Code | Anthropic PBC | No |
-| IDA Pro (Phase 3 optional) | Hex-Rays SA | No |
-| Node.js | OpenJS Foundation | No |
+| Software | Owner | License | Official Affiliation? |
+|---|---|---|---|
+| Claude, Claude Code | Anthropic PBC | Proprietary (commercial) | No |
+| IDA Pro (Phase 3, optional) | Hex-Rays SA | Proprietary (commercial, separate purchase required) | No |
+| Node.js | OpenJS Foundation | MIT | No |
+| Ghidra (Phase 3) | US National Security Agency (NSA) | Apache-2.0 | No |
+| JADX (Phase 2) | skylot and community | Apache-2.0 | No |
+| Apktool (Phase 2) | iBotPeaches and community | Apache-2.0 | No |
+| LIEF (Phase 3, optional alternative) | Quarkslab | Apache-2.0 | No |
 
-The above trademarks are the property of their respective owners. This plugin has no official affiliation or endorsement relationship with any of them.
+None of the above tools are bundled with this plugin — each is installed separately by the user from its own official source and invoked as an external wrapper (see [NOTICE](./NOTICE) for details). Each tool is governed by its own owner and license as listed above, and none of them are officially affiliated with or endorse this plugin. All trademarks are the property of their respective owners.
 
 ---
 
@@ -1602,6 +1635,17 @@ The creator (SoDam AI Studio) is not responsible for:
 - Applied the same prompt-injection defense (§0-1) as the Android module, from the start this time
 - **Malware defense analysis is out of scope for now** (pending platform policy review, confirmed with the user) — the related tool entry stays on hold
 - ⚠️ Actual disassembly is **pending live verification** on a machine with the tools (currently scaffolding). Safety, consent, and report rules operate the same as Phase 1.
+
+</details>
+
+<details>
+<summary><strong>Full Test & Verification Pass (2026-07-18)</strong></summary>
+
+- Re-ran the full 3-layer safety test suite (normal, exception, malformed-input, boundary, and failure cases) — no regressions (8/0 maintained)
+- Verified the full install cycle (install → uninstall → reinstall) byte-for-byte, and confirmed all 3 sibling-synergy scripts work correctly
+- Found and fixed 1 issue: an incorrect comment in `scripts/re-inject-harness.mjs` (logic unchanged)
+- **Documentation accuracy fixes**: discovered `/re-selftest` does not print a new hash when `integrity.json` already has a mismatched value → added direct-computation fallback to §2-4/§9/§10 Q6; filled in the missing `/re-agent` command reference (§4); added JADX/Apktool/Ghidra/LIEF to the third-party license table (§12); corrected the Mac/Linux support answer to be more precise (§11 Q10); fixed an internal contradiction where the masking-pattern count read "10" in one place and "15" in another (both now read 15, matching the actual file)
+- Found 3 stale entries in `references/trust-catalog.md` (no safety impact, cleanup pending)
 
 </details>
 

@@ -432,7 +432,9 @@ Context → Agentic → Prompt → <strong>Reverse (this one)</strong></p>
 <tr>
 <td><strong>SoDam-Harness</strong></td>
 <td>Safety belt · backup</td>
-<td>RE patterns are actually merged into Harness's shared rules (Reverse's own hook still runs separately — see "Known limitation" below)</td>
+<td>RE patterns are actually merged into Harness’s shared rules
+(Reverse’s own hook still runs separately — see “Known limitation”
+below)</td>
 </tr>
 <tr>
 <td><strong>SoDam-Loop</strong></td>
@@ -464,18 +466,15 @@ folder</strong> (<code>D:\my-project\</code> etc.).</p>
 </blockquote>
 <p><strong>If Harness is installed — run once:</strong></p>
 <pre><code>node scripts/re-inject-harness.mjs</code></pre>
-<p>→ RE danger patterns are actually added to Harness's shared safety
-rules.</p>
-<blockquote>
-<p>⚠️ <strong>Known limitation:</strong> the rules are shared, but
-Reverse still registers its own separate hook (a feature to skip
-Reverse's own check when Harness is present was attempted on
-2026-07-12, but was reverted after an isolated test found it let a
-dangerous request through unchecked). A single dangerous request may
-therefore trigger 2 block messages — redundant, but not a safety
-issue, since the same danger is simply caught twice. See
-<a href="./GUIDE.en.html">GUIDE.en.html</a> §3 for details.</p>
-</blockquote>
+<p>→ RE danger patterns are actually added to Harness’s shared safety
+rules. &gt; ⚠️ <strong>Known limitation:</strong> the rules are shared,
+but Reverse still registers its own separate hook (a feature to skip
+Reverse’s own check when Harness is present was attempted on 2026-07-12,
+but was reverted after an isolated test found it let a dangerous request
+through unchecked). A single dangerous request may therefore trigger 2
+block messages — redundant, but not a safety issue, since the same
+danger is simply caught twice. See <a
+href="./GUIDE.en.md">GUIDE.en.md</a> §3 for details.</p>
 <hr />
 <h2 id="prerequisites-free-2-items">5. Prerequisites (Free, 2
 Items)</h2>
@@ -829,7 +828,7 @@ Structure</h2>
 │
 ├── references/                  ← Data and rule files
 │   ├── deny-corpus.json         ← 60 keywords + 7 regex
-│   ├── mask-patterns.json       ← 10 masking rules
+│   ├── mask-patterns.json       ← 15 masking rules
 │   ├── trust-catalog.md         ← 15 trusted tool entries
 │   ├── report-template.md       ← Standard report template
 │   └── integrity.json           ← SHA-256 hash store
@@ -851,6 +850,8 @@ Structure</h2>
 ├── GUIDE.md                     ← Korean detailed guide
 ├── GUIDE.en.md                  ← English detailed guide
 ├── TROUBLESHOOTING.md           ← Error resolution guide
+├── CHECKPOINT.md                ← Development progress (for developers)
+├── SETUP_BLOCKED_FILES.md       ← Full source of the manually-created safety files
 ├── LICENSE                      ← Apache-2.0 full text
 └── NOTICE                       ← Copyright notice</code></pre>
 <hr />
@@ -944,6 +945,11 @@ Structure</h2>
 <td><code>scripts/check-family.mjs</code></td>
 <td>6-sibling diagnostic script</td>
 </tr>
+<tr>
+<td>Trust Freshness</td>
+<td><code>scripts/check-trust-freshness.mjs</code></td>
+<td>Checks trusted-tool catalog for staleness</td>
+</tr>
 </tbody>
 </table>
 <hr />
@@ -1000,6 +1006,15 @@ for defense, education, and analysis of code you own.</p>
 <pre><code>node hooks/_selftest.mjs</code></pre>
 <p>Copy output hash → save to <code>references/integrity.json</code> →
 rerun</p>
+<blockquote>
+<p>⚠️ <strong>Note:</strong> If <code>references/integrity.json</code>
+<strong>already has a value</strong> and the hash differs (❌), the
+command above only reports “mismatch” and does <strong>not</strong>
+print the new hash (the hash is only printed when the entry is empty).
+In that case, compute it directly:</p>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>node <span class="op">-</span>e <span class="st">&quot;console.log(require(&#39;crypto&#39;).createHash(&#39;sha256&#39;).update(require(&#39;fs&#39;).readFileSync(&#39;hooks/re-deny-guard.mjs&#39;)).digest(&#39;hex&#39;))&quot;</span></span></code></pre></div>
+</blockquote>
 <hr />
 <h3 id="q8.-passwords-appear-in-plain-text-in-the-report">Q8. Passwords
 appear in plain text in the report</h3>
@@ -1316,6 +1331,29 @@ tool entry stays on hold</li>
 <li>⚠️ Actual disassembly is <strong>pending live verification</strong>
 on a machine with the tools (currently scaffolding). Safety, consent,
 and report rules operate the same as Phase 1.</li>
+</ul>
+</details>
+<details>
+<summary>
+<strong>Full Test &amp; Verification Pass (2026-07-18)</strong>
+</summary>
+<ul>
+<li>Re-ran the full 3-layer safety test suite (normal, exception,
+malformed-input, boundary, and failure cases) end-to-end — no
+regressions (8/0 maintained)</li>
+<li>Verified the full install cycle (install → uninstall → reinstall)
+byte-for-byte</li>
+<li>Found and fixed 1 issue: an incorrect comment in
+<code>scripts/re-inject-harness.mjs</code></li>
+<li><strong>Documentation accuracy fix</strong>: discovered that
+<code>/re-selftest</code> does not print a new hash when
+<code>references/integrity.json</code> already has a mismatched value →
+added a direct hash-computation fallback to this document and
+GUIDE.en.md, filled in the missing <code>/re-agent</code> command entry,
+added JADX/Apktool/Ghidra/LIEF to the third-party license table, and
+corrected the mask-pattern count (10 → 15)</li>
+<li>Found 3 stale entries in <code>references/trust-catalog.md</code>
+(no safety impact, cleanup pending)</li>
 </ul>
 </details>
 <blockquote>

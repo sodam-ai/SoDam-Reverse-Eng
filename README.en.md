@@ -399,7 +399,7 @@ SoDam-Reverse-Eng/
 │
 ├── references/                  ← Data and rule files
 │   ├── deny-corpus.json         ← 60 keywords + 7 regex
-│   ├── mask-patterns.json       ← 10 masking rules
+│   ├── mask-patterns.json       ← 15 masking rules
 │   ├── trust-catalog.md         ← 15 trusted tool entries
 │   ├── report-template.md       ← Standard report template
 │   └── integrity.json           ← SHA-256 hash store
@@ -421,6 +421,8 @@ SoDam-Reverse-Eng/
 ├── GUIDE.md                     ← Korean detailed guide
 ├── GUIDE.en.md                  ← English detailed guide
 ├── TROUBLESHOOTING.md           ← Error resolution guide
+├── CHECKPOINT.md                ← Development progress (for developers)
+├── SETUP_BLOCKED_FILES.md       ← Full source of the manually-created safety files
 ├── LICENSE                      ← Apache-2.0 full text
 └── NOTICE                       ← Copyright notice
 ```
@@ -446,6 +448,7 @@ SoDam-Reverse-Eng/
 | Report Template | `references/report-template.md` | Report format definition |
 | Integrity Hashes | `references/integrity.json` | SHA-256 hash store |
 | Family Status | `scripts/check-family.mjs` | 6-sibling diagnostic script |
+| Trust Freshness | `scripts/check-trust-freshness.mjs` | Checks trusted-tool catalog for staleness |
 
 ---
 
@@ -513,6 +516,11 @@ SHA-256 mismatch:
 node hooks/_selftest.mjs
 ```
 Copy output hash → save to `references/integrity.json` → rerun
+
+> ⚠️ **Note:** If `references/integrity.json` **already has a value** and the hash differs (❌), the command above only reports "mismatch" and does **not** print the new hash (the hash is only printed when the entry is empty). In that case, compute it directly:
+> ```powershell
+> node -e "console.log(require('crypto').createHash('sha256').update(require('fs').readFileSync('hooks/re-deny-guard.mjs')).digest('hex'))"
+> ```
 
 ---
 
@@ -683,6 +691,17 @@ node scripts/re-inject-harness.mjs
 - Applied the same prompt-injection defense (§0-1) as the Android module, from the start this time
 - **Malware defense analysis is out of scope for now** (pending platform policy review, confirmed with the user) — the related tool entry stays on hold
 - ⚠️ Actual disassembly is **pending live verification** on a machine with the tools (currently scaffolding). Safety, consent, and report rules operate the same as Phase 1.
+
+</details>
+
+<details>
+<summary><strong>Full Test & Verification Pass (2026-07-18)</strong></summary>
+
+- Re-ran the full 3-layer safety test suite (normal, exception, malformed-input, boundary, and failure cases) end-to-end — no regressions (8/0 maintained)
+- Verified the full install cycle (install → uninstall → reinstall) byte-for-byte
+- Found and fixed 1 issue: an incorrect comment in `scripts/re-inject-harness.mjs`
+- **Documentation accuracy fix**: discovered that `/re-selftest` does not print a new hash when `references/integrity.json` already has a mismatched value → added a direct hash-computation fallback to this document and GUIDE.en.md, filled in the missing `/re-agent` command entry, added JADX/Apktool/Ghidra/LIEF to the third-party license table, and corrected the mask-pattern count (10 → 15)
+- Found 3 stale entries in `references/trust-catalog.md` (no safety impact, cleanup pending)
 
 </details>
 

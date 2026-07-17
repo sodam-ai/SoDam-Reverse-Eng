@@ -531,6 +531,11 @@ node hooks/_selftest.mjs
 ```
 출력 해시 → `references/integrity.json` 저장 → 재실행
 
+> ⚠️ **주의:** `integrity.json`에 **이미 값이 들어있는 상태**에서 해시가 달라 ❌가 뜬 경우, 위 명령은 "불일치(변조 의심)"라고만 알려주고 **새 해시를 화면에 출력하지 않습니다**(해시 출력은 `integrity.json`이 비어있을 때만 나옵니다). 이럴 때는 아래 명령으로 새 해시를 직접 확인하세요:
+> ```powershell
+> node -e "console.log(require('crypto').createHash('sha256').update(require('fs').readFileSync('hooks/re-deny-guard.mjs')).digest('hex'))"
+> ```
+
 ---
 
 ### Q8. 보고서에서 비밀번호가 그대로 보여요
@@ -700,6 +705,17 @@ node scripts/re-inject-harness.mjs
 - 안드로이드와 동일한 프롬프트 인젝션 방어(§0-1)를 처음부터 반영
 - **악성코드 방어 분석은 이번 범위에 없음**(플랫폼 정책 검토 대기, 사용자 확정) — 관련 도구는 계속 보류 상태
 - ⚠️ 실제 디스어셈블 동작은 도구 설치 환경에서 **라이브 검증 예정**(현재 골격). 안전·동의·보고서 규칙은 Phase 1과 동일
+
+</details>
+
+<details>
+<summary><strong>전수 테스트·검증 세션 (2026-07-18)</strong></summary>
+
+- 안전 3층(선택기·경계값·실패 케이스 포함) 실행 기반 전수 재검증 — 회귀 없음(8/0 유지)
+- 설치 스크립트 전체 사이클(설치→언인스톨→재설치) 바이트 단위 일치 확인
+- 발견·수정 1건: `scripts/re-inject-harness.mjs`의 잘못된 주석("`/re-selftest`가 자동 호출") 정정
+- 발견(문서 정정): 무결성 해시가 **이미 등록된 상태에서 불일치**가 나면 `/re-selftest`가 새 해시를 출력하지 않는다는 사실 확인 → 본 문서·GUIDE.md의 관련 안내에 직접 계산 명령 보강
+- `references/trust-catalog.md` 최신화 필요 항목 3건 발견(1개 보관 처리됨·2개 장기 미갱신) — 별도 정리 예정
 
 </details>
 
