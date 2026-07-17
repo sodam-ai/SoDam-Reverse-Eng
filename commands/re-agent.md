@@ -1,5 +1,4 @@
 ---
-name: re-agent
 description: AI 코딩 에이전트 구조 분석 시작 (본인 소유/허가된 Claude Code·Codex 설정, 방어·교육 전용).
 ---
 

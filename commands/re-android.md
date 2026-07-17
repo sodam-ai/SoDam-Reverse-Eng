@@ -1,5 +1,4 @@
 ---
-name: re-android
 description: 안드로이드 APK 분석 시작 (본인 소유/허가 APK, 방어·교육 전용).
 ---
 

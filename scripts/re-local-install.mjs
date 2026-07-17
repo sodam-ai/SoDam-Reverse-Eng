@@ -4,7 +4,11 @@
  * SoDam-Reverse 로컬 설치 스크립트
  *
  * 마켓플레이스 배포 전 테스트용.
- * 스킬 파일을 ~/.claude/skills/ 에 복사하여 어느 폴더에서나 동작하게 함.
+ * ~/.claude/plugins/sodam-reverse/ 에만 설치해 어느 폴더에서나 `/sodam-reverse:커맨드명` 형태로 동작하게 함.
+ *
+ * [2026-07-17] 이전엔 ~/.claude/skills/·~/.claude/commands/(전역 개인 폴더)에도 동일 이름으로
+ * 이중 설치했으나, 같은 이름이 두 곳에 등록되면서 bare `/re-start` 호출이 "Unknown command"로
+ * 실패하는 걸 실사용 중 확인함. 플러그인 스코프(`sodam-reverse:`)로만 단일화해 이 모호성을 제거함.
  *
  * 사용법: node scripts/re-local-install.mjs [--uninstall]
  */
@@ -18,8 +22,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const PLUGIN_ROOT = dirname(__dirname); // scripts/ 의 부모 = 플러그인 루트
 
-const SKILLS = ['re-router', 're-analyze-mycode', 're-report'];
-const COMMANDS = ['re-start', 're-report', 're-selftest', 're-android', 're-binary'];
+const SKILLS = ['re-router', 're-analyze-mycode', 're-report', 're-analyze-android', 're-analyze-binary', 're-analyze-agent'];
+const COMMANDS = ['re-start', 're-report', 're-selftest', 're-android', 're-binary', 're-agent', 're-ping'];
 const GLOBAL_SKILLS_DIR = join(homedir(), '.claude', 'skills');
 const GLOBAL_COMMANDS_DIR = join(homedir(), '.claude', 'commands');
 const GLOBAL_PLUGIN_DIR = join(homedir(), '.claude', 'plugins', 'sodam-reverse');
@@ -63,64 +67,28 @@ if (UNINSTALL) {
 // ─── 인스톨 ──────────────────────────────────────────────────────────────────
 console.log('SoDam-Reverse 로컬 설치 시작...\n');
 
-if (!existsSync(GLOBAL_SKILLS_DIR)) {
-  console.error(`❌ ~/.claude/skills/ 폴더가 없습니다: ${GLOBAL_SKILLS_DIR}`);
-  process.exit(1);
-}
-if (!existsSync(GLOBAL_COMMANDS_DIR)) {
-  console.error(`❌ ~/.claude/commands/ 폴더가 없습니다: ${GLOBAL_COMMANDS_DIR}`);
-  process.exit(1);
-}
-
 let installed = 0;
 let skipped = 0;
 let failed = 0;
 
-// 스킬 설치
-console.log('[스킬 설치]');
+// [2026-07-17] 전역 개인 폴더(~/.claude/skills/, ~/.claude/commands/)에는 더 이상 설치하지 않음.
+// 아래 "플러그인 등록"(~/.claude/plugins/sodam-reverse/)만 설치해 `/sodam-reverse:커맨드명`으로 단일화.
+// 이전 버전이 그 두 폴더에 남겨둔 사본은 바로 아래 블록에서 정리한다.
+
+// 이전 버전이 전역 개인 폴더에 남긴 사본 정리(이중 등록 모호성 제거)
+console.log('[이전 이중 설치 정리]');
 for (const skill of SKILLS) {
-  const srcPath = join(PLUGIN_ROOT, 'skills', skill, 'SKILL.md');
   const destDir = join(GLOBAL_SKILLS_DIR, skill);
-  const destPath = join(destDir, 'SKILL.md');
-
-  if (!existsSync(srcPath)) {
-    console.log(`⚠️  소스 없음: ${srcPath}`);
-    failed++;
-    continue;
-  }
-
-  try {
-    if (!existsSync(destDir)) {
-      mkdirSync(destDir, { recursive: true });
-    }
-    copyFileSync(srcPath, destPath);
-    console.log(`✅ ${skill} → ${destPath}`);
-    installed++;
-  } catch (err) {
-    console.log(`❌ ${skill}: ${err.message}`);
-    failed++;
+  if (existsSync(destDir)) {
+    rmSync(destDir, { recursive: true, force: true });
+    console.log(`🧹 전역 스킬 사본 제거: ${destDir}`);
   }
 }
-
-// 커맨드 설치
-console.log('\n[커맨드 설치]');
 for (const cmd of COMMANDS) {
-  const srcPath = join(PLUGIN_ROOT, 'commands', `${cmd}.md`);
   const destPath = join(GLOBAL_COMMANDS_DIR, `${cmd}.md`);
-
-  if (!existsSync(srcPath)) {
-    console.log(`⚠️  소스 없음: ${srcPath}`);
-    failed++;
-    continue;
-  }
-
-  try {
-    copyFileSync(srcPath, destPath);
-    console.log(`✅ /${cmd} → ${destPath}`);
-    installed++;
-  } catch (err) {
-    console.log(`❌ /${cmd}: ${err.message}`);
-    failed++;
+  if (existsSync(destPath)) {
+    rmSync(destPath, { force: true });
+    console.log(`🧹 전역 커맨드 사본 제거: ${destPath}`);
   }
 }
 
@@ -162,8 +130,8 @@ if (installed > 0) {
 
 설치 후 확인 방법:
    새 Claude Code 세션에서:
-   /re-start D:\\Dev-Test_Made\\test6\\my-first-code.js
-   → 동의 질문이 나오면 성공
+   /sodam-reverse:re-ping
+   → "Pong!" 문구가 나오면 성공(플러그인 스코프 커맨드는 항상 이 형태로 호출)
 
 언인스톨: node scripts/re-local-install.mjs --uninstall`);
 }

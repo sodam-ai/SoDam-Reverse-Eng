@@ -1,5 +1,4 @@
 ---
-name: re-binary
 description: 바이너리 역공학 분석 시작 (본인 소유/허가 실행파일, 방어·교육 전용). Ghidra 정적분석, IDA는 옵션.
 ---
 
