@@ -120,7 +120,7 @@ node scripts/check-trust-freshness.mjs
 
 ## 12. Phase 2·3 명령어(/re-android·/re-binary)가 안 돼요
 
-Phase 2·3는 **골격이 이미 작성돼 있으나, 실제 도구로 라이브 검증된 적은 없는 상태**입니다(이 PC 기준 Java/JADX/Apktool/Ghidra 미설치 확인됨). "구현 전"이 아니라 "라이브 미검증"이 정확한 표현입니다.
+Phase 2·3는 **골격이 이미 작성돼 있으나, 실제 도구로 라이브 검증된 적은 없는 상태**입니다(2026-07-27 재확인: Java/JADX/Apktool은 이 PC에 설치·작동 확인됨, Ghidra는 여전히 미설치). "구현 전"이 아니라 "라이브 미검증"이 정확한 표현입니다.
 
 - Phase 2(안드로이드): 골격 완료. JADX·Apktool·Java 17+ 설치 필요(GUIDE 2-6절).
 - Phase 3(바이너리): 골격 완료. Ghidra·Java 17+ 설치 필요(GUIDE 2-7절).
