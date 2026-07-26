@@ -604,10 +604,13 @@ is complete.</p>
 Chapter 2</p>
 <h3 id="step-6-register-integrity-hash-activate-layer-3">Step 6:
 Register Integrity Hash (Activate Layer 3)</h3>
-<p>Copy the SHA-256 hash from the selftest output → Paste it as the
-value for <code>hooks/re-deny-guard.mjs</code> in
-<code>references/integrity.json</code> → Save → Run
-<code>/re-selftest</code> again → Confirm Layer 3 ✅</p>
+<p>Copy <strong>all 5 file hashes</strong> from the selftest output and
+save them to <code>references/integrity.json</code> (keep any existing
+entries, only add the missing ones): <code>hooks/hooks.json</code> ·
+<code>hooks/re-deny-guard.mjs</code> · <code>hooks/_selftest.mjs</code> ·
+<code>references/deny-corpus.json</code> ·
+<code>references/mask-patterns.json</code>. Then run
+<code>/re-selftest</code> again → confirm all 5 Layer-3 items ✅</p>
 <hr />
 <h3 id="quick-start-5-minute-summary">6-1. Quick Start (5-Minute
 Summary)</h3>
@@ -1017,9 +1020,13 @@ rerun</p>
 <strong>already has a value</strong> and the hash differs (❌), the
 command above only reports “mismatch” and does <strong>not</strong>
 print the new hash (the hash is only printed when the entry is empty).
-In that case, compute it directly:</p>
+In that case, take the path of whichever file shows ❌ (one of
+<code>hooks/hooks.json</code>, <code>hooks/re-deny-guard.mjs</code>,
+<code>hooks/_selftest.mjs</code>, <code>references/deny-corpus.json</code>,
+<code>references/mask-patterns.json</code>) and compute it
+directly:</p>
 <div class="sourceCode" id="cb16"><pre
-class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>node <span class="op">-</span>e <span class="st">&quot;console.log(require(&#39;crypto&#39;).createHash(&#39;sha256&#39;).update(require(&#39;fs&#39;).readFileSync(&#39;hooks/re-deny-guard.mjs&#39;)).digest(&#39;hex&#39;))&quot;</span></span></code></pre></div>
+class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>node <span class="op">-</span>e <span class="st">&quot;console.log(require(&#39;crypto&#39;).createHash(&#39;sha256&#39;).update(require(&#39;fs&#39;).readFileSync(&#39;&lt;file-path&gt;&#39;)).digest(&#39;hex&#39;))&quot;</span></span></code></pre></div>
 </blockquote>
 <hr />
 <h3 id="q8.-passwords-appear-in-plain-text-in-the-report">Q8. Passwords

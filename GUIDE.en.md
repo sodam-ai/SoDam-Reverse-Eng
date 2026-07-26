@@ -229,16 +229,25 @@ All three must show OK. If any show NG → [Chapter 10 Troubleshooting](#10-trou
 
 ### 2-4. Register Integrity Hash (Fully Activate Layer 3)
 
-For the Layer 3 integrity check to work properly, you need to register the hash.
+The Layer 3 integrity check inspects **5 protected files** (`hooks/hooks.json`, `hooks/re-deny-guard.mjs`, `hooks/_selftest.mjs`, `references/deny-corpus.json`, `references/mask-patterns.json`) individually. For it to work properly, you need to register the hash for all 5.
 
 1. Run `/re-selftest`
-2. Copy the 64-character string after `SHA-256 hash:` in the output
+2. In the output, find the 5 lines formatted as `file-path: hash-value` and copy each 64-character hash
 3. Open `references/integrity.json` in the plugin folder
-4. Paste the copied hash as the value for the `"hooks/re-deny-guard.mjs"` entry
+4. Register **all 5 files** as shown below (keep any entries that already have a value; only add the missing ones):
+   ```json
+   {
+     "hooks/hooks.json": "<hash printed by the self-test>",
+     "hooks/re-deny-guard.mjs": "<hash printed by the self-test>",
+     "hooks/_selftest.mjs": "<hash printed by the self-test>",
+     "references/deny-corpus.json": "<hash printed by the self-test>",
+     "references/mask-patterns.json": "<hash printed by the self-test>"
+   }
+   ```
 5. Save the file
-6. Run `/re-selftest` again → confirm Layer 3 shows OK
+6. Run `/re-selftest` again → confirm all **5 Layer-3 entries** show OK
 
-> ⚠️ **Note:** This procedure applies when `integrity.json` is **empty** (first-time setup). If it already has a value and the hash differs (NG), `/re-selftest` only reports "mismatch" and does **not** print the new hash. In that case, use the direct-computation command in §9 "Manual Integrity Hash Update".
+> ⚠️ **Note:** This procedure applies when `integrity.json` is **empty** (first-time setup). If it already has values and any one of the 5 hashes differs (NG), `/re-selftest` only reports "mismatch" for that file and does **not** print the new hash. In that case, use the direct-computation command in §9 "Manual Integrity Hash Update".
 
 ---
 
@@ -1148,19 +1157,19 @@ node scripts/rotate-safety-log.mjs [--days=30] [--dry-run]
 
 ### Manual Integrity Hash Update
 
-If you legitimately modified safety files, you need to re-register the hash:
+If you legitimately modified one of the 5 protected safety files, you need to re-register the hash for that file:
 
 ```powershell
 node hooks/_selftest.mjs
 ```
 
-Copy the new SHA-256 hash from the output and update `references/integrity.json`.
+If `integrity.json` is empty, the output prints a new SHA-256 hash for each of the 5 files as `file-path: hash-value` → update the relevant value(s) in `references/integrity.json`.
 
-> ⚠️ **If `references/integrity.json` already has a value**, the command above will only report "mismatch" and will **not** print the new hash (it only prints when the entry is empty). In that case, compute it directly:
+> ⚠️ **If `references/integrity.json` already has a value**, the command above will only report "mismatch" for the file you changed and will **not** print the new hash (it only prints when the entry is empty). In that case, compute it directly (example below is for `hooks/re-deny-guard.mjs` — substitute the path of the file you actually modified):
 > ```powershell
 > node -e "console.log(require('crypto').createHash('sha256').update(require('fs').readFileSync('hooks/re-deny-guard.mjs')).digest('hex'))"
 > ```
-> Save the printed value as the `"hooks/re-deny-guard.mjs"` entry in `references/integrity.json`, then rerun.
+> Save the printed value as that file's entry (e.g. `"hooks/re-deny-guard.mjs"`) in `references/integrity.json`, then rerun. **The 5 protected files:** `hooks/hooks.json`, `hooks/re-deny-guard.mjs`, `hooks/_selftest.mjs`, `references/deny-corpus.json`, `references/mask-patterns.json`.
 
 ---
 
@@ -1277,10 +1286,12 @@ Check whether `hooks/re-deny-guard.mjs` exists.
 If missing, copy the content from `SETUP_BLOCKED_FILES.md` and create the file.
 
 **If Layer 3 shows NG (hash mismatch):**
+
+Layer 3 checks 5 protected files individually (`hooks/hooks.json`, `hooks/re-deny-guard.mjs`, `hooks/_selftest.mjs`, `references/deny-corpus.json`, `references/mask-patterns.json`). First check which file(s) show NG — the output lists the path alongside each result:
 ```powershell
 node hooks\_selftest.mjs
 ```
-Copy the output hash, update `references/integrity.json`, then rerun `/re-selftest`.
+Copy the output hash(es), update the matching entry/entries in `references/integrity.json`, then rerun `/re-selftest`.
 
 > ⚠️ If `integrity.json` already had a value before the mismatch, the command above won't print a new hash — see §9 "Manual Integrity Hash Update" for the direct-computation fallback.
 

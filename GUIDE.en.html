@@ -462,26 +462,39 @@ Troubleshooting</a></p>
 <hr />
 <h3 id="register-integrity-hash-fully-activate-layer-3">2-4. Register
 Integrity Hash (Fully Activate Layer 3)</h3>
-<p>For the Layer 3 integrity check to work properly, you need to
-register the hash.</p>
+<p>The Layer 3 integrity check inspects <strong>5 protected
+files</strong> (<code>hooks/hooks.json</code>,
+<code>hooks/re-deny-guard.mjs</code>, <code>hooks/_selftest.mjs</code>,
+<code>references/deny-corpus.json</code>,
+<code>references/mask-patterns.json</code>) individually. For it to
+work properly, you need to register the hash for all 5.</p>
 <ol type="1">
 <li>Run <code>/re-selftest</code></li>
-<li>Copy the 64-character string after <code>SHA-256 hash:</code> in the
-output</li>
+<li>In the output, find the 5 lines formatted as <code>file-path:
+hash-value</code> and copy each 64-character hash</li>
 <li>Open <code>references/integrity.json</code> in the plugin
 folder</li>
-<li>Paste the copied hash as the value for the
-<code>"hooks/re-deny-guard.mjs"</code> entry</li>
+<li>Register <strong>all 5 files</strong> as shown below (keep any
+entries that already have a value; only add the missing ones):
+<pre><code>{
+  "hooks/hooks.json": "&lt;hash printed by the self-test&gt;",
+  "hooks/re-deny-guard.mjs": "&lt;hash printed by the self-test&gt;",
+  "hooks/_selftest.mjs": "&lt;hash printed by the self-test&gt;",
+  "references/deny-corpus.json": "&lt;hash printed by the self-test&gt;",
+  "references/mask-patterns.json": "&lt;hash printed by the self-test&gt;"
+}</code></pre></li>
 <li>Save the file</li>
-<li>Run <code>/re-selftest</code> again → confirm Layer 3 shows OK</li>
+<li>Run <code>/re-selftest</code> again → confirm all <strong>5
+Layer-3 entries</strong> show OK</li>
 </ol>
 <blockquote>
 <p>⚠️ <strong>Note:</strong> This procedure applies when
 <code>integrity.json</code> is <strong>empty</strong> (first-time
-setup). If it already has a value and the hash differs (NG),
-<code>/re-selftest</code> only reports “mismatch” and does
-<strong>not</strong> print the new hash. In that case, use the
-direct-computation command in §9 “Manual Integrity Hash Update”.</p>
+setup). If it already has values and any one of the 5 hashes differs
+(NG), <code>/re-selftest</code> only reports “mismatch” for that file
+and does <strong>not</strong> print the new hash. In that case, use
+the direct-computation command in §9 “Manual Integrity Hash
+Update”.</p>
 </blockquote>
 <hr />
 <h3 id="family-synergy-setup-optional">2-5. Family Synergy Setup
@@ -1546,21 +1559,30 @@ are up to date <strong>When to run:</strong> Recommended quarterly</p>
 <strong>When to run:</strong> Manual only (never runs automatically) — recommended periodically (e.g. once a month)</p>
 <hr />
 <h3 id="manual-integrity-hash-update">Manual Integrity Hash Update</h3>
-<p>If you legitimately modified safety files, you need to re-register
-the hash:</p>
+<p>If you legitimately modified one of the 5 protected safety files,
+you need to re-register the hash for that file:</p>
 <div class="sourceCode" id="cb55"><pre
 class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>node hooks<span class="op">/</span>_selftest<span class="op">.</span><span class="fu">mjs</span></span></code></pre></div>
-<p>Copy the new SHA-256 hash from the output and update
+<p>If <code>integrity.json</code> is empty, the output prints a new
+SHA-256 hash for each of the 5 files as <code>file-path:
+hash-value</code> → update the relevant value(s) in
 <code>references/integrity.json</code>.</p>
 <blockquote>
 <p>⚠️ <strong>If <code>references/integrity.json</code> already has a
-value</strong>, the command above will only report “mismatch” and will
-<strong>not</strong> print the new hash (it only prints when the entry
-is empty). In that case, compute it directly:</p>
+value</strong>, the command above will only report “mismatch” for the
+file you changed and will <strong>not</strong> print the new hash (it
+only prints when the entry is empty). In that case, compute it
+directly (example below is for <code>hooks/re-deny-guard.mjs</code> —
+substitute the path of the file you actually modified):</p>
 <div class="sourceCode" id="cb56"><pre
 class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>node <span class="op">-</span>e <span class="st">&quot;console.log(require(&#39;crypto&#39;).createHash(&#39;sha256&#39;).update(require(&#39;fs&#39;).readFileSync(&#39;hooks/re-deny-guard.mjs&#39;)).digest(&#39;hex&#39;))&quot;</span></span></code></pre></div>
-<p>Save the printed value as the <code>"hooks/re-deny-guard.mjs"</code>
-entry in <code>references/integrity.json</code>, then rerun.</p>
+<p>Save the printed value as that file’s entry (e.g.
+<code>"hooks/re-deny-guard.mjs"</code>) in
+<code>references/integrity.json</code>, then rerun. <strong>The 5
+protected files:</strong> <code>hooks/hooks.json</code>,
+<code>hooks/re-deny-guard.mjs</code>, <code>hooks/_selftest.mjs</code>,
+<code>references/deny-corpus.json</code>,
+<code>references/mask-patterns.json</code>.</p>
 </blockquote>
 <hr />
 <h3 id="example-files-for-testing">Example Files for Testing</h3>
@@ -1648,10 +1670,17 @@ create the file.</p>
 missing, copy the content from <code>SETUP_BLOCKED_FILES.md</code> and
 create the file.</p>
 <p><strong>If Layer 3 shows NG (hash mismatch):</strong></p>
+<p>Layer 3 checks 5 protected files individually
+(<code>hooks/hooks.json</code>, <code>hooks/re-deny-guard.mjs</code>,
+<code>hooks/_selftest.mjs</code>,
+<code>references/deny-corpus.json</code>,
+<code>references/mask-patterns.json</code>). First check which file(s)
+show NG — the output lists the path alongside each result:</p>
 <div class="sourceCode" id="cb61"><pre
 class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>node hooks\_selftest<span class="op">.</span><span class="fu">mjs</span></span></code></pre></div>
-<p>Copy the output hash, update <code>references/integrity.json</code>,
-then rerun <code>/re-selftest</code>.</p>
+<p>Copy the output hash(es), update the matching entry/entries in
+<code>references/integrity.json</code>, then rerun
+<code>/re-selftest</code>.</p>
 <blockquote>
 <p>⚠️ If <code>integrity.json</code> already had a value before the
 mismatch, the command above won’t print a new hash — see §9 “Manual

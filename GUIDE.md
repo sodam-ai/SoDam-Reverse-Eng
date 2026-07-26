@@ -230,16 +230,25 @@ Pong! /re-ping 정상 작동합니다.
 
 ### 2-4. 무결성 해시 등록 (3층 완전 활성화)
 
-3층 무결성 점검이 제대로 작동하려면 해시를 등록해야 합니다.
+3층 무결성 점검은 **보호 대상 파일 5개**(`hooks/hooks.json`, `hooks/re-deny-guard.mjs`, `hooks/_selftest.mjs`, `references/deny-corpus.json`, `references/mask-patterns.json`)를 각각 검사합니다. 제대로 작동하려면 5개 파일의 해시를 모두 등록해야 합니다.
 
 1. `/re-selftest` 실행
-2. 출력 중 `SHA-256 해시:` 뒤의 64자리 문자열 복사
+2. 출력에서 `파일경로: 해시값` 형식의 줄 5개를 찾아 각 해시(64자리 문자열)를 복사
 3. 플러그인 폴더 → `references/integrity.json` 열기
-4. `"hooks/re-deny-guard.mjs"` 항목 값에 복사한 해시 붙여넣기
+4. 아래처럼 **5개 파일 전부**를 등록(이미 값이 있는 항목은 그대로 두고, 없는 항목만 추가):
+   ```json
+   {
+     "hooks/hooks.json": "<셀프테스트가 출력한 해시>",
+     "hooks/re-deny-guard.mjs": "<셀프테스트가 출력한 해시>",
+     "hooks/_selftest.mjs": "<셀프테스트가 출력한 해시>",
+     "references/deny-corpus.json": "<셀프테스트가 출력한 해시>",
+     "references/mask-patterns.json": "<셀프테스트가 출력한 해시>"
+   }
+   ```
 5. 파일 저장
-6. 다시 `/re-selftest` 실행 → 3층 ✅ 확인
+6. 다시 `/re-selftest` 실행 → 3층 **5개 항목 전부** ✅ 확인
 
-> ⚠️ **주의:** 위 절차는 `integrity.json`이 **비어있을 때**(최초 1회) 기준입니다. 이미 값이 들어있는 상태에서 해시가 달라 ❌가 뜨면 `/re-selftest`는 "불일치"라고만 말하고 **새 해시를 화면에 출력하지 않습니다**. 이 경우엔 §9 "무결성 해시 수동 갱신"의 직접 계산 명령을 사용하세요.
+> ⚠️ **주의:** 위 절차는 `integrity.json`이 **비어있을 때**(최초 1회) 기준입니다. 이미 값이 들어있는 상태에서 5개 파일 중 하나라도 해시가 달라 ❌가 뜨면 `/re-selftest`는 "불일치"라고만 말하고 **새 해시를 화면에 출력하지 않습니다**. 이 경우엔 §9 "무결성 해시 수동 갱신"의 직접 계산 명령을 사용하세요.
 
 ---
 
@@ -1133,19 +1142,19 @@ node scripts/rotate-safety-log.mjs [--days=30] [--dry-run]
 
 ### 무결성 해시 수동 갱신
 
-안전파일을 합법적으로 수정했다면 해시를 새로 등록해야 합니다:
+안전파일(보호 대상 5개 중 하나)을 합법적으로 수정했다면 그 파일의 해시를 새로 등록해야 합니다:
 
 ```powershell
 node hooks/_selftest.mjs
 ```
 
-출력에서 새 SHA-256 해시 복사 → `references/integrity.json` 업데이트
+`integrity.json`이 비어있다면 출력에서 5개 파일 각각의 새 SHA-256 해시가 `파일경로: 해시값` 형식으로 나옵니다 → 해당 값들을 `references/integrity.json`에 업데이트
 
-> ⚠️ **`integrity.json`에 이미 값이 있으면** 위 명령이 새 해시를 출력하지 않고 "불일치"라고만 말합니다(해시 출력은 값이 비어있을 때만 나오는 코드 구조 때문). 이럴 땐 아래 명령으로 직접 계산하세요:
+> ⚠️ **`integrity.json`에 이미 값이 있으면** 위 명령이 새 해시를 출력하지 않고, 수정한 파일에 대해서만 "불일치"라고 말합니다(해시 출력은 항목이 비어있을 때만 나오는 코드 구조 때문). 이럴 땐 아래 명령으로 직접 계산하세요(예시는 `hooks/re-deny-guard.mjs`를 수정한 경우 — 실제로 수정한 파일 경로로 바꿔서 실행):
 > ```powershell
 > node -e "console.log(require('crypto').createHash('sha256').update(require('fs').readFileSync('hooks/re-deny-guard.mjs')).digest('hex'))"
 > ```
-> 출력된 문자열을 `references/integrity.json`의 `"hooks/re-deny-guard.mjs"` 값으로 저장한 뒤 재실행하세요.
+> 출력된 문자열을 `references/integrity.json`의 해당 파일 경로 값(예: `"hooks/re-deny-guard.mjs"`)으로 저장한 뒤 재실행하세요. **보호 대상 5개 파일**: `hooks/hooks.json`, `hooks/re-deny-guard.mjs`, `hooks/_selftest.mjs`, `references/deny-corpus.json`, `references/mask-patterns.json`.
 
 ---
 
@@ -1276,10 +1285,12 @@ ls D:\내플러그인폴더\hooks\re-deny-guard.mjs
 파일이 없으면 → `SETUP_BLOCKED_FILES.md`에서 내용 복사 후 파일 생성
 
 **3층 ❌인 경우 (해시 불일치):**
+
+3층은 보호 대상 파일 5개(`hooks/hooks.json`, `hooks/re-deny-guard.mjs`, `hooks/_selftest.mjs`, `references/deny-corpus.json`, `references/mask-patterns.json`)를 각각 검사합니다. 출력에서 어느 파일이 ❌인지(파일 경로가 함께 표시됩니다) 먼저 확인하세요:
 ```powershell
 node D:\내플러그인폴더\hooks\_selftest.mjs
 ```
-출력된 해시 복사 → `references/integrity.json` 업데이트 → 재실행
+출력된 해시(들) 복사 → `references/integrity.json`에서 해당 파일 항목들 업데이트 → 재실행
 
 > ⚠️ `integrity.json`에 이미 값이 있는 상태의 불일치는 위 명령이 새 해시를 출력하지 않습니다. 이땐 §9 "무결성 해시 수동 갱신"의 직접 계산 명령을 쓰세요.
 

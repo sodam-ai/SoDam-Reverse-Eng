@@ -254,9 +254,17 @@ Claude Code가 열리면 `/re-p` 입력 → 자동완성에 아래가 떠야 정
 
 ### 단계 6: 무결성 해시 등록 (3층 활성화)
 
-selftest 출력에서 SHA-256 해시를 복사 →
-`references/integrity.json` 파일의 `hooks/re-deny-guard.mjs` 값에 붙여넣기 → 저장
-→ 다시 `/re-selftest` 실행 → 3층 ✅ 확인
+selftest 출력에서 **5개 파일의 해시**를 모두 `references/integrity.json`에 저장하세요(이미 있는 항목은 유지, 없는 항목만 추가):
+```json
+{
+  "hooks/hooks.json": "<셀프테스트가 출력한 해시>",
+  "hooks/re-deny-guard.mjs": "<셀프테스트가 출력한 해시>",
+  "hooks/_selftest.mjs": "<셀프테스트가 출력한 해시>",
+  "references/deny-corpus.json": "<셀프테스트가 출력한 해시>",
+  "references/mask-patterns.json": "<셀프테스트가 출력한 해시>"
+}
+```
+→ 다시 `/re-selftest` 실행 → 3층 5개 항목 전부 ✅ 확인
 
 ---
 
@@ -533,9 +541,9 @@ node hooks/_selftest.mjs
 ```
 출력 해시 → `references/integrity.json` 저장 → 재실행
 
-> ⚠️ **주의:** `integrity.json`에 **이미 값이 들어있는 상태**에서 해시가 달라 ❌가 뜬 경우, 위 명령은 "불일치(변조 의심)"라고만 알려주고 **새 해시를 화면에 출력하지 않습니다**(해시 출력은 `integrity.json`이 비어있을 때만 나옵니다). 이럴 때는 아래 명령으로 새 해시를 직접 확인하세요:
+> ⚠️ **주의:** `integrity.json`에 **이미 값이 들어있는 상태**에서 해시가 달라 ❌가 뜬 경우, 위 명령은 "불일치(변조 의심)"라고만 알려주고 **새 해시를 화면에 출력하지 않습니다**(해시 출력은 `integrity.json`이 비어있을 때만 나옵니다). 이럴 때는 ❌가 뜬 파일 경로(`hooks/hooks.json` · `hooks/re-deny-guard.mjs` · `hooks/_selftest.mjs` · `references/deny-corpus.json` · `references/mask-patterns.json` 중 하나)를 아래 명령의 `<파일경로>` 자리에 넣어 새 해시를 직접 확인하세요:
 > ```powershell
-> node -e "console.log(require('crypto').createHash('sha256').update(require('fs').readFileSync('hooks/re-deny-guard.mjs')).digest('hex'))"
+> node -e "console.log(require('crypto').createHash('sha256').update(require('fs').readFileSync('<파일경로>')).digest('hex'))"
 > ```
 
 ---

@@ -580,10 +580,13 @@ class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb6-
 참고</p>
 <h3 id="단계-6-무결성-해시-등록-3층-활성화">단계 6: 무결성 해시 등록
 (3층 활성화)</h3>
-<p>selftest 출력에서 SHA-256 해시를 복사 →
-<code>references/integrity.json</code> 파일의
-<code>hooks/re-deny-guard.mjs</code> 값에 붙여넣기 → 저장 → 다시
-<code>/re-selftest</code> 실행 → 3층 ✅ 확인</p>
+<p>selftest 출력에서 <strong>5개 파일의 해시</strong>를 모두 복사해
+<code>references/integrity.json</code>에 저장하세요(이미 있는 항목은
+유지, 없는 항목만 추가): <code>hooks/hooks.json</code> ·
+<code>hooks/re-deny-guard.mjs</code> · <code>hooks/_selftest.mjs</code> ·
+<code>references/deny-corpus.json</code> ·
+<code>references/mask-patterns.json</code>. 저장 후 다시
+<code>/re-selftest</code> 실행 → 3층 5개 항목 전부 ✅ 확인.</p>
 <hr />
 <h3 id="빠른-시작-5분-요약">6-1. 빠른 시작 (5분 요약)</h3>
 <blockquote>
@@ -993,9 +996,14 @@ class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb15
 값이 들어있는 상태</strong>에서 해시가 달라 ❌가 뜬 경우, 위 명령은
 “불일치(변조 의심)”라고만 알려주고 <strong>새 해시를 화면에 출력하지
 않습니다</strong>(해시 출력은 <code>integrity.json</code>이 비어있을
-때만 나옵니다). 이럴 때는 아래 명령으로 새 해시를 직접 확인하세요:</p>
+때만 나옵니다). 이럴 때는 ❌가 뜬 파일 경로(<code>hooks/hooks.json</code>
+· <code>hooks/re-deny-guard.mjs</code> · <code>hooks/_selftest.mjs</code>
+· <code>references/deny-corpus.json</code> ·
+<code>references/mask-patterns.json</code> 중 하나)를 아래 명령의
+<code>&lt;파일경로&gt;</code> 자리에 넣어 새 해시를 직접
+확인하세요:</p>
 <div class="sourceCode" id="cb17"><pre
-class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>node <span class="op">-</span>e <span class="st">&quot;console.log(require(&#39;crypto&#39;).createHash(&#39;sha256&#39;).update(require(&#39;fs&#39;).readFileSync(&#39;hooks/re-deny-guard.mjs&#39;)).digest(&#39;hex&#39;))&quot;</span></span></code></pre></div>
+class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>node <span class="op">-</span>e <span class="st">&quot;console.log(require(&#39;crypto&#39;).createHash(&#39;sha256&#39;).update(require(&#39;fs&#39;).readFileSync(&#39;&lt;파일경로&gt;&#39;)).digest(&#39;hex&#39;))&quot;</span></span></code></pre></div>
 </blockquote>
 <hr />
 <h3 id="q8.-보고서에서-비밀번호가-그대로-보여요">Q8. 보고서에서

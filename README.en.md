@@ -252,9 +252,17 @@ If any are not green → See [GUIDE.en.md](./GUIDE.en.md) Chapter 2
 
 ### Step 6: Register Integrity Hash (Activate Layer 3)
 
-Copy the SHA-256 hash from the selftest output →
-Paste it as the value for `hooks/re-deny-guard.mjs` in `references/integrity.json` → Save
-→ Run `/re-selftest` again → Confirm Layer 3 ✅
+Copy **all 5 file hashes** from the selftest output and save them to `references/integrity.json` (keep any existing entries, only add the missing ones):
+```json
+{
+  "hooks/hooks.json": "<hash from selftest>",
+  "hooks/re-deny-guard.mjs": "<hash from selftest>",
+  "hooks/_selftest.mjs": "<hash from selftest>",
+  "references/deny-corpus.json": "<hash from selftest>",
+  "references/mask-patterns.json": "<hash from selftest>"
+}
+```
+→ Run `/re-selftest` again → Confirm all 5 Layer-3 items ✅
 
 ---
 
@@ -519,9 +527,9 @@ node hooks/_selftest.mjs
 ```
 Copy output hash → save to `references/integrity.json` → rerun
 
-> ⚠️ **Note:** If `references/integrity.json` **already has a value** and the hash differs (❌), the command above only reports "mismatch" and does **not** print the new hash (the hash is only printed when the entry is empty). In that case, compute it directly:
+> ⚠️ **Note:** If `references/integrity.json` **already has a value** and the hash differs (❌), the command above only reports "mismatch" and does **not** print the new hash (the hash is only printed when the entry is empty). In that case, take the path of whichever file shows ❌ (one of `hooks/hooks.json`, `hooks/re-deny-guard.mjs`, `hooks/_selftest.mjs`, `references/deny-corpus.json`, `references/mask-patterns.json`) and compute it directly:
 > ```powershell
-> node -e "console.log(require('crypto').createHash('sha256').update(require('fs').readFileSync('hooks/re-deny-guard.mjs')).digest('hex'))"
+> node -e "console.log(require('crypto').createHash('sha256').update(require('fs').readFileSync('<file-path>')).digest('hex'))"
 > ```
 
 ---
