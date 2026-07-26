@@ -98,7 +98,7 @@ const syn = [
   { label: '[Loop+Harness]    Loop Bash 이중확인 방지', ok: loopInstalled && harnessInstalled,  detail: '(Loop safety-gate.mjs 자동 양보 — 코드 변경 불필요)' },
   { label: '[Agentic+Harness] Agentic 이중 가드 방지', ok: agenticInstalled && harnessInstalled, detail: '(Agentic guard.mjs 자동 양보 — 코드 변경 불필요)' },
   { label: '[Context+Reverse] RE 스코프 건강검진     ', ok: ctxInstalled && reScopeInjected,  detail: ctxInstalled ? (reScopeInjected ? 're-scope-guard 활성' : 'node scripts/re-inject-context.mjs 실행 권장') : 'Context 미설치' },
-  { label: '[Prompt+Reverse]  자연어 요청 품질향상   ', ok: false, detail: promptInstalled ? '설치는 확인되나 코드 수준 연동 없음(M4-D 미착수, 정성적 시너지만 존재)' : 'Prompt 미설치' },
+  { label: '[Prompt+Reverse]  자연어 요청 품질향상   ', ok: promptInstalled, detail: promptInstalled ? 're-router에 안내 문구로 연계(M4-D 완결 — 코드수준 공유config는 Prompt에 확장점 자체가 없어 구조적 불가, §5-21)' : 'Prompt 미설치' },
 ];
 
 for (const s of syn) {
@@ -109,7 +109,7 @@ log('\n────────────────────────�
 
 const allDone = harnessInstalled && reInjected && loopInstalled && agenticInstalled && ctxInstalled && reScopeInjected;
 if (allDone) {
-  log('🎉 모든 현재 시너지가 활성화됐습니다 (Prompt 연동(M4-D)은 설계 미착수 — 별개 트랙).\n');
+  log('🎉 모든 현재 시너지가 활성화됐습니다 (Prompt 연동(M4-D)은 문서수준 안내로 완결 — Prompt에 코드수준 확장점 자체가 없음, §5-21).\n');
 } else {
   log('\n💡 권장 다음 단계:');
   if (!harnessInstalled)              log('   1. SoDam-Harness 설치 후 초기화');

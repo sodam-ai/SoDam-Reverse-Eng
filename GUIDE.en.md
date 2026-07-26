@@ -499,7 +499,7 @@ Active Synergies:
   [Loop+Harness]    Loop Bash dedup guard         OK
   [Agentic+Harness] Agentic dedup guard           OK
   [Context+Reverse] RE scope health check         -- (Context not installed)
-  [Prompt+Reverse]  Natural-language req quality  -- (installed, but no code-level integration yet — M4-D not started)
+  [Prompt+Reverse]  Natural-language req quality  OK re-router carries an advisory note (M4-D concluded — Prompt has no code-level extension point)
 ```
 
 ---
