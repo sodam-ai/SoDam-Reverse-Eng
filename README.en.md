@@ -408,7 +408,8 @@ SoDam-Reverse-Eng/
 │   ├── re-inject-harness.mjs    ← Harness synergy setup
 │   ├── re-inject-context.mjs    ← Context synergy setup
 │   ├── check-family.mjs         ← 6-sibling status check
-│   └── check-trust-freshness.mjs
+│   ├── check-trust-freshness.mjs
+│   └── rotate-safety-log.mjs    ← Safety-log retention cleanup (auto-expiry)
 │
 ├── samples/                     ← Example files for testing
 │   ├── safe-login.js
@@ -449,6 +450,7 @@ SoDam-Reverse-Eng/
 | Integrity Hashes | `references/integrity.json` | SHA-256 hash store |
 | Family Status | `scripts/check-family.mjs` | 6-sibling diagnostic script |
 | Trust Freshness | `scripts/check-trust-freshness.mjs` | Checks trusted-tool catalog for staleness |
+| Safety-Log Retention | `scripts/rotate-safety-log.mjs` | Deletes safety-log entries older than 30 days (default) — self-incrimination risk reduction |
 
 ---
 

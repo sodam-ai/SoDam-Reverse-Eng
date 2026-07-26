@@ -811,7 +811,8 @@ Claude AI (Anthropic 서버)
 │   ├── re-inject-harness.mjs    ← Harness 시너지 설정
 │   ├── re-inject-context.mjs    ← Context 시너지 설정
 │   ├── check-family.mjs         ← 6형제 상태 확인
-│   └── check-trust-freshness.mjs← 도구 신뢰도 신선도 점검
+│   ├── check-trust-freshness.mjs← 도구 신뢰도 신선도 점검
+│   └── rotate-safety-log.mjs    ← 안전로그 보존기간 관리(자동만료)
 │
 ├── mcp/
 │   └── catalog.json             ← Phase 2·3 외부 도구 설정
@@ -930,6 +931,11 @@ Claude AI (Anthropic 서버)
 <td>신선도 점검</td>
 <td><code>scripts/check-trust-freshness.mjs</code></td>
 <td>신뢰 카탈로그 최신성 확인</td>
+</tr>
+<tr>
+<td>안전로그 보존기간 관리</td>
+<td><code>scripts/rotate-safety-log.mjs</code></td>
+<td>30일(기본) 지난 안전로그 항목 삭제(자기부죄 방지)</td>
 </tr>
 </tbody>
 </table>

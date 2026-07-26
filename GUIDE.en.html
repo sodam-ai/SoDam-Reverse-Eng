@@ -1297,6 +1297,10 @@ Files</h4>
 <td><code>check-trust-freshness.mjs</code></td>
 <td>Trusted tool freshness check</td>
 </tr>
+<tr>
+<td><code>rotate-safety-log.mjs</code></td>
+<td>Safety-log retention cleanup (30 days default, auto-expiry)</td>
+</tr>
 </tbody>
 </table>
 <hr />
@@ -1486,6 +1490,7 @@ Guide</h2>
 |   +-- re-inject-context.mjs
 |   +-- check-family.mjs
 |   +-- check-trust-freshness.mjs
+|   +-- rotate-safety-log.mjs       &lt;- Safety-log retention cleanup
 |
 +-- samples/                         &lt;- Test example files
 |   +-- safe-login.js
@@ -1533,6 +1538,12 @@ synergy activation state at once <strong>When to run:</strong> Anytime
 <pre><code>node scripts/check-trust-freshness.mjs</code></pre>
 <p><strong>Purpose:</strong> Check whether tools in the trust catalog
 are up to date <strong>When to run:</strong> Recommended quarterly</p>
+<hr />
+<h4 id="rotate-safety-log.mjs">rotate-safety-log.mjs</h4>
+<pre><code>node scripts/rotate-safety-log.mjs [--days=30] [--dry-run]</code></pre>
+<p><strong>Purpose:</strong> Deletes old entries from <code>.sodam-re/safety-log.jsonl</code> so the block-history log doesn't accumulate forever (reduces self-incrimination risk). The log only stores hashes, never the original text, so deleting old entries has zero effect on the safety-layer's block/allow decisions.<br />
+<strong>Options:</strong> <code>--days=N</code> to adjust retention (default 30 days), <code>--dry-run</code> to preview how many entries would be deleted without actually deleting anything<br />
+<strong>When to run:</strong> Manual only (never runs automatically) — recommended periodically (e.g. once a month)</p>
 <hr />
 <h3 id="manual-integrity-hash-update">Manual Integrity Hash Update</h3>
 <p>If you legitimately modified safety files, you need to re-register

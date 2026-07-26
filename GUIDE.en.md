@@ -940,6 +940,7 @@ This means paths never need to be adjusted on any computer.
 | `re-inject-context.mjs` | Scope connection with Context |
 | `check-family.mjs` | Full 6-sibling status check |
 | `check-trust-freshness.mjs` | Trusted tool freshness check |
+| `rotate-safety-log.mjs` | Safety-log retention cleanup (30 days default, auto-expiry) |
 
 ---
 
@@ -1057,6 +1058,7 @@ SoDam-Reverse-Eng/                   <- Plugin root folder
 |   +-- re-inject-context.mjs
 |   +-- check-family.mjs
 |   +-- check-trust-freshness.mjs
+|   +-- rotate-safety-log.mjs       <- Safety-log retention cleanup
 |
 +-- samples/                         <- Test example files
 |   +-- safe-login.js
@@ -1127,8 +1129,20 @@ node scripts/check-family.mjs
 node scripts/check-trust-freshness.mjs
 ```
 
-**Purpose:** Check whether tools in the trust catalog are up to date
-**When to run:** Recommended quarterly
+**Purpose:** Checks whether the tools listed in the trust catalog (trust-catalog.md) are still up to date
+**When to run:** Recommended once per quarter
+
+---
+
+#### rotate-safety-log.mjs
+
+```
+node scripts/rotate-safety-log.mjs [--days=30] [--dry-run]
+```
+
+**Purpose:** Deletes old entries from `.sodam-re/safety-log.jsonl` so the block-history log doesn't accumulate forever (reduces self-incrimination risk). The log only stores hashes, never the original text, so deleting old entries has zero effect on the safety-layer's block/allow decisions.
+**Options:** `--days=N` to adjust retention (default 30 days), `--dry-run` to preview how many entries would be deleted without actually deleting anything
+**When to run:** Manual only (never runs automatically) — recommended periodically (e.g. once a month)
 
 ---
 

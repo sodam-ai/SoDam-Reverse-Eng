@@ -925,6 +925,7 @@ Claude Code가 실행하는 모든 도구를 감시하고 제어합니다.
 | `re-inject-context.mjs` | Context와 스코프 연결 |
 | `check-family.mjs` | 6형제 상태 전체 확인 |
 | `check-trust-freshness.mjs` | 신뢰 도구 신선도 점검 |
+| `rotate-safety-log.mjs` | 안전로그 보존기간 관리(30일 기본, 자동만료) |
 
 ---
 
@@ -1041,7 +1042,8 @@ SoDam-Reverse-Eng/                   ← 플러그인 루트 폴더
 │   ├── re-inject-harness.mjs
 │   ├── re-inject-context.mjs
 │   ├── check-family.mjs
-│   └── check-trust-freshness.mjs
+│   ├── check-trust-freshness.mjs
+│   └── rotate-safety-log.mjs        ← 안전로그 보존기간 관리
 │
 ├── samples/                         ← 테스트용 예제
 │   ├── safe-login.js
@@ -1114,6 +1116,18 @@ node scripts/check-trust-freshness.mjs
 
 **목적:** 신뢰 카탈로그(trust-catalog.md)의 도구들이 최신 버전인지 확인
 **실행 시기:** 분기별 1회 권장
+
+---
+
+#### rotate-safety-log.mjs
+
+```
+node scripts/rotate-safety-log.mjs [--days=30] [--dry-run]
+```
+
+**목적:** `.sodam-re/safety-log.jsonl`에 쌓이는 차단 이력이 무기한 누적되지 않게 오래된 항목을 삭제(자기부죄 리스크 완화). 로그는 원문이 아닌 해시만 담고 있어 삭제해도 안전 3층 차단 판정에는 전혀 영향 없습니다.
+**옵션:** `--days=N`으로 보존 일수 조정(기본 30일), `--dry-run`으로 실제 삭제 없이 몇 건이 삭제 대상인지만 미리 확인
+**실행 시기:** 사용자가 원할 때 수동 실행(자동 실행 아님) — 정기적으로(예: 월 1회) 실행 권장
 
 ---
 

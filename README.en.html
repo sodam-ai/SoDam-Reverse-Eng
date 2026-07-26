@@ -837,7 +837,8 @@ Structure</h2>
 │   ├── re-inject-harness.mjs    ← Harness synergy setup
 │   ├── re-inject-context.mjs    ← Context synergy setup
 │   ├── check-family.mjs         ← 6-sibling status check
-│   └── check-trust-freshness.mjs
+│   ├── check-trust-freshness.mjs
+│   └── rotate-safety-log.mjs    ← Safety-log retention cleanup (auto-expiry)
 │
 ├── samples/                     ← Example files for testing
 │   ├── safe-login.js
@@ -949,6 +950,11 @@ Structure</h2>
 <td>Trust Freshness</td>
 <td><code>scripts/check-trust-freshness.mjs</code></td>
 <td>Checks trusted-tool catalog for staleness</td>
+</tr>
+<tr>
+<td>Safety-Log Retention</td>
+<td><code>scripts/rotate-safety-log.mjs</code></td>
+<td>Deletes safety-log entries older than 30 days (default) — self-incrimination risk reduction</td>
 </tr>
 </tbody>
 </table>

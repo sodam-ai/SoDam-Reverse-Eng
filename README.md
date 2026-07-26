@@ -410,7 +410,8 @@ SoDam-Reverse-Eng/
 │   ├── re-inject-harness.mjs    ← Harness 시너지 설정
 │   ├── re-inject-context.mjs    ← Context 시너지 설정
 │   ├── check-family.mjs         ← 6형제 상태 확인
-│   └── check-trust-freshness.mjs← 도구 신뢰도 신선도 점검
+│   ├── check-trust-freshness.mjs← 도구 신뢰도 신선도 점검
+│   └── rotate-safety-log.mjs    ← 안전로그 보존기간 관리(자동만료)
 │
 ├── mcp/
 │   └── catalog.json             ← Phase 2·3 외부 도구 설정
@@ -461,6 +462,7 @@ SoDam-Reverse-Eng/
 | 무결성 해시 | `references/integrity.json` | SHA-256 해시 저장 |
 | 형제 상태 확인 | `scripts/check-family.mjs` | 6형제 진단 스크립트 |
 | 신선도 점검 | `scripts/check-trust-freshness.mjs` | 신뢰 카탈로그 최신성 확인 |
+| 안전로그 보존기간 관리 | `scripts/rotate-safety-log.mjs` | 30일(기본) 지난 안전로그 항목 삭제(자기부죄 방지) |
 
 ---
 

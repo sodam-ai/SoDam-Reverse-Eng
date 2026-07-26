@@ -1223,6 +1223,10 @@ href="#q6-re-selftest에서-일부-항목이-">10장 Q6</a> 참고</p>
 <td><code>check-trust-freshness.mjs</code></td>
 <td>신뢰 도구 신선도 점검</td>
 </tr>
+<tr>
+<td><code>rotate-safety-log.mjs</code></td>
+<td>안전로그 보존기간 관리(30일 기본, 자동만료)</td>
+</tr>
 </tbody>
 </table>
 <hr />
@@ -1409,7 +1413,8 @@ href="#q6-re-selftest에서-일부-항목이-">10장 Q6</a> 참고</p>
 │   ├── re-inject-harness.mjs
 │   ├── re-inject-context.mjs
 │   ├── check-family.mjs
-│   └── check-trust-freshness.mjs
+│   ├── check-trust-freshness.mjs
+│   └── rotate-safety-log.mjs        ← 안전로그 보존기간 관리
 │
 ├── samples/                         ← 테스트용 예제
 │   ├── safe-login.js
@@ -1455,6 +1460,12 @@ RE 규칙 10개 (risky) 주입 완료
 <pre><code>node scripts/check-trust-freshness.mjs</code></pre>
 <p><strong>목적:</strong> 신뢰 카탈로그(trust-catalog.md)의 도구들이
 최신 버전인지 확인 <strong>실행 시기:</strong> 분기별 1회 권장</p>
+<hr />
+<h4 id="rotate-safety-log.mjs">rotate-safety-log.mjs</h4>
+<pre><code>node scripts/rotate-safety-log.mjs [--days=30] [--dry-run]</code></pre>
+<p><strong>목적:</strong> <code>.sodam-re/safety-log.jsonl</code>에 쌓이는 차단 이력이 무기한 누적되지 않게 오래된 항목을 삭제(자기부죄 리스크 완화). 로그는 원문이 아닌 해시만 담고 있어 삭제해도 안전 3층 차단 판정에는 전혀 영향 없습니다.<br />
+<strong>옵션:</strong> <code>--days=N</code>으로 보존 일수 조정(기본 30일), <code>--dry-run</code>으로 실제 삭제 없이 몇 건이 삭제 대상인지만 미리 확인<br />
+<strong>실행 시기:</strong> 사용자가 원할 때 수동 실행(자동 실행 아님) — 정기적으로(예: 월 1회) 실행 권장</p>
 <hr />
 <h3 id="무결성-해시-수동-갱신">무결성 해시 수동 갱신</h3>
 <p>안전파일을 합법적으로 수정했다면 해시를 새로 등록해야 합니다:</p>
