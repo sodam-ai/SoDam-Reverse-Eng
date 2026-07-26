@@ -14,7 +14,7 @@
  *   --days=N   보존 일수(기본 30). PRD가 특정 숫자를 지정하지 않아 권장값으로 둔 것 — 필요시 조정.
  *   --dry-run  실제로 지우지 않고 몇 줄이 삭제 대상인지만 미리 보여준다.
  */
-import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync, renameSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -57,7 +57,13 @@ if (!existsSync(LOG_PATH)) {
   process.exit(0);
 }
 
-const raw = readFileSync(LOG_PATH, 'utf8');
+let raw;
+try {
+  raw = readFileSync(LOG_PATH, 'utf8');
+} catch (e) {
+  console.error(`❌ 안전로그 파일을 읽지 못했습니다: ${e.message}`);
+  process.exit(1);
+}
 const lines = raw.split('\n').filter((l) => l.trim());
 const { kept, dropped, malformed } = filterByRetention(lines, RETENTION_DAYS, Date.now());
 
@@ -77,5 +83,15 @@ if (dryRun) {
   process.exit(0);
 }
 
-writeFileSync(LOG_PATH, kept.length ? kept.join('\n') + '\n' : '', 'utf8');
+// 임시파일→rename으로 쓰기 자체는 원자적으로 처리(교체 도중 프로세스 종료·손상 방지).
+// 읽기~rename 사이의 좁은 구간에 새 로그 줄이 추가되면 그 줄만 유실될 잔여 위험은 남지만,
+// 수동 실행·1인 로컬 환경 기준으로 낮은 위험으로 판단해 락 없이 이 수준까지만 개선한다.
+try {
+  const tmpPath = `${LOG_PATH}.tmp-${process.pid}`;
+  writeFileSync(tmpPath, kept.length ? kept.join('\n') + '\n' : '', 'utf8');
+  renameSync(tmpPath, LOG_PATH);
+} catch (e) {
+  console.error(`❌ 안전로그 파일 쓰기에 실패했습니다: ${e.message}`);
+  process.exit(1);
+}
 console.log(`🧹 ${dropped.length}줄 삭제 완료(원문이 아닌 해시만 있던 항목입니다). 안전 3층 차단 판정에는 영향 없습니다.`);
