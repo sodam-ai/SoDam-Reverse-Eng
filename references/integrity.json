@@ -1,5 +1,8 @@
 {
-  "_note": "/re-selftest 또는 node hooks/_selftest.mjs 실행 후 출력된 SHA-256 해시로 채우세요.",
+  "_note": "/re-selftest 또는 node hooks/_selftest.mjs 실행 후 출력된 SHA-256 해시로 채우세요. (2026-07-27: 검사범위 1→5파일 확장, SETUP_BLOCKED_FILES.md 참조)",
   "_example": "{ \"hooks/re-deny-guard.mjs\": \"abc123...\" }",
-  "hooks/re-deny-guard.mjs": "7e5c7d4f6599b5649f9ef3d8695d4fd8d89cefce66503fce7ec0b051fd70da60"
+  "hooks/re-deny-guard.mjs": "7e5c7d4f6599b5649f9ef3d8695d4fd8d89cefce66503fce7ec0b051fd70da60",
+  "hooks/hooks.json": "677c9ffbbb7f63a4dd135171462ed83b4043d13877852927f1b4250e904418fc",
+  "references/deny-corpus.json": "91e960a1a9b34eff9fee23e05342787d805b246f3ba112a0af265a33decfafcb",
+  "references/mask-patterns.json": "08792b3e41ea83364f6582199c51c0e7db4e02cd43193f1636e550adcfdc6c7a"
 }

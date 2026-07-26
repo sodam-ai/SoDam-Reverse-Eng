@@ -16,7 +16,7 @@
 - **Phase 3 바이너리 RE + IDA (NEXT-4, 2026-07-11):** ✅ **골격 완료·라이브 미검증**(안드로이드와 동일 규약). `re-analyze-binary`+`/re-binary`, Ghidra 정적분석 wrap + IDA 옵션(`SODAM_RE_IDA_PATH`). §0-1 프롬프트인젝션 방어를 처음부터 반영(재발방지). **악성코드 방어 분석은 PRD 자체 감사(H5) 근거로 사용자 확정하에 이번 범위에서 명시적 제외** — `mcp/catalog.json`의 `malware-analysis`는 `pending-wrap` 그대로.
 - **문서:** README·GUIDE (한/영) **md + html**, "업데이트 요약" 토글 포함. deny 코퍼스 = **키워드 60 + 정규식 7**(2026-07-14 실측 재확인, `node -e` 검증 명령 결과 그대로).
 - **테스트 검증(2026-07-11):** 정상/악성/경계값/오탐 10종 실제 실행 → 9/10 정상, **1건 실버그 발견**(`re-deny-guard.mjs` 빈입력 fail-open, §5-1). 무결성 해시 독립 재계산 → 저장값과 일치 확인(3층 정상).
-- **NEXT-3(GitHub 백업 푸시)는 이미 완료 상태**(위 동기화 확인으로 정정 — 더 이상 대기 항목 아님). 나머지(NEXT-2/2b/4b/5)는 도구미설치·상용라이선스·보호파일·정책보류로 구조적 차단. 다음 단계 → §6 참조.
+- **NEXT-3(GitHub 백업 푸시)는 2026-07-27 2차 재확인 결과 신규 커밋 1개(`9bad0cc`) 대기 중**(이전 3커밋은 이미 push 확인됨 — §6 참조). 나머지(NEXT-2/2b/4b/5)는 도구미설치·상용라이선스·보호파일·정책보류로 구조적 차단. 다음 단계 → §6 참조.
 - **AI 단독 실행 가능 항목도 전부 소진(2026-07-15 확인, §5-13 참조)**: §5-12가 식별한 A(커밋 승인)·H(README.md:312 표현 정정) 중 A는 이번 세션에 `dcbfba9`로 커밋·push·origin 동기화(0/0) 완료. H는 실측 결과 이미 `f1350e9`(2026-07-13)에 반영되어 있었는데 §5-12 표 갱신이 누락돼 "미수정"으로 잘못 남아있던 것으로 확인됨 — 실제 미수정 항목이 아니라 문서 정합성 오류였다. **현재 시점 AI가 안전하게 단독 실행 가능한 신규 항목 0건.** 다음 세션은 §6의 NEXT-2/2b/5(사람·환경·정책 게이트)에서 바로 이어받을 것.
 - **신규 기록(2026-07-11)**: 미커밋 PDF 4개 삭제(`README/GUIDE` 한·영, HTML 4종이 이미 대체·`90595fb`) + GitHub `main`이 feat와 **발산**(main 5커밋 단독 — PDF4개+CHECKPOINT.md 직접삭제, feat 15커밋 단독 — 전체 기능·문서 작업). main 병합은 사용자 결정 사안, 임의 진행 안 함.
 - **다음 할 일 → §6 "다음 작업" 참조.**
@@ -919,6 +919,37 @@ else no('3층 무결성: guard 해시 불일치(변조 의심) → 재설치 권
 
 ---
 
+## 5-25. 2026-07-27(15차 세션) — 안전 3층 무결성 검사 커버리지 확장(1/5→5/5) + 잔여 이스케이프·문서모순 정리
+
+> "더 확실하고 꼼꼼하게, 전수적으로"라는 반복 지시에 따라 서브에이전트 4개(PRD 9문서·CHECKPOINT 982행 전체·안전로그/무결성 서브시스템·Phase2-3 정합성)를 병렬 실행해 이 세션에서 처음 다뤄진 파일들(`RESEARCH_SOURCES.md`·`rotate-safety-log.mjs`·`.sodam-re/safety-log.jsonl`·`integrity.json`·`re-analyze-android`·`re-analyze-binary`·`samples/safe-login.js` 등)을 감사했다.
+
+### 발견 — "안전 3층"의 3층(SHA-256 무결성)이 실제로는 5개 보호파일 중 1개만 검사
+- `hooks/_selftest.mjs`를 직접 읽어 확인: `guardPath = join(here, 're-deny-guard.mjs')`로 파일 하나만 하드코딩, manifest도 `'hooks/re-deny-guard.mjs'` 키 하나만 조회(39~53행).
+- `references/integrity.json`도 직접 확인: 실제로 항목이 1개뿐.
+- PRD(01_PRD.md)는 3층 무결성이 안전 관련 파일 전체를 지킨다는 전제로 설계돼 있어, 문서 주장과 실제 코드 사이에 괴리가 있었다. 특히 **`deny-corpus.json`(차단 키워드 원본)은 위변조돼도 전혀 탐지되지 않는** 상태였다 — 안전장치의 핵심 데이터가 무방비.
+- 부가 발견(에이전트3): `scripts/rotate-safety-log.mjs`에 원자적 쓰기 없는 경쟁조건과 try/catch 누락(단, 한 번도 실행된 적 없어 시급성 낮음). `SETUP_BLOCKED_FILES.md`와 `integrity.json`이 "5개 보호파일"을 서로 다른 대상으로 지칭해 혼동 소지.
+- 부가 발견(에이전트4): `re-inject-context.mjs` 79행 수정 시 같은 줄의 `contextRulesPath`는 대칭 이스케이프가 안 돼 있던 잔여 구멍(계정명에 홑따옴표가 있는 극단적 케이스만 해당, 낮은 위험도).
+- 안전로그(`.sodam-re/safety-log.jsonl`, 152줄) 실측: 실제 비밀번호·키·PII·절대경로 노출 없음, `.gitignore`로 git 추적도 정상 제외됨 — 이 부분은 문제없음 확인.
+
+### 리스크 검토 후 조치 (실행 전 직접 검증)
+- **우려**: 지금 해시를 고정하면 이미 변조된 상태를 "정상"으로 오인하지 않는가? → 4개 파일(`hooks.json`·`deny-corpus.json`·`mask-patterns.json`·`re-deny-guard.mjs`)의 실제 내용을 세션 내내 반복 확인해온 기준(키워드 60·정규식 7, 마스킹패턴 15, matcher 문자열, 셀프테스트 8/0)과 직접 대조 — 전부 일치, 이상 없음 확인 후 해시 계산.
+- **우려**: 검사 로직(`_selftest.mjs`)을 AI가 직접 고칠 수 있는가? → **불가**(5개 보호파일 중 하나, 자기보호 훅 차단 대상). 기존에 이미 확립된 방식(`SETUP_BLOCKED_FILES.md`에 복붙 템플릿 추가 → 사람이 직접 적용)을 그대로 재사용 — 새 메커니즘 도입 안 함.
+- **우려**: 새 검사 로직 자체에 버그가 있으면? → 스크래치패드에 동일 로직을 격리해 실제 5개 보호파일 사본으로 4개 시나리오(manifest 없음/전부 일치/1개 변조/1개 항목 누락) 테스트, 8/8 통과 확인 후에만 `SETUP_BLOCKED_FILES.md`에 반영.
+- **판단**: `hooks.json`·`deny-corpus.json`·`mask-patterns.json`은 이번 작업과 무관하게 안정적이므로 지금 실제 해시를 `integrity.json`에 추가. `re-deny-guard.mjs`(기존 패치 대기 중)·`_selftest.mjs`(이번에 새 로직 추가)는 사람이 패치를 적용한 뒤 `/re-selftest`가 자동으로 새 해시를 출력하는 기존 부트스트랩 흐름에 맡기고 지금 임의로 선계산하지 않음(적용 전 내용을 앞서 확정하면 향후 실제 붙여넣기와 바이트 단위로 어긋날 위험이 있어 회피).
+
+### 실행 결과
+- `SETUP_BLOCKED_FILES.md` §5 `_selftest.mjs` 템플릿: 1파일 검사 → `PROTECTED_FILES` 배열 기반 5파일 루프로 교체, "만든 뒤 할 일" 안내도 5파일 예시로 갱신, "5개 파일" 용어가 문서마다 다른 대상을 가리킨다는 참고 문구 추가.
+- `references/integrity.json`: `hooks.json`·`deny-corpus.json`·`mask-patterns.json` 3개 해시 신규 추가(기존 `re-deny-guard.mjs` 항목은 그대로 유지).
+- `scripts/re-inject-context.mjs`:80 — `contextRulesPath`도 홑따옴표 이스케이프 추가, PowerShell로 `O'Brien` 같은 경로를 재현해 정상 왕복 확인.
+- `CHECKPOINT.md` §0/§6 NEXT-3 자기모순(상단 "완료" vs 하단 "재대기") 정정 — `git branch --contains`로 이전 3커밋(`956e2c8`·`7e296db`·`b9f7b85`)이 이미 origin에 포함돼 있음을 직접 확인, 현재 미반영은 이번 세션의 `9bad0cc` 1개뿐임을 반영.
+- 검증: `node --check` 통과 / `integrity.json` JSON 유효성 확인 / `node hooks/_selftest.mjs` 8/0 유지(회귀 없음 — `_selftest.mjs` 자체는 미변경이라 당연한 결과) / `git status --short` 의도한 4개 파일만 변경 확인.
+
+### 정직하게 남는 한계
+- **아직 "완료"가 아니다.** 데이터(`integrity.json`)와 사람이 적용할 템플릿(`SETUP_BLOCKED_FILES.md`)만 준비됐을 뿐, 실제 검사 로직 반영은 여전히 사람이 `hooks/_selftest.mjs`를 수동 교체해야 완성된다 — 대기 패치가 기존 3건(정규화·문맥인식완화·android skillFiles)에서 **4건**으로 늘었다.
+- `RESEARCH_SOURCES.md`의 낡은 도구 추천 정정, `rotate-safety-log.mjs` 경쟁조건 수정, 동의게이트 문항수 통일(re-router 2문항 vs android/binary 3문항)은 이번엔 의도적으로 보류(각각 실행코드 아님/한 번도 실행 안 됨/기능저하 아닌 표현차 — §6 참조).
+
+---
+
 ## 6. 다음 작업 (우선순위 · 2026-07-07)
 
 > 각 작업의 담당(AI 단독 / 사람·환경 게이트 / 사용자 결정)과 done-when, 예상 리스크·변수·충돌·실패, 대응을 함께 명시.
@@ -929,7 +960,7 @@ else no('3층 무결성: guard 해시 불일치(변조 의심) → 재설치 권
 | **NEXT-1** | Phase 2 나머지 절반 = **AI 코딩 에이전트 구조 분석 모듈** | AI | ✅ **완전 완료** — `re-analyze-agent`+`re-agent` 신규, router 4번 활성, 셀프테스트 6/0 무회귀. 자체검증(3건)→**독립 레드팀 감사**(3건 실제 갭 추가 발견·전부 봉쇄)로 2단계 강화. **문서 4종(README·GUIDE 한/영) 동기화 완료**(PRD §10 의무 이행) — 이 모듈은 여기서 종료, 추가 레드팀 루프는 의도적으로 중단(한계효용 판단, 다음은 Phase C/D). (A4 deny-corpus 추가는 문서 카운트 동기화 회피 위해 의도적 생략) |
 | **NEXT-2** | **Phase 2+3 라이브 검증**(안드로이드 JADX/Apktool + 바이너리 Ghidra) | 안드로이드=✅완료(재확인 진행중) / 바이너리=사람·환경 | `/re-android`·`/re-binary`로 실제 분석 + 크랙요청 거부 재현. **2026-07-13에 이미 실사용 성공(§5-23) — 오늘자 빌드 재확인만 남음(사용자 진행 중). Ghidra는 여전히 미설치(바이너리는 환경 게이트 유지)** |
 | **NEXT-2b** | IDA Pro 옵션 실사용 검증 | **구조적으로 AI 불가** | IDA는 상용 소프트웨어 — 사용자 본인 라이선스 필요. `SODAM_RE_IDA_PATH` 처리 코드는 작성 완료, 실사용 확인은 **영구히 사람 몫**(AI가 대신할 방법 자체가 없음, "보류"가 아니라 구조적 한계) |
-| **NEXT-3** | **GitHub 백업 푸시**(`feat/m5-readiness`→`origin`, main 무변경) | 사용자 승인 시 AI | ⏳ **재대기(2026-07-27 재확인)** — 2026-07-12 동기화 이후 로컬에 3커밋 추가(`956e2c8`·`7e296db`·`b9f7b85`) 축적, origin 미반영. push 자체는 저위험(보호5파일 미포함)이나 사용자 명시 승인 후 진행 원칙 유지 |
+| **NEXT-3** | **GitHub 백업 푸시**(`feat/m5-readiness`→`origin`, main 무변경) | 사용자 승인 시 AI | ⏳ **재대기(2026-07-27 2차 재확인)** — 이전 기록의 3커밋(`956e2c8`·`7e296db`·`b9f7b85`)은 이후 시점에 이미 push되어 origin에 포함됨(`git branch --contains`로 확인). 현재 미반영은 이번 세션의 `9bad0cc` 1개뿐. push 자체는 저위험(보호5파일 미포함)이나 사용자 명시 승인 후 진행 원칙 유지 |
 | **NEXT-4** | **Phase 3 골격** (바이너리 ghidra-mcp wrap) | AI | ✅ **완료**(바이너리RE+IDA만, 사용자 범위확정) — `re-analyze-binary`+`/re-binary` 골격, catalog `ghidra-mcp` active. **악성코드는 정책검토 대기로 명시적 보류**(임의 구현 안 함) |
 | **NEXT-4b** | **보호파일 버그 2건 수정**(§5-1 참조) | — | ✅ **완료(2026-07-12, §5-6 참조)**. fail-open은 라이브 반영·검증 완료(6/0). 훅중복(Harness위임)은 반영 후 실제 회귀(위험샘플 무검증 통과)가 발견돼 **의도적으로 롤백** — 위험도 낮은 기존 한계로 되돌림. `integrity.json` 재기록 완료 |
 | **NEXT-5** | **M5 사람몫** (레드팀·베타·법무·공개) | 사람 | 모든 구현 후(연기 확정) — NEXT-2/2b가 완료돼야 도달 |
@@ -959,9 +990,9 @@ else no('3층 무결성: guard 해시 불일치(변조 의심) → 재설치 권
 **NEXT-2b — IDA Pro 실사용 검증 (구조적 불가)**
 - **리스크:** 없음(작동 위험이 아니라 검증 불가능성의 문제) — IDA는 사용자 개인 구매 라이선스가 있어야만 실행되므로, AI가 대신 라이선스를 사거나 검증할 방법이 없음. 사용자가 본인 IDA를 직접 써봐야만 확인 가능.
 
-**NEXT-3 — GitHub 백업 푸시 (2026-07-27 재확인 — 다시 대기 상태로 전환)**
-- **이력:** 2026-07-12에 로컬=origin 완전 동기화(`f8c1450`) 확정됐으나, 이후 여러 세션(rotate-safety-log·check-family 오탐지 수정·M4-D)에서 로컬 커밋만 쌓이고 push는 하지 않았음(매 세션 "사용자 승인 없이 자동 push 안 함" 원칙 준수).
-- **현재(2026-07-27 실측):** `git rev-list --count origin/feat/m5-readiness..HEAD` = **3**(`956e2c8`·`7e296db`·`b9f7b85`). working tree clean, main 브랜치는 무관(건드리지 않음).
+**NEXT-3 — GitHub 백업 푸시 (2026-07-27 2차 재확인 — 이전 3커밋은 이미 push됨, 신규 1커밋만 대기)**
+- **이력:** 2026-07-12에 로컬=origin 완전 동기화(`f8c1450`) 확정 이후 로컬 커밋이 쌓였다가, 이번 세션 이전 어느 시점에 `956e2c8`·`7e296db`·`b9f7b85` 3개가 실제로 push됨(정확한 시점은 이 세션에서 추적하지 않았으나, `git branch --contains <hash> -a`로 3개 전부 `remotes/origin/feat/m5-readiness`에 포함돼 있음을 직접 확인함).
+- **현재(2026-07-27 2차 실측):** `git log --oneline origin/feat/m5-readiness..HEAD` = **`9bad0cc`(PowerShell 이스케이프 버그 수정) 1개뿐**. working tree clean, main 브랜치는 무관(건드리지 않음).
 - **리스크:** push 내용 자체는 이미 검증·커밋된 문서/스크립트 변경뿐(보호 5파일 미포함) — 기술적 위험은 낮음. 다만 "대외에 보이는 상태 변경"이라 사용자 명시 승인 없이는 진행하지 않음(이번 세션도 미실행).
 - **NEXT-4b와의 관계:** 무관(별개 트랙, 이미 완료).
 

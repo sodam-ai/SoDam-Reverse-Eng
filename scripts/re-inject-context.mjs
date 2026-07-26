@@ -77,6 +77,7 @@ log('─────────────────────────
 log('PowerShell 원라이너 (복붙 후 실행):');
 log('─────────────────────────────────────────────────────────────────');
 const escaped = JSON.stringify(RE_SCOPE_RULE).replace(/'/g, "''");
-log(`$f = '${contextRulesPath}'; $r = Get-Content $f | ConvertFrom-Json; $r.checks += '${escaped}' | ConvertFrom-Json; $r | ConvertTo-Json -Depth 10 | Set-Content $f -Encoding UTF8`);
+const escapedPath = contextRulesPath.replace(/'/g, "''");
+log(`$f = '${escapedPath}'; $r = Get-Content $f | ConvertFrom-Json; $r.checks += '${escaped}' | ConvertFrom-Json; $r | ConvertTo-Json -Depth 10 | Set-Content $f -Encoding UTF8`);
 log('─────────────────────────────────────────────────────────────────');
 log('\n실행 후 /sodam-context:treat 를 다시 실행하면 RE 스코프 검진이 활성화됩니다.\n');
