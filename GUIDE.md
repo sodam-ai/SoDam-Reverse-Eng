@@ -474,21 +474,23 @@ Agentic은 보고서를 비개발자 눈높이로 재검수해 주는 도구입�
 node scripts/check-family.mjs
 ```
 
-출력 예시:
+출력 예시(실제 형식 반영, 설치 여부는 사용자 환경마다 다름):
 ```
 SoDam 6형제 상태 점검
 ─────────────────────────────────────
 Harness  ✅ 설치됨
 Loop     ✅ 설치됨
-Context  ❌ 미설치
+Context  ❌ 미발견
 Agentic  ✅ 설치됨
-Prompt   ❌ 미설치
-Reverse  ✅ (현재 플러그인)
+Prompt   ✅ 설치됨
+Reverse  ✅ 현재 플러그인
 
 활성 시너지:
-  [Harness+Reverse] RE 규칙 공유  ✅
-  [Agentic+Reverse] 재검수 트리거 ✅
-  [Context+Reverse] 스코프 점검   ❌ (미연결)
+  [Harness+Reverse] RE 규칙 공유 hook        ✅
+  [Loop+Harness]    Loop Bash 이중확인 방지  ✅
+  [Agentic+Harness] Agentic 이중 가드 방지   ✅
+  [Context+Reverse] RE 스코프 건강검진       ❌ (Context 미설치)
+  [Prompt+Reverse]  자연어 요청 품질향상     ❌ (설치는 됐으나 코드 연동 없음, M4-D 미착수)
 ```
 
 ---

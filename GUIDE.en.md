@@ -370,6 +370,21 @@ Binary analysis needs **2 free tools**. Install **Java first** (Ghidra runs on t
   JAVA_HOME at your Java install path, then retry from a new terminal (Windows: System Properties
   → Environment Variables → New).
 
+#### (Alternative) Java+Ghidra feels heavy? Try lightweight LIEF analysis
+
+Ghidra installation is somewhat heavy (two steps: Java, then Ghidra). Instead, installing just
+**Python + LIEF** (a free, open-source library) gives you a lighter-weight analysis path.
+
+```
+pip install lief
+```
+
+- **What you get**: file format (PE/ELF/Mach-O), section list, imported/exported function names
+- **What you don't get**: explaining a function's internal logic (disassembly) requires Ghidra —
+  LIEF only shows "structure", not behavior.
+- ⚠️ This path has never actually been run in this project — it is **not yet live-verified**
+  (added 2026-07-16).
+
 #### (Optional) IDA Pro integration
 
 IDA Pro is **commercial software**. If you already own a license, set the `SODAM_RE_IDA_PATH`
@@ -468,21 +483,23 @@ Then Agentic's easy-reviewer automatically steps in.
 node scripts/check-family.mjs
 ```
 
-Sample output:
+Sample output (reflects the actual format; install status varies by environment):
 ```
 SoDam 6-Sibling Status Check
 ────────────────────────────────────
 Harness  OK - installed
 Loop     OK - installed
-Context  -- not installed
+Context  -- not found
 Agentic  OK - installed
-Prompt   -- not installed
+Prompt   OK - installed
 Reverse  OK (current plugin)
 
 Active Synergies:
-  [Harness+Reverse] RE rule sharing   OK
-  [Agentic+Reverse] Re-review trigger OK
-  [Context+Reverse] Scope check       -- (not connected)
+  [Harness+Reverse] RE rule sharing hook          OK
+  [Loop+Harness]    Loop Bash dedup guard         OK
+  [Agentic+Harness] Agentic dedup guard           OK
+  [Context+Reverse] RE scope health check         -- (Context not installed)
+  [Prompt+Reverse]  Natural-language req quality  -- (installed, but no code-level integration yet — M4-D not started)
 ```
 
 ---
