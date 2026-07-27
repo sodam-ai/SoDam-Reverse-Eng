@@ -1,7 +1,7 @@
 # SoDam-Reverse-Eng 문제 해결 가이드
 
 > PRD §10.3 기반 — 실측·설계 과정에서 식별된 **실제 실패 모드** 중심.
-> 일반 FAQ는 **[GUIDE.md](./GUIDE.md)** 를 먼저 보세요.
+> 일반 FAQ는 **[README.md](./README.md)** §12를 먼저 보세요.
 
 ---
 
@@ -122,8 +122,8 @@ node scripts/check-trust-freshness.mjs
 
 Phase 2·3는 **골격이 이미 작성돼 있으나, 실제 도구로 라이브 검증된 적은 없는 상태**입니다(2026-07-27 재확인: Java/JADX/Apktool은 이 PC에 설치·작동 확인됨, Ghidra는 여전히 미설치). "구현 전"이 아니라 "라이브 미검증"이 정확한 표현입니다.
 
-- Phase 2(안드로이드): ✅ 라이브 검증 완료(2026-07-13). JADX·Apktool·Java 17+ 설치 필요(GUIDE 2-6절).
-- Phase 3(바이너리): 골격 완료. Ghidra·Java 17+ 설치 필요(GUIDE 2-7절).
+- Phase 2(안드로이드): ✅ 라이브 검증 완료(2026-07-13). JADX·Apktool·Java 17+ 설치 필요(README.md §6-2).
+- Phase 3(바이너리): 골격 완료. Ghidra·Java 17+ 설치 필요(README.md §6-2).
 
 도구를 설치했는데도 명령이 실패하면 아래 12-1·12-2를 확인하세요.
 
@@ -146,12 +146,12 @@ Phase 2·3는 **골격이 이미 작성돼 있으나, 실제 도구로 라이브
 
 **`ghidraRun`(또는 `.bat`) 실행이 안 됨:**
 - 대부분 **JAVA_HOME 환경변수 미설정**이 원인입니다. Java 17+ 설치 경로를 JAVA_HOME으로 지정한 뒤 새 터미널에서 재시도하세요.
-- Windows 설정 방법은 GUIDE.md 2-7절 참고.
+- Windows 설정 방법은 README.md §6-2 참고.
 
 **IDA Pro 옵션이 인식 안 됨:**
-- `SODAM_RE_IDA_PATH` 환경변수가 정확히 설정됐는지 확인(GUIDE.md 2-7절에 Windows `setx` 명령 안내).
+- `SODAM_RE_IDA_PATH` 환경변수가 정확히 설정됐는지 확인(README.md §6-2에 Windows `setx` 명령 안내).
 
 ---
 
-> 더 자세한 설치·사용법: **[GUIDE.md](./GUIDE.md)**  
+> 더 자세한 설치·사용법: **[README.md](./README.md)**  
 > 버그 신고: GitHub Issues (공개 후)
