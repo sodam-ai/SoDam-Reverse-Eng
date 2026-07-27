@@ -473,8 +473,7 @@ Reverse’s own check when Harness is present was attempted on 2026-07-12,
 but was reverted after an isolated test found it let a dangerous request
 through unchecked). A single dangerous request may therefore trigger 2
 block messages — redundant, but not a safety issue, since the same
-danger is simply caught twice. See <a
-href="./GUIDE.en.md">GUIDE.en.md</a> §3 for details.</p>
+danger is simply caught twice.</p>
 <hr />
 <h2 id="prerequisites-free-2-items">5. Prerequisites (Free, 2
 Items)</h2>
@@ -504,10 +503,6 @@ it</strong>. If not, install Claude Code from the Anthropic official
 website.</p>
 <hr />
 <h2 id="installation">6. Installation</h2>
-<blockquote>
-<p>📌 <strong>Detailed step-by-step guide:</strong> See <a
-href="./GUIDE.en.md">GUIDE.en.md</a> Chapter 2</p>
-</blockquote>
 <hr />
 <h3 id="read-before-installing-most-common-failure-cause">⚠️ Read Before
 Installing — Most Common Failure Cause</h3>
@@ -600,17 +595,26 @@ is complete.</p>
 3-Layer Safety (Required!)</h3>
 <pre><code>/re-selftest</code></pre>
 <p><strong>Expected result:</strong> ✅✅✅ All three green</p>
-<p>If any are not green → See <a href="./GUIDE.en.md">GUIDE.en.md</a>
-Chapter 2</p>
+<p>If any are not green → See <a
+href="./TROUBLESHOOTING.md">TROUBLESHOOTING.md</a></p>
 <h3 id="step-6-register-integrity-hash-activate-layer-3">Step 6:
 Register Integrity Hash (Activate Layer 3)</h3>
-<p>Copy <strong>all 5 file hashes</strong> from the selftest output and
-save them to <code>references/integrity.json</code> (keep any existing
-entries, only add the missing ones): <code>hooks/hooks.json</code> ·
-<code>hooks/re-deny-guard.mjs</code> · <code>hooks/_selftest.mjs</code> ·
-<code>references/deny-corpus.json</code> ·
-<code>references/mask-patterns.json</code>. Then run
-<code>/re-selftest</code> again → confirm all 5 Layer-3 items ✅</p>
+<p>Copy the <strong>hash of the core safety file
+(<code>hooks/re-deny-guard.mjs</code>)</strong> from the selftest output
+and save it to <code>references/integrity.json</code> (keep any existing
+entries):</p>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode json"><code class="sourceCode json"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;hooks/re-deny-guard.mjs&quot;</span><span class="fu">:</span> <span class="st">&quot;&lt;hash from selftest&gt;&quot;</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<p>→ Run <code>/re-selftest</code> again → confirm the Layer-3
+guard-hash line shows ✅</p>
+<blockquote>
+<p>💡 <code>references/integrity.json</code> may already contain other
+file entries (values staged ahead of a future coverage expansion). Right
+now, only <code>hooks/re-deny-guard.mjs</code> is actually checked — see
+<code>CHECKPOINT.md</code> for the developer-facing roadmap.</p>
+</blockquote>
 <hr />
 <h3 id="quick-start-5-minute-summary">6-1. Quick Start (5-Minute
 Summary)</h3>
@@ -634,6 +638,77 @@ that’s it.</li>
 <p>Stuck? See §12 (Troubleshooting · FAQ). For the reasoning behind each
 step, see §6 (Installation).</p>
 </blockquote>
+<hr />
+<h3 id="phase-23-additional-tool-installation-optional">6-2. (Phase 2·3)
+Additional Tool Installation — Optional</h3>
+<blockquote>
+<p>If you only use <code>/re-start</code> (source code analysis), you
+can skip this section. <code>/re-android</code> (APK analysis) or
+<code>/re-binary</code> (executable analysis) need the tools below.</p>
+</blockquote>
+<details>
+<summary>
+<strong>Android Analysis Tools — Java 17 · JADX · Apktool (✅
+Live-verified 2026-07-13)</strong>
+</summary>
+<p>3 free tools are needed. Install <strong>Java first</strong> (JADX
+and Apktool run on top of Java).</p>
+<p><strong>1) Java 17 or higher</strong> - Official: <a
+href="https://adoptium.net">adoptium.net</a> → “Temurin 17 (LTS)” →
+install the Windows <code>.msi</code> - Verify:
+<code>java -version</code> → <code>17</code> or higher means OK</p>
+<p><strong>2) JADX (APK → Java code)</strong> - Official: <a
+href="https://github.com/skylot/jadx/releases">github.com/skylot/jadx/releases</a>
+→ download <code>jadx-x.x.x.zip</code> (the CLI+GUI bundle; skip
+<code>jadx-gui-*</code>, which is GUI-only) → unzip to a location of
+your choice (e.g. <code>C:\jadx</code>) - <strong>Register PATH
+(required)</strong>: Windows search → “environment variables” → “Edit
+the system environment variables” → “Environment Variables…” → edit the
+<code>Path</code> user variable → “New” → add <code>C:\jadx\bin</code> →
+OK → <strong>fully restart Claude Code</strong> - Verify:
+<code>jadx --version</code></p>
+<p><strong>3) Apktool (resources and manifest)</strong> - Official:
+follow the Windows steps at <a
+href="https://apktool.org/docs/install">apktool.org/docs/install</a> —
+download <code>apktool.bat</code> and the latest jar (rename it to
+exactly <code>apktool.jar</code>), place both in the same folder
+(e.g. <code>C:\apktool</code>) - Register PATH the same way as JADX,
+adding <code>C:\apktool</code> → <strong>fully restart Claude
+Code</strong> - Verify: <code>apktool --version</code></p>
+<blockquote>
+<p>💡 Still not recognized after registering PATH? A new terminal alone
+may not be enough — <strong>fully quit and relaunch Claude Code
+itself</strong>.</p>
+</blockquote>
+<p>Once all 3 respond to <code>--version</code>, start analyzing with
+<code>/re-android [APK-path]</code>.</p>
+</details>
+<details>
+<summary>
+<strong>Binary Analysis Tools — Java · Ghidra (⚠️ Scaffolding complete,
+not yet live-verified)</strong>
+</summary>
+<p>2 free tools are needed. Install <strong>Java first</strong> (Ghidra
+runs on top of Java).</p>
+<p><strong>1) Java 17 or higher</strong> — Official: <a
+href="https://adoptium.net">adoptium.net</a> · Verify:
+<code>java --version</code></p>
+<p><strong>2) Ghidra (free, built by the NSA)</strong> - Official: <a
+href="https://ghidra-sre.org/">ghidra-sre.org</a> - After extracting,
+verify <code>ghidraRun.bat</code> (Windows) launches - If
+<code>ghidraRun</code> won’t launch, it’s usually a missing
+<code>JAVA_HOME</code> — point it at your Java install path and retry
+from a new terminal</p>
+<p><strong>(Alternative) Installation feels heavy?</strong>:
+<code>pip install lief</code> gives lightweight structure analysis only
+(no disassembly, not yet live-verified)</p>
+<p><strong>(Optional) IDA Pro integration</strong>: if you own a
+commercial license, run the following then reopen your terminal:</p>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>setx SODAM_RE_IDA_PATH <span class="st">&quot;C:\Program Files\IDA Pro 8.x\ida64.exe&quot;</span></span></code></pre></div>
+<p>Once Java and Ghidra are ready, start analyzing with
+<code>/re-binary [executable-path]</code>.</p>
+</details>
 <hr />
 <h2 id="commands">7. Commands</h2>
 <table>
@@ -708,10 +783,10 @@ step, see §6 (Installation).</p>
 <h2 id="analysis-workflow">8. Analysis Workflow</h2>
 <pre><code>User: /re-start my-code/login.js
           ↓
-[Step 1] Consent Gate
-  AI: &quot;Is this code yours or do you have permission to analyze it?&quot; → Yes/No
-  AI: &quot;Do you agree this is for defense/education only? You bear responsibility.&quot; → Yes/No
-  Both &quot;Yes&quot; required to proceed
+[Step 1] Consent Gate (3 button-choice questions, since 2026-07-27)
+  The AI shows 3 questions at once — covering ownership, purpose, and responsibility.
+  Answer with buttons, not free typing. All three need a &quot;Yes&quot;-type answer to proceed;
+  any &quot;No&quot; stops immediately. (See §12 Q5 for the exact question wording)
           ↓
 [Step 2] 3-Layer Safety Check (automatic)
   Layer 1: AI self-judges whether content involves cracking/bypass
@@ -843,16 +918,19 @@ Structure</h2>
 │   ├── check-trust-freshness.mjs
 │   └── rotate-safety-log.mjs    ← Safety-log retention cleanup (auto-expiry)
 │
+├── mcp/
+│   └── catalog.json             ← Phase 2·3 external tool curation (trust tier, license)
+│
 ├── samples/                     ← Example files for testing
 │   ├── safe-login.js
-│   └── deny-demo.txt
+│   ├── deny-demo.txt
+│   ├── agent-injection-demo.md  ← Prompt-injection defense test
+│   └── agent-injection-demo-2.md← Combined-attack (red-team) defense test
 │
 ├── .sodam-re/                   ← Analysis results (auto-created, .gitignore)
 │
 ├── README.md                    ← Korean overview
 ├── README.en.md                 ← This file (English overview)
-├── GUIDE.md                     ← Korean detailed guide
-├── GUIDE.en.md                  ← English detailed guide
 ├── TROUBLESHOOTING.md           ← Error resolution guide
 ├── CHECKPOINT.md                ← Development progress (for developers)
 ├── SETUP_BLOCKED_FILES.md       ← Full source of the manually-created safety files
@@ -883,16 +961,6 @@ Structure</h2>
 <td>English README</td>
 <td><code>README.en.md</code></td>
 <td>This file</td>
-</tr>
-<tr>
-<td>Korean Guide</td>
-<td><code>GUIDE.md</code></td>
-<td>Comprehensive Korean guide</td>
-</tr>
-<tr>
-<td>English Guide</td>
-<td><code>GUIDE.en.md</code></td>
-<td>Comprehensive English guide</td>
 </tr>
 <tr>
 <td>Error Resolution</td>
@@ -945,6 +1013,11 @@ Structure</h2>
 <td>SHA-256 hash store</td>
 </tr>
 <tr>
+<td>External Tool Curation</td>
+<td><code>mcp/catalog.json</code></td>
+<td>Phase 2·3 per-tool trust tier, license, status</td>
+</tr>
+<tr>
 <td>Family Status</td>
 <td><code>scripts/check-family.mjs</code></td>
 <td>6-sibling diagnostic script</td>
@@ -957,7 +1030,8 @@ Structure</h2>
 <tr>
 <td>Safety-Log Retention</td>
 <td><code>scripts/rotate-safety-log.mjs</code></td>
-<td>Deletes safety-log entries older than 30 days (default) — self-incrimination risk reduction</td>
+<td>Deletes safety-log entries older than 30 days (default) —
+self-incrimination risk reduction</td>
 </tr>
 </tbody>
 </table>
@@ -990,16 +1064,17 @@ also fail.</p>
 operations keep getting blocked</h3>
 <p>You are likely running Claude Code from <code>C:\Users\name</code>
 (home folder).</p>
-<div class="sourceCode" id="cb14"><pre
-class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cd</span> D<span class="op">:</span>\my-project-folder</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>claude</span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cd</span> D<span class="op">:</span>\my-project-folder</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>claude</span></code></pre></div>
 <p>Restart Claude Code from a <strong>project folder</strong>.</p>
 <hr />
 <h3 id="q5.-the-consent-question-keeps-prompting">Q5. The consent
 question keeps prompting</h3>
-<p>Answer clearly with <code>yes</code>, <code>Yes</code>, or
-<code>I agree</code>. Vague answers like “I think so” or “probably” are
-not treated as consent.</p>
+<p>When the 3 questions appear, don’t type free text — <strong>click the
+button (choice)</strong> or <strong>select a number</strong>. Choose a
+“Yes”-type option to register consent. Choosing “No” or declining to
+answer immediately halts the analysis.</p>
 <hr />
 <h3 id="q6.-crackbypass-request-was-refused">Q6. Crack/bypass request
 was refused</h3>
@@ -1022,11 +1097,11 @@ command above only reports “mismatch” and does <strong>not</strong>
 print the new hash (the hash is only printed when the entry is empty).
 In that case, take the path of whichever file shows ❌ (one of
 <code>hooks/hooks.json</code>, <code>hooks/re-deny-guard.mjs</code>,
-<code>hooks/_selftest.mjs</code>, <code>references/deny-corpus.json</code>,
-<code>references/mask-patterns.json</code>) and compute it
-directly:</p>
-<div class="sourceCode" id="cb16"><pre
-class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>node <span class="op">-</span>e <span class="st">&quot;console.log(require(&#39;crypto&#39;).createHash(&#39;sha256&#39;).update(require(&#39;fs&#39;).readFileSync(&#39;&lt;file-path&gt;&#39;)).digest(&#39;hex&#39;))&quot;</span></span></code></pre></div>
+<code>hooks/_selftest.mjs</code>,
+<code>references/deny-corpus.json</code>,
+<code>references/mask-patterns.json</code>) and compute it directly:</p>
+<div class="sourceCode" id="cb18"><pre
+class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>node <span class="op">-</span>e <span class="st">&quot;console.log(require(&#39;crypto&#39;).createHash(&#39;sha256&#39;).update(require(&#39;fs&#39;).readFileSync(&#39;&lt;file-path&gt;&#39;)).digest(&#39;hex&#39;))&quot;</span></span></code></pre></div>
 </blockquote>
 <hr />
 <h3 id="q8.-passwords-appear-in-plain-text-in-the-report">Q8. Passwords
@@ -1048,8 +1123,7 @@ not connecting</h3>
 <hr />
 <h3 id="q11.-more-detailed-error-resolution">Q11. More detailed error
 resolution</h3>
-<p>→ <strong><a href="./GUIDE.en.md">GUIDE.en.md</a></strong> — 25 FAQs
-and detailed guide → <strong><a
+<p>→ <strong><a
 href="./TROUBLESHOOTING.md">TROUBLESHOOTING.md</a></strong> — Full error
 pattern reference</p>
 <hr />
@@ -1207,9 +1281,7 @@ use</li>
 <li>No security tool can guarantee 100% safety</li>
 </ul>
 <p><strong>Full license text:</strong> <a href="./LICENSE">LICENSE</a> ·
-<strong>Copyright notice:</strong> <a href="./NOTICE">NOTICE</a>
-<strong>Detailed license explanation:</strong> See <a
-href="./GUIDE.en.md">GUIDE.en.md</a> Chapter 12</p>
+<strong>Copyright notice:</strong> <a href="./NOTICE">NOTICE</a></p>
 <hr />
 <h2 id="contact-contributing">14. Contact · Contributing</h2>
 <ul>
@@ -1369,13 +1441,46 @@ corrected the mask-pattern count (10 → 15)</li>
 (no safety impact, cleanup pending)</li>
 </ul>
 </details>
+<details>
+<summary>
+<strong>GUIDE Removed — Essential Content Merged into README
+(2026-07-27)</strong>
+</summary>
+<ul>
+<li>Removed <code>GUIDE.md</code>/<code>GUIDE.en.md</code> (+html). The
+install steps that lived only there (Android/JADX/Apktool, and
+binary/Ghidra tool setup) were moved into this document’s §6-2. One
+README now covers install, run, and troubleshoot end-to-end.</li>
+<li>Detailed error resolution continues to live in
+<code>TROUBLESHOOTING.md</code>.</li>
+</ul>
+</details>
+<details>
+<summary>
+<strong>Consent Gate Switched to Buttons + Automatic Safety-Log Cleanup
+(2026-07-27)</strong>
+</summary>
+<ul>
+<li>Converted all 4 consent gates (<code>/re-start</code>,
+<code>/re-android</code>, <code>/re-binary</code>,
+<code>/re-agent</code>) from free-text “yes/no” typing to <strong>button
+(choice) selection</strong> — reduces misfires from typos or ambiguous
+answers.</li>
+<li>New <code>scripts/rotate-safety-log.mjs</code>: automatically prunes
+block-history entries (<code>safety-log.jsonl</code>) older than 30 days
+(default, adjustable) so the log doesn’t grow forever. Only hashes are
+removed, never raw text, so this has no effect on safety-layer
+decisions.</li>
+<li>Fixed 4 internal recording gaps/typos in the planning docs (PRD) —
+no user-facing behavior changed.</li>
+</ul>
+</details>
 <blockquote>
 <p>For detailed development history, see <code>CHECKPOINT.md</code> (for
 developers).</p>
 </blockquote>
 <hr />
 <p><em>Korean version: <a href="./README.md">README.md</a></em>
-<em>Detailed English guide: <a href="./GUIDE.en.md">GUIDE.en.md</a></em>
 <em>Error resolution: <a
 href="./TROUBLESHOOTING.md">TROUBLESHOOTING.md</a></em></p>
 </body>

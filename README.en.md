@@ -103,7 +103,7 @@ SoDam-Reverse is the **youngest** of 6 sibling plugins. Installing siblings make
 node scripts/re-inject-harness.mjs
 ```
 → RE danger patterns are actually added to Harness's shared safety rules.
-> ⚠️ **Known limitation:** the rules are shared, but Reverse still registers its own separate hook (a feature to skip Reverse's own check when Harness is present was attempted on 2026-07-12, but was reverted after an isolated test found it let a dangerous request through unchecked). A single dangerous request may therefore trigger 2 block messages — redundant, but not a safety issue, since the same danger is simply caught twice. See [GUIDE.en.md](./GUIDE.en.md) §3 for details.
+> ⚠️ **Known limitation:** the rules are shared, but Reverse still registers its own separate hook (a feature to skip Reverse's own check when Harness is present was attempted on 2026-07-12, but was reverted after an isolated test found it let a dangerous request through unchecked). A single dangerous request may therefore trigger 2 block messages — redundant, but not a safety issue, since the same danger is simply caught twice.
 
 ---
 
@@ -139,8 +139,6 @@ If not, install Claude Code from the Anthropic official website.
 ---
 
 ## 6. Installation
-
-> 📌 **Detailed step-by-step guide:** See [GUIDE.en.md](./GUIDE.en.md) Chapter 2
 
 ---
 
@@ -248,21 +246,19 @@ The `(sodam-reverse)` tag confirms the plugin loaded correctly.
 
 **Expected result:** ✅✅✅ All three green
 
-If any are not green → See [GUIDE.en.md](./GUIDE.en.md) Chapter 2
+If any are not green → See [TROUBLESHOOTING.md](./TROUBLESHOOTING.md)
 
 ### Step 6: Register Integrity Hash (Activate Layer 3)
 
-Copy **all 5 file hashes** from the selftest output and save them to `references/integrity.json` (keep any existing entries, only add the missing ones):
+Copy the **hash of the core safety file (`hooks/re-deny-guard.mjs`)** from the selftest output and save it to `references/integrity.json` (keep any existing entries):
 ```json
 {
-  "hooks/hooks.json": "<hash from selftest>",
-  "hooks/re-deny-guard.mjs": "<hash from selftest>",
-  "hooks/_selftest.mjs": "<hash from selftest>",
-  "references/deny-corpus.json": "<hash from selftest>",
-  "references/mask-patterns.json": "<hash from selftest>"
+  "hooks/re-deny-guard.mjs": "<hash from selftest>"
 }
 ```
-→ Run `/re-selftest` again → Confirm all 5 Layer-3 items ✅
+→ Run `/re-selftest` again → confirm the Layer-3 guard-hash line shows ✅
+
+> 💡 `references/integrity.json` may already contain other file entries (values staged ahead of a future coverage expansion). Right now, only `hooks/re-deny-guard.mjs` is actually checked — see `CHECKPOINT.md` for the developer-facing roadmap.
 
 ---
 
@@ -277,6 +273,61 @@ Copy **all 5 file hashes** from the selftest output and save them to `references
 5. Now try your own code: `/re-start [your-file-path]` — that's it.
 
 > Stuck? See §12 (Troubleshooting · FAQ). For the reasoning behind each step, see §6 (Installation).
+
+---
+
+### 6-2. (Phase 2·3) Additional Tool Installation — Optional
+
+> If you only use `/re-start` (source code analysis), you can skip this section.
+> `/re-android` (APK analysis) or `/re-binary` (executable analysis) need the tools below.
+
+<details>
+<summary><strong>Android Analysis Tools — Java 17 · JADX · Apktool (✅ Live-verified 2026-07-13)</strong></summary>
+
+3 free tools are needed. Install **Java first** (JADX and Apktool run on top of Java).
+
+**1) Java 17 or higher**
+- Official: [adoptium.net](https://adoptium.net) → "Temurin 17 (LTS)" → install the Windows `.msi`
+- Verify: `java -version` → `17` or higher means OK
+
+**2) JADX (APK → Java code)**
+- Official: [github.com/skylot/jadx/releases](https://github.com/skylot/jadx/releases) → download `jadx-x.x.x.zip` (the CLI+GUI bundle; skip `jadx-gui-*`, which is GUI-only) → unzip to a location of your choice (e.g. `C:\jadx`)
+- **Register PATH (required)**: Windows search → "environment variables" → "Edit the system environment variables" → "Environment Variables..." → edit the `Path` user variable → "New" → add `C:\jadx\bin` → OK → **fully restart Claude Code**
+- Verify: `jadx --version`
+
+**3) Apktool (resources and manifest)**
+- Official: follow the Windows steps at [apktool.org/docs/install](https://apktool.org/docs/install) — download `apktool.bat` and the latest jar (rename it to exactly `apktool.jar`), place both in the same folder (e.g. `C:\apktool`)
+- Register PATH the same way as JADX, adding `C:\apktool` → **fully restart Claude Code**
+- Verify: `apktool --version`
+
+> 💡 Still not recognized after registering PATH? A new terminal alone may not be enough — **fully quit and relaunch Claude Code itself**.
+
+Once all 3 respond to `--version`, start analyzing with `/re-android [APK-path]`.
+
+</details>
+
+<details>
+<summary><strong>Binary Analysis Tools — Java · Ghidra (⚠️ Scaffolding complete, not yet live-verified)</strong></summary>
+
+2 free tools are needed. Install **Java first** (Ghidra runs on top of Java).
+
+**1) Java 17 or higher** — Official: [adoptium.net](https://adoptium.net) · Verify: `java --version`
+
+**2) Ghidra (free, built by the NSA)**
+- Official: [ghidra-sre.org](https://ghidra-sre.org/)
+- After extracting, verify `ghidraRun.bat` (Windows) launches
+- If `ghidraRun` won't launch, it's usually a missing `JAVA_HOME` — point it at your Java install path and retry from a new terminal
+
+**(Alternative) Installation feels heavy?**: `pip install lief` gives lightweight structure analysis only (no disassembly, not yet live-verified)
+
+**(Optional) IDA Pro integration**: if you own a commercial license, run the following then reopen your terminal:
+```powershell
+setx SODAM_RE_IDA_PATH "C:\Program Files\IDA Pro 8.x\ida64.exe"
+```
+
+Once Java and Ghidra are ready, start analyzing with `/re-binary [executable-path]`.
+
+</details>
 
 ---
 
@@ -304,10 +355,10 @@ Copy **all 5 file hashes** from the selftest output and save them to `references
 ```
 User: /re-start my-code/login.js
           ↓
-[Step 1] Consent Gate
-  AI: "Is this code yours or do you have permission to analyze it?" → Yes/No
-  AI: "Do you agree this is for defense/education only? You bear responsibility." → Yes/No
-  Both "Yes" required to proceed
+[Step 1] Consent Gate (3 button-choice questions, since 2026-07-27)
+  The AI shows 3 questions at once — covering ownership, purpose, and responsibility.
+  Answer with buttons, not free typing. All three need a "Yes"-type answer to proceed;
+  any "No" stops immediately. (See §12 Q5 for the exact question wording)
           ↓
 [Step 2] 3-Layer Safety Check (automatic)
   Layer 1: AI self-judges whether content involves cracking/bypass
@@ -419,16 +470,19 @@ SoDam-Reverse-Eng/
 │   ├── check-trust-freshness.mjs
 │   └── rotate-safety-log.mjs    ← Safety-log retention cleanup (auto-expiry)
 │
+├── mcp/
+│   └── catalog.json             ← Phase 2·3 external tool curation (trust tier, license)
+│
 ├── samples/                     ← Example files for testing
 │   ├── safe-login.js
-│   └── deny-demo.txt
+│   ├── deny-demo.txt
+│   ├── agent-injection-demo.md  ← Prompt-injection defense test
+│   └── agent-injection-demo-2.md← Combined-attack (red-team) defense test
 │
 ├── .sodam-re/                   ← Analysis results (auto-created, .gitignore)
 │
 ├── README.md                    ← Korean overview
 ├── README.en.md                 ← This file (English overview)
-├── GUIDE.md                     ← Korean detailed guide
-├── GUIDE.en.md                  ← English detailed guide
 ├── TROUBLESHOOTING.md           ← Error resolution guide
 ├── CHECKPOINT.md                ← Development progress (for developers)
 ├── SETUP_BLOCKED_FILES.md       ← Full source of the manually-created safety files
@@ -444,8 +498,6 @@ SoDam-Reverse-Eng/
 |---|---|---|
 | Korean README | `README.md` | Korean overview |
 | English README | `README.en.md` | This file |
-| Korean Guide | `GUIDE.md` | Comprehensive Korean guide |
-| English Guide | `GUIDE.en.md` | Comprehensive English guide |
 | Error Resolution | `TROUBLESHOOTING.md` | Full troubleshooting reference |
 | Safety File Code | `SETUP_BLOCKED_FILES.md` | Manual setup file contents |
 | License Full Text | `LICENSE` | Apache-2.0 full text |
@@ -456,6 +508,7 @@ SoDam-Reverse-Eng/
 | Trusted Tool List | `references/trust-catalog.md` | 15 tools with trust ratings |
 | Report Template | `references/report-template.md` | Report format definition |
 | Integrity Hashes | `references/integrity.json` | SHA-256 hash store |
+| External Tool Curation | `mcp/catalog.json` | Phase 2·3 per-tool trust tier, license, status |
 | Family Status | `scripts/check-family.mjs` | 6-sibling diagnostic script |
 | Trust Freshness | `scripts/check-trust-freshness.mjs` | Checks trusted-tool catalog for staleness |
 | Safety-Log Retention | `scripts/rotate-safety-log.mjs` | Deletes safety-log entries older than 30 days (default) — self-incrimination risk reduction |
@@ -505,8 +558,8 @@ Restart Claude Code from a **project folder**.
 
 ### Q5. The consent question keeps prompting
 
-Answer clearly with `yes`, `Yes`, or `I agree`.
-Vague answers like "I think so" or "probably" are not treated as consent.
+When the 3 questions appear, don't type free text — **click the button (choice)** or **select a number**.
+Choose a "Yes"-type option to register consent. Choosing "No" or declining to answer immediately halts the analysis.
 
 ---
 
@@ -562,7 +615,6 @@ node scripts/re-inject-harness.mjs
 
 ### Q11. More detailed error resolution
 
-→ **[GUIDE.en.md](./GUIDE.en.md)** — 25 FAQs and detailed guide
 → **[TROUBLESHOOTING.md](./TROUBLESHOOTING.md)** — Full error pattern reference
 
 ---
@@ -624,7 +676,6 @@ node scripts/re-inject-harness.mjs
 - No security tool can guarantee 100% safety
 
 **Full license text:** [LICENSE](./LICENSE) · **Copyright notice:** [NOTICE](./NOTICE)
-**Detailed license explanation:** See [GUIDE.en.md](./GUIDE.en.md) Chapter 12
 
 ---
 
@@ -715,10 +766,26 @@ node scripts/re-inject-harness.mjs
 
 </details>
 
+<details>
+<summary><strong>GUIDE Removed — Essential Content Merged into README (2026-07-27)</strong></summary>
+
+- Removed `GUIDE.md`/`GUIDE.en.md` (+html). The install steps that lived only there (Android/JADX/Apktool, and binary/Ghidra tool setup) were moved into this document's §6-2. One README now covers install, run, and troubleshoot end-to-end.
+- Detailed error resolution continues to live in `TROUBLESHOOTING.md`.
+
+</details>
+
+<details>
+<summary><strong>Consent Gate Switched to Buttons + Automatic Safety-Log Cleanup (2026-07-27)</strong></summary>
+
+- Converted all 4 consent gates (`/re-start`, `/re-android`, `/re-binary`, `/re-agent`) from free-text "yes/no" typing to **button (choice) selection** — reduces misfires from typos or ambiguous answers.
+- New `scripts/rotate-safety-log.mjs`: automatically prunes block-history entries (`safety-log.jsonl`) older than 30 days (default, adjustable) so the log doesn't grow forever. Only hashes are removed, never raw text, so this has no effect on safety-layer decisions.
+- Fixed 4 internal recording gaps/typos in the planning docs (PRD) — no user-facing behavior changed.
+
+</details>
+
 > For detailed development history, see `CHECKPOINT.md` (for developers).
 
 ---
 
 *Korean version: [README.md](./README.md)*
-*Detailed English guide: [GUIDE.en.md](./GUIDE.en.md)*
 *Error resolution: [TROUBLESHOOTING.md](./TROUBLESHOOTING.md)*

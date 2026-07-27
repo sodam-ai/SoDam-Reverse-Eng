@@ -105,7 +105,7 @@ SoDam-Reverse는 6형제 플러그인 중 **막내**입니다. 형제들과 함�
 node scripts/re-inject-harness.mjs
 ```
 → RE 위험 패턴이 Harness 안전규칙에 실제로 추가됩니다.
-> ⚠️ **알려진 한계**: 규칙은 공유되지만 hook 자체는 Reverse가 별도로 계속 등록합니다(Harness 존재 시 자체검사를 생략하는 기능을 2026-07-12에 시도했으나 위험 요청이 무검증 통과하는 실제 회귀가 발견돼 되돌림). 그래서 위험한 요청 1건에 차단 메시지가 2번 뜰 수 있으나, 같은 위험을 두 번 잡는 것뿐이라 안전에는 영향 없습니다. 자세한 설명은 [GUIDE.md](./GUIDE.md) 3장 참고.
+> ⚠️ **알려진 한계**: 규칙은 공유되지만 hook 자체는 Reverse가 별도로 계속 등록합니다(Harness 존재 시 자체검사를 생략하는 기능을 2026-07-12에 시도했으나 위험 요청이 무검증 통과하는 실제 회귀가 발견돼 되돌림). 그래서 위험한 요청 1건에 차단 메시지가 2번 뜰 수 있으나, 같은 위험을 두 번 잡는 것뿐이라 안전에는 영향 없습니다.
 
 ---
 
@@ -141,8 +141,6 @@ node scripts/re-inject-harness.mjs
 ---
 
 ## 6. 설치 방법
-
-> 📌 **더 자세한 단계별 안내:** [GUIDE.md](./GUIDE.md) 2장 참고
 
 ---
 
@@ -250,21 +248,19 @@ Claude Code가 열리면 `/re-p` 입력 → 자동완성에 아래가 떠야 정
 
 **기대 결과:** ✅✅✅ 3개 모두 초록색
 
-초록색 3개가 나오지 않으면 → [GUIDE.md](./GUIDE.md) 2장 참고
+초록색 3개가 나오지 않으면 → [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) 참고
 
 ### 단계 6: 무결성 해시 등록 (3층 활성화)
 
-selftest 출력에서 **5개 파일의 해시**를 모두 `references/integrity.json`에 저장하세요(이미 있는 항목은 유지, 없는 항목만 추가):
+selftest 출력에서 **핵심 안전파일(`hooks/re-deny-guard.mjs`)의 해시**를 `references/integrity.json`에 저장하세요(이미 있는 항목은 유지):
 ```json
 {
-  "hooks/hooks.json": "<셀프테스트가 출력한 해시>",
-  "hooks/re-deny-guard.mjs": "<셀프테스트가 출력한 해시>",
-  "hooks/_selftest.mjs": "<셀프테스트가 출력한 해시>",
-  "references/deny-corpus.json": "<셀프테스트가 출력한 해시>",
-  "references/mask-patterns.json": "<셀프테스트가 출력한 해시>"
+  "hooks/re-deny-guard.mjs": "<셀프테스트가 출력한 해시>"
 }
 ```
-→ 다시 `/re-selftest` 실행 → 3층 5개 항목 전부 ✅ 확인
+→ 다시 `/re-selftest` 실행 → `"3층 무결성: guard 해시 일치"` ✅ 확인
+
+> 💡 `references/integrity.json`에는 다른 안전파일 항목이 미리 채워져 있을 수 있습니다(향후 검사 범위 확장을 대비한 준비값). 지금 이 단계에서 실제로 검사에 쓰이는 항목은 `hooks/re-deny-guard.mjs` 하나뿐입니다 — 개발자용 상세는 `CHECKPOINT.md`를 참고하세요.
 
 ---
 
@@ -279,6 +275,61 @@ selftest 출력에서 **5개 파일의 해시**를 모두 `references/integrity.
 5. 이후 내 코드로 실습: `/re-start [내 파일 경로]` — 이게 전부입니다.
 
 > 막히면 §12(문제 해결·FAQ)를, 각 단계의 자세한 이유는 §6(설치 방법)을 참고하세요.
+
+---
+
+### 6-2. (Phase 2·3) 추가 도구 설치 — 선택 사항
+
+> `/re-start`(소스 코드 분석)만 쓴다면 이 항목은 건너뛰어도 됩니다.
+> `/re-android`(APK 분석) 또는 `/re-binary`(실행파일 분석)를 쓰려면 아래 도구가 필요합니다.
+
+<details>
+<summary><strong>Android 분석 도구 설치 — Java 17 · JADX · Apktool (✅ 2026-07-13 라이브 검증 완료)</strong></summary>
+
+무료 도구 3개가 필요합니다. **Java를 가장 먼저** 설치하세요(JADX·Apktool이 Java 위에서 동작).
+
+**1) Java 17 이상**
+- 공식: [adoptium.net](https://adoptium.net) → "Temurin 17 (LTS)" → Windows `.msi` 설치
+- 확인: `java -version` → `17` 이상 숫자면 OK
+
+**2) JADX (APK → 자바 코드 복원)**
+- 공식: [github.com/skylot/jadx/releases](https://github.com/skylot/jadx/releases) → `jadx-x.x.x.zip`(cli+gui 통합본, `jadx-gui-*`는 GUI 전용이라 제외) 다운로드 → 원하는 위치에 압축 해제(예: `C:\jadx`)
+- **PATH 등록(필수)**: Windows 검색 → "환경 변수" → "시스템 환경 변수 편집" → "환경 변수(N)..." → 사용자 변수 `Path` 편집 → "새로 만들기" → `C:\jadx\bin` 추가 → 확인 → **Claude Code 완전 재시작**
+- 확인: `jadx --version`
+
+**3) Apktool (리소스·매니페스트 복원)**
+- 공식: [apktool.org/docs/install](https://apktool.org/docs/install) Windows 안내대로 `apktool.bat`과 최신 jar(반드시 `apktool.jar`로 이름 변경) 다운로드 → 같은 폴더에 배치(예: `C:\apktool`)
+- PATH 등록: JADX와 동일한 방법으로 `C:\apktool` 추가 → **Claude Code 완전 재시작**
+- 확인: `apktool --version`
+
+> 💡 PATH 등록 후에도 인식이 안 되면 새 터미널만으로는 부족할 수 있습니다 — **Claude Code 자체를 완전히 종료 후 재실행**해야 합니다.
+
+3개 모두 준비되면 `/re-android [APK경로]`로 분석을 시작하세요.
+
+</details>
+
+<details>
+<summary><strong>바이너리 분석 도구 설치 — Java · Ghidra (⚠️ 골격 완료, 라이브 미검증)</strong></summary>
+
+무료 도구 2개가 필요합니다. **Java를 먼저** 설치하세요(Ghidra가 Java 위에서 동작).
+
+**1) Java 17 이상** — 공식: [adoptium.net](https://adoptium.net) · 확인: `java --version`
+
+**2) Ghidra (무료, NSA 개발)**
+- 공식: [ghidra-sre.org](https://ghidra-sre.org/)
+- 압축 해제 후 `ghidraRun.bat`(Windows) 실행 확인
+- `ghidraRun`이 안 열리면 대부분 `JAVA_HOME` 환경변수 미설정이 원인 — Java 설치 경로를 `JAVA_HOME`으로 지정 후 새 터미널에서 재시도
+
+**(대안) 설치가 부담스럽다면**: `pip install lief`로 가벼운 구조 분석만 가능(디스어셈블은 불가, 라이브 미검증)
+
+**(선택) IDA Pro 연동**: 본인 소유 상용 라이선스가 있다면 아래 명령 실행 후 새 터미널에서 사용 가능:
+```powershell
+setx SODAM_RE_IDA_PATH "C:\Program Files\IDA Pro 8.x\ida64.exe"
+```
+
+Java·Ghidra가 준비되면 `/re-binary [실행파일경로]`로 분석을 시작하세요.
+
+</details>
 
 ---
 
@@ -306,10 +357,10 @@ selftest 출력에서 **5개 파일의 해시**를 모두 `references/integrity.
 ```
 사용자: /re-start 내코드/login.js
           ↓
-[1단계] 동의 게이트
-  AI: "이 코드가 본인 소유이거나 허가받은 것입니까?" → 예/아니오
-  AI: "방어·교육 목적에 동의합니까? 책임은 본인에게 있습니다." → 예/아니오
-  둘 다 "예"여야 다음 단계로 진행
+[1단계] 동의 게이트 (버튼 선택형 질문 3개, 2026-07-27부터)
+  AI가 소유권·분석 목적·이용 동의 질문 3개를 한 번에 띄웁니다 — 타이핑 대신 버튼(선택지)을 눌러 답합니다.
+  세 질문 모두 "예" 계열 선택 → 다음 단계로. 하나라도 "아니오" → 즉시 중단
+  (정확한 질문 문구는 §12 Q5 참고)
           ↓
 [2단계] 안전 3층 점검 (자동)
   1층: AI가 크랙·우회 내용인지 자체 판단
@@ -422,18 +473,18 @@ SoDam-Reverse-Eng/
 │   └── rotate-safety-log.mjs    ← 안전로그 보존기간 관리(자동만료)
 │
 ├── mcp/
-│   └── catalog.json             ← Phase 2·3 외부 도구 설정
+│   └── catalog.json             ← Phase 2·3 외부 도구 큐레이션 설정(신뢰등급·라이선스)
 │
 ├── samples/                     ← 테스트용 예제 파일
 │   ├── safe-login.js            ← 정상 분석 테스트용
-│   └── deny-demo.txt            ← 차단 테스트용
+│   ├── deny-demo.txt            ← 차단 테스트용
+│   ├── agent-injection-demo.md  ← 프롬프트 인젝션 방어 테스트용
+│   └── agent-injection-demo-2.md← 결합공격(레드팀) 방어 테스트용
 │
 ├── .sodam-re/                   ← 분석 결과 저장 (자동 생성, .gitignore)
 │
 ├── README.md                    ← 이 파일 (한국어 개요)
 ├── README.en.md                 ← English overview
-├── GUIDE.md                     ← 초보 완전 사용 설명서 (한국어)
-├── GUIDE.en.md                  ← English detailed guide
 ├── TROUBLESHOOTING.md           ← 오류 해결 가이드
 ├── CHECKPOINT.md                ← 개발 진행 상태 (개발자용)
 ├── SETUP_BLOCKED_FILES.md       ← 안전파일 코드 전문
@@ -456,8 +507,6 @@ SoDam-Reverse-Eng/
 |---|---|---|
 | 한국어 README | `README.md` | 이 파일 (전체 개요) |
 | 영어 README | `README.en.md` | English overview |
-| 한국어 상세 가이드 | `GUIDE.md` | 초보 완전 사용 설명서 |
-| 영어 상세 가이드 | `GUIDE.en.md` | English detailed guide |
 | 오류 해결 가이드 | `TROUBLESHOOTING.md` | 실패 패턴 전체 해결법 |
 | 안전파일 코드 전문 | `SETUP_BLOCKED_FILES.md` | 수동 설정 파일 코드 |
 | 라이선스 원문 | `LICENSE` | Apache-2.0 전문 |
@@ -468,6 +517,7 @@ SoDam-Reverse-Eng/
 | 신뢰 도구 목록 | `references/trust-catalog.md` | 15개 도구 신뢰등급 |
 | 보고서 표준 양식 | `references/report-template.md` | 보고서 형식 정의 |
 | 무결성 해시 | `references/integrity.json` | SHA-256 해시 저장 |
+| 외부 도구 큐레이션 | `mcp/catalog.json` | Phase 2·3 도구별 신뢰등급·라이선스·상태 |
 | 형제 상태 확인 | `scripts/check-family.mjs` | 6형제 진단 스크립트 |
 | 신선도 점검 | `scripts/check-trust-freshness.mjs` | 신뢰 카탈로그 최신성 확인 |
 | 안전로그 보존기간 관리 | `scripts/rotate-safety-log.mjs` | 30일(기본) 지난 안전로그 항목 삭제(자기부죄 방지) |
@@ -519,8 +569,8 @@ claude
 
 ### Q5. 동의 질문에서 막혀요
 
-"예" 또는 "네" 또는 "동의합니다"처럼 **명확하게** 입력하세요.
-"그런 것 같아요", "아마도요" 같은 애매한 답변은 동의로 처리되지 않습니다.
+질문 3개가 뜨면 자연어로 타이핑하지 말고, **버튼(선택지)을 직접 클릭**하거나 **번호를 선택**하세요.
+"예" 계열 선택지를 골라야 동의로 처리됩니다 — "아니오"를 선택하거나 응답을 거부하면 그 즉시 분석이 중단됩니다.
 
 ---
 
@@ -576,7 +626,6 @@ node scripts/re-inject-harness.mjs
 
 ### Q11. 더 자세한 오류 해결
 
-→ **[GUIDE.md](./GUIDE.md)** — FAQ 25가지 포함 상세 가이드
 → **[TROUBLESHOOTING.md](./TROUBLESHOOTING.md)** — 실패 패턴 전체 해결법
 
 ---
@@ -638,7 +687,6 @@ node scripts/re-inject-harness.mjs
 - "100% 안전"은 어떤 보안 도구도 보장할 수 없습니다
 
 **라이선스 전문:** [LICENSE](./LICENSE) · **저작권 고지:** [NOTICE](./NOTICE)
-**더 자세한 라이선스 해설:** [GUIDE.md](./GUIDE.md) 11장 참고
 
 ---
 
@@ -729,10 +777,26 @@ node scripts/re-inject-harness.mjs
 
 </details>
 
+<details>
+<summary><strong>GUIDE 문서 제거 — 핵심 내용을 README로 통합 (2026-07-27)</strong></summary>
+
+- `GUIDE.md`·`GUIDE.en.md`(+html)를 제거하고, 유일했던 설치 정보(Android/JADX/Apktool·바이너리/Ghidra 도구 설치 절차)를 이 문서 §6-2로 이전했습니다. README 하나로 설치·실행·문제해결까지 끝나도록 문서 구조를 단순화했습니다.
+- 남은 상세 오류 해결은 `TROUBLESHOOTING.md`가 계속 담당합니다.
+
+</details>
+
+<details>
+<summary><strong>동의 게이트 버튼형 전환 + 안전로그 자동 정리 (2026-07-27)</strong></summary>
+
+- 동의 게이트 4곳(`/re-start`·`/re-android`·`/re-binary`·`/re-agent`)을 자연어 "예/아니오" 타이핑 방식에서 **버튼(선택지) 선택 방식**으로 전환 — 오타·애매한 답변으로 인한 오동작 가능성을 줄임.
+- `scripts/rotate-safety-log.mjs` 신규: 차단 이력(`safety-log.jsonl`)이 무기한 쌓이지 않도록 30일(기본, 조정 가능) 지난 항목을 자동 정리. 원문이 아닌 해시만 지우는 것이라 안전 판정에는 영향 없음.
+- 기획 문서(PRD) 내부 기록 4건의 누락·오기 수정(사용자에게 보이는 기능 변경은 없음).
+
+</details>
+
 > 개발 상세 이력은 `CHECKPOINT.md`(개발자용)를 참고하세요.
 
 ---
 
 *English version: [README.en.md](./README.en.md)*
-*상세 사용 설명서: [GUIDE.md](./GUIDE.md)*
 *오류 해결: [TROUBLESHOOTING.md](./TROUBLESHOOTING.md)*

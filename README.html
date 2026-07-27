@@ -455,8 +455,7 @@ Claude Code를 시작하면 Harness · Loop guard가 정상 작업까지 막습�
 별도로 계속 등록합니다(Harness 존재 시 자체검사를 생략하는 기능을
 2026-07-12에 시도했으나 위험 요청이 무검증 통과하는 실제 회귀가 발견돼
 되돌림). 그래서 위험한 요청 1건에 차단 메시지가 2번 뜰 수 있으나, 같은
-위험을 두 번 잡는 것뿐이라 안전에는 영향 없습니다. 자세한 설명은 <a
-href="./GUIDE.md">GUIDE.md</a> 3장 참고.</p>
+위험을 두 번 잡는 것뿐이라 안전에는 영향 없습니다.</p>
 <hr />
 <h2 id="사전-준비물-무료-2가지">5. 사전 준비물 (무료, 2가지)</h2>
 <h3 id="준비물-1-node.js-버전-18-이상">준비물 1: Node.js (버전 18
@@ -484,10 +483,6 @@ PowerShell</strong> 클릭 3. 검은 창이 열리면 아래를 입력하고
 설치하세요.</p>
 <hr />
 <h2 id="설치-방법">6. 설치 방법</h2>
-<blockquote>
-<p>📌 <strong>더 자세한 단계별 안내:</strong> <a
-href="./GUIDE.md">GUIDE.md</a> 2장 참고</p>
-</blockquote>
 <hr />
 <h3 id="설치-전-반드시-읽기-가장-흔한-실패-원인">⚠️ 설치 전 반드시 읽기
 — 가장 흔한 실패 원인</h3>
@@ -576,17 +571,27 @@ class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb6-
 <h3 id="단계-5-안전-3층-검증-필수">단계 5: 안전 3층 검증 (필수!)</h3>
 <pre><code>/re-selftest</code></pre>
 <p><strong>기대 결과:</strong> ✅✅✅ 3개 모두 초록색</p>
-<p>초록색 3개가 나오지 않으면 → <a href="./GUIDE.md">GUIDE.md</a> 2장
-참고</p>
+<p>초록색 3개가 나오지 않으면 → <a
+href="./TROUBLESHOOTING.md">TROUBLESHOOTING.md</a> 참고</p>
 <h3 id="단계-6-무결성-해시-등록-3층-활성화">단계 6: 무결성 해시 등록
 (3층 활성화)</h3>
-<p>selftest 출력에서 <strong>5개 파일의 해시</strong>를 모두 복사해
+<p>selftest 출력에서 <strong>핵심
+안전파일(<code>hooks/re-deny-guard.mjs</code>)의 해시</strong>를
 <code>references/integrity.json</code>에 저장하세요(이미 있는 항목은
-유지, 없는 항목만 추가): <code>hooks/hooks.json</code> ·
-<code>hooks/re-deny-guard.mjs</code> · <code>hooks/_selftest.mjs</code> ·
-<code>references/deny-corpus.json</code> ·
-<code>references/mask-patterns.json</code>. 저장 후 다시
-<code>/re-selftest</code> 실행 → 3층 5개 항목 전부 ✅ 확인.</p>
+유지):</p>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode json"><code class="sourceCode json"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;hooks/re-deny-guard.mjs&quot;</span><span class="fu">:</span> <span class="st">&quot;&lt;셀프테스트가 출력한 해시&gt;&quot;</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<p>→ 다시 <code>/re-selftest</code> 실행 →
+<code>"3층 무결성: guard 해시 일치"</code> ✅ 확인</p>
+<blockquote>
+<p>💡 <code>references/integrity.json</code>에는 다른 안전파일 항목이
+미리 채워져 있을 수 있습니다(향후 검사 범위 확장을 대비한 준비값). 지금
+이 단계에서 실제로 검사에 쓰이는 항목은
+<code>hooks/re-deny-guard.mjs</code> 하나뿐입니다 — 개발자용 상세는
+<code>CHECKPOINT.md</code>를 참고하세요.</p>
+</blockquote>
 <hr />
 <h3 id="빠른-시작-5분-요약">6-1. 빠른 시작 (5분 요약)</h3>
 <blockquote>
@@ -609,6 +614,75 @@ class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb6-
 <p>막히면 §12(문제 해결·FAQ)를, 각 단계의 자세한 이유는 §6(설치 방법)을
 참고하세요.</p>
 </blockquote>
+<hr />
+<h3 id="phase-23-추가-도구-설치-선택-사항">6-2. (Phase 2·3) 추가 도구
+설치 — 선택 사항</h3>
+<blockquote>
+<p><code>/re-start</code>(소스 코드 분석)만 쓴다면 이 항목은 건너뛰어도
+됩니다. <code>/re-android</code>(APK 분석) 또는
+<code>/re-binary</code>(실행파일 분석)를 쓰려면 아래 도구가
+필요합니다.</p>
+</blockquote>
+<details>
+<summary>
+<strong>Android 분석 도구 설치 — Java 17 · JADX · Apktool (✅ 2026-07-13
+라이브 검증 완료)</strong>
+</summary>
+<p>무료 도구 3개가 필요합니다. <strong>Java를 가장 먼저</strong>
+설치하세요(JADX·Apktool이 Java 위에서 동작).</p>
+<p><strong>1) Java 17 이상</strong> - 공식: <a
+href="https://adoptium.net">adoptium.net</a> → “Temurin 17 (LTS)” →
+Windows <code>.msi</code> 설치 - 확인: <code>java -version</code> →
+<code>17</code> 이상 숫자면 OK</p>
+<p><strong>2) JADX (APK → 자바 코드 복원)</strong> - 공식: <a
+href="https://github.com/skylot/jadx/releases">github.com/skylot/jadx/releases</a>
+→ <code>jadx-x.x.x.zip</code>(cli+gui 통합본, <code>jadx-gui-*</code>는
+GUI 전용이라 제외) 다운로드 → 원하는 위치에 압축 해제(예:
+<code>C:\jadx</code>) - <strong>PATH 등록(필수)</strong>: Windows 검색 →
+“환경 변수” → “시스템 환경 변수 편집” → “환경 변수(N)…” → 사용자 변수
+<code>Path</code> 편집 → “새로 만들기” → <code>C:\jadx\bin</code> 추가 →
+확인 → <strong>Claude Code 완전 재시작</strong> - 확인:
+<code>jadx --version</code></p>
+<p><strong>3) Apktool (리소스·매니페스트 복원)</strong> - 공식: <a
+href="https://apktool.org/docs/install">apktool.org/docs/install</a>
+Windows 안내대로 <code>apktool.bat</code>과 최신 jar(반드시
+<code>apktool.jar</code>로 이름 변경) 다운로드 → 같은 폴더에 배치(예:
+<code>C:\apktool</code>) - PATH 등록: JADX와 동일한 방법으로
+<code>C:\apktool</code> 추가 → <strong>Claude Code 완전 재시작</strong>
+- 확인: <code>apktool --version</code></p>
+<blockquote>
+<p>💡 PATH 등록 후에도 인식이 안 되면 새 터미널만으로는 부족할 수
+있습니다 — <strong>Claude Code 자체를 완전히 종료 후 재실행</strong>해야
+합니다.</p>
+</blockquote>
+<p>3개 모두 준비되면 <code>/re-android [APK경로]</code>로 분석을
+시작하세요.</p>
+</details>
+<details>
+<summary>
+<strong>바이너리 분석 도구 설치 — Java · Ghidra (⚠️ 골격 완료, 라이브
+미검증)</strong>
+</summary>
+<p>무료 도구 2개가 필요합니다. <strong>Java를 먼저</strong>
+설치하세요(Ghidra가 Java 위에서 동작).</p>
+<p><strong>1) Java 17 이상</strong> — 공식: <a
+href="https://adoptium.net">adoptium.net</a> · 확인:
+<code>java --version</code></p>
+<p><strong>2) Ghidra (무료, NSA 개발)</strong> - 공식: <a
+href="https://ghidra-sre.org/">ghidra-sre.org</a> - 압축 해제 후
+<code>ghidraRun.bat</code>(Windows) 실행 확인 - <code>ghidraRun</code>이
+안 열리면 대부분 <code>JAVA_HOME</code> 환경변수 미설정이 원인 — Java
+설치 경로를 <code>JAVA_HOME</code>으로 지정 후 새 터미널에서 재시도</p>
+<p><strong>(대안) 설치가 부담스럽다면</strong>:
+<code>pip install lief</code>로 가벼운 구조 분석만 가능(디스어셈블은
+불가, 라이브 미검증)</p>
+<p><strong>(선택) IDA Pro 연동</strong>: 본인 소유 상용 라이선스가
+있다면 아래 명령 실행 후 새 터미널에서 사용 가능:</p>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>setx SODAM_RE_IDA_PATH <span class="st">&quot;C:\Program Files\IDA Pro 8.x\ida64.exe&quot;</span></span></code></pre></div>
+<p>Java·Ghidra가 준비되면 <code>/re-binary [실행파일경로]</code>로
+분석을 시작하세요.</p>
+</details>
 <hr />
 <h2 id="명령어">7. 명령어</h2>
 <table>
@@ -683,10 +757,10 @@ class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb6-
 <h2 id="분석-흐름-워크플로우">8. 분석 흐름 (워크플로우)</h2>
 <pre><code>사용자: /re-start 내코드/login.js
           ↓
-[1단계] 동의 게이트
-  AI: &quot;이 코드가 본인 소유이거나 허가받은 것입니까?&quot; → 예/아니오
-  AI: &quot;방어·교육 목적에 동의합니까? 책임은 본인에게 있습니다.&quot; → 예/아니오
-  둘 다 &quot;예&quot;여야 다음 단계로 진행
+[1단계] 동의 게이트 (버튼 선택형 질문 3개, 2026-07-27부터)
+  AI가 소유권·분석 목적·이용 동의 질문 3개를 한 번에 띄웁니다 — 타이핑 대신 버튼(선택지)을 눌러 답합니다.
+  세 질문 모두 &quot;예&quot; 계열 선택 → 다음 단계로. 하나라도 &quot;아니오&quot; → 즉시 중단
+  (정확한 질문 문구는 §12 Q5 참고)
           ↓
 [2단계] 안전 3층 점검 (자동)
   1층: AI가 크랙·우회 내용인지 자체 판단
@@ -818,18 +892,18 @@ Claude AI (Anthropic 서버)
 │   └── rotate-safety-log.mjs    ← 안전로그 보존기간 관리(자동만료)
 │
 ├── mcp/
-│   └── catalog.json             ← Phase 2·3 외부 도구 설정
+│   └── catalog.json             ← Phase 2·3 외부 도구 큐레이션 설정(신뢰등급·라이선스)
 │
 ├── samples/                     ← 테스트용 예제 파일
 │   ├── safe-login.js            ← 정상 분석 테스트용
-│   └── deny-demo.txt            ← 차단 테스트용
+│   ├── deny-demo.txt            ← 차단 테스트용
+│   ├── agent-injection-demo.md  ← 프롬프트 인젝션 방어 테스트용
+│   └── agent-injection-demo-2.md← 결합공격(레드팀) 방어 테스트용
 │
 ├── .sodam-re/                   ← 분석 결과 저장 (자동 생성, .gitignore)
 │
 ├── README.md                    ← 이 파일 (한국어 개요)
 ├── README.en.md                 ← English overview
-├── GUIDE.md                     ← 초보 완전 사용 설명서 (한국어)
-├── GUIDE.en.md                  ← English detailed guide
 ├── TROUBLESHOOTING.md           ← 오류 해결 가이드
 ├── CHECKPOINT.md                ← 개발 진행 상태 (개발자용)
 ├── SETUP_BLOCKED_FILES.md       ← 안전파일 코드 전문
@@ -864,16 +938,6 @@ Claude AI (Anthropic 서버)
 <td>영어 README</td>
 <td><code>README.en.md</code></td>
 <td>English overview</td>
-</tr>
-<tr>
-<td>한국어 상세 가이드</td>
-<td><code>GUIDE.md</code></td>
-<td>초보 완전 사용 설명서</td>
-</tr>
-<tr>
-<td>영어 상세 가이드</td>
-<td><code>GUIDE.en.md</code></td>
-<td>English detailed guide</td>
 </tr>
 <tr>
 <td>오류 해결 가이드</td>
@@ -926,6 +990,11 @@ Claude AI (Anthropic 서버)
 <td>SHA-256 해시 저장</td>
 </tr>
 <tr>
+<td>외부 도구 큐레이션</td>
+<td><code>mcp/catalog.json</code></td>
+<td>Phase 2·3 도구별 신뢰등급·라이선스·상태</td>
+</tr>
+<tr>
 <td>형제 상태 확인</td>
 <td><code>scripts/check-family.mjs</code></td>
 <td>6형제 진단 스크립트</td>
@@ -968,15 +1037,16 @@ Claude AI (Anthropic 서버)
 <h3 id="q4.-정상-작업이-계속-막혀요">Q4. 정상 작업이 계속 막혀요</h3>
 <p><code>C:\Users\이름</code> (홈 폴더)에서 실행하고 있을 가능성이
 큽니다.</p>
-<div class="sourceCode" id="cb15"><pre
-class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cd</span> D<span class="op">:</span>\내프로젝트폴더</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>claude</span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cd</span> D<span class="op">:</span>\내프로젝트폴더</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>claude</span></code></pre></div>
 <p><strong>프로젝트 폴더</strong>에서 Claude Code를 다시 시작하세요.</p>
 <hr />
 <h3 id="q5.-동의-질문에서-막혀요">Q5. 동의 질문에서 막혀요</h3>
-<p>“예” 또는 “네” 또는 “동의합니다”처럼 <strong>명확하게</strong>
-입력하세요. “그런 것 같아요”, “아마도요” 같은 애매한 답변은 동의로
-처리되지 않습니다.</p>
+<p>질문 3개가 뜨면 자연어로 타이핑하지 말고, <strong>버튼(선택지)을 직접
+클릭</strong>하거나 <strong>번호를 선택</strong>하세요. “예” 계열
+선택지를 골라야 동의로 처리됩니다 — “아니오”를 선택하거나 응답을
+거부하면 그 즉시 분석이 중단됩니다.</p>
 <hr />
 <h3 id="q6.-크랙우회-요청이-거부됐어요">Q6. 크랙/우회 요청이
 거부됐어요</h3>
@@ -996,14 +1066,14 @@ class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb15
 값이 들어있는 상태</strong>에서 해시가 달라 ❌가 뜬 경우, 위 명령은
 “불일치(변조 의심)”라고만 알려주고 <strong>새 해시를 화면에 출력하지
 않습니다</strong>(해시 출력은 <code>integrity.json</code>이 비어있을
-때만 나옵니다). 이럴 때는 ❌가 뜬 파일 경로(<code>hooks/hooks.json</code>
-· <code>hooks/re-deny-guard.mjs</code> · <code>hooks/_selftest.mjs</code>
+때만 나옵니다). 이럴 때는 ❌가 뜬 파일
+경로(<code>hooks/hooks.json</code> ·
+<code>hooks/re-deny-guard.mjs</code> · <code>hooks/_selftest.mjs</code>
 · <code>references/deny-corpus.json</code> ·
 <code>references/mask-patterns.json</code> 중 하나)를 아래 명령의
-<code>&lt;파일경로&gt;</code> 자리에 넣어 새 해시를 직접
-확인하세요:</p>
-<div class="sourceCode" id="cb17"><pre
-class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>node <span class="op">-</span>e <span class="st">&quot;console.log(require(&#39;crypto&#39;).createHash(&#39;sha256&#39;).update(require(&#39;fs&#39;).readFileSync(&#39;&lt;파일경로&gt;&#39;)).digest(&#39;hex&#39;))&quot;</span></span></code></pre></div>
+<code>&lt;파일경로&gt;</code> 자리에 넣어 새 해시를 직접 확인하세요:</p>
+<div class="sourceCode" id="cb19"><pre
+class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>node <span class="op">-</span>e <span class="st">&quot;console.log(require(&#39;crypto&#39;).createHash(&#39;sha256&#39;).update(require(&#39;fs&#39;).readFileSync(&#39;&lt;파일경로&gt;&#39;)).digest(&#39;hex&#39;))&quot;</span></span></code></pre></div>
 </blockquote>
 <hr />
 <h3 id="q8.-보고서에서-비밀번호가-그대로-보여요">Q8. 보고서에서
@@ -1024,8 +1094,7 @@ class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb17
 <p>“RE 규칙 N개 주입 완료” 메시지가 나오면 성공.</p>
 <hr />
 <h3 id="q11.-더-자세한-오류-해결">Q11. 더 자세한 오류 해결</h3>
-<p>→ <strong><a href="./GUIDE.md">GUIDE.md</a></strong> — FAQ 25가지
-포함 상세 가이드 → <strong><a
+<p>→ <strong><a
 href="./TROUBLESHOOTING.md">TROUBLESHOOTING.md</a></strong> — 실패 패턴
 전체 해결법</p>
 <hr />
@@ -1168,9 +1237,7 @@ href="./TROUBLESHOOTING.md">TROUBLESHOOTING.md</a></strong> — 실패 패턴
 <li>“100% 안전”은 어떤 보안 도구도 보장할 수 없습니다</li>
 </ul>
 <p><strong>라이선스 전문:</strong> <a href="./LICENSE">LICENSE</a> ·
-<strong>저작권 고지:</strong> <a href="./NOTICE">NOTICE</a> <strong>더
-자세한 라이선스 해설:</strong> <a href="./GUIDE.md">GUIDE.md</a> 11장
-참고</p>
+<strong>저작권 고지:</strong> <a href="./NOTICE">NOTICE</a></p>
 <hr />
 <h2 id="연락기여">14. 연락·기여</h2>
 <ul>
@@ -1309,13 +1376,46 @@ GitHub·브라우저 모두 접기/펼치기 지원)</p>
 발견(1개 보관 처리됨·2개 장기 미갱신) — 별도 정리 예정</li>
 </ul>
 </details>
+<details>
+<summary>
+<strong>GUIDE 문서 제거 — 핵심 내용을 README로 통합
+(2026-07-27)</strong>
+</summary>
+<ul>
+<li><code>GUIDE.md</code>·<code>GUIDE.en.md</code>(+html)를 제거하고,
+유일했던 설치 정보(Android/JADX/Apktool·바이너리/Ghidra 도구 설치
+절차)를 이 문서 §6-2로 이전했습니다. README 하나로
+설치·실행·문제해결까지 끝나도록 문서 구조를 단순화했습니다.</li>
+<li>남은 상세 오류 해결은 <code>TROUBLESHOOTING.md</code>가 계속
+담당합니다.</li>
+</ul>
+</details>
+<details>
+<summary>
+<strong>동의 게이트 버튼형 전환 + 안전로그 자동 정리
+(2026-07-27)</strong>
+</summary>
+<ul>
+<li>동의 게이트
+4곳(<code>/re-start</code>·<code>/re-android</code>·<code>/re-binary</code>·<code>/re-agent</code>)을
+자연어 “예/아니오” 타이핑 방식에서 <strong>버튼(선택지) 선택
+방식</strong>으로 전환 — 오타·애매한 답변으로 인한 오동작 가능성을
+줄임.</li>
+<li><code>scripts/rotate-safety-log.mjs</code> 신규: 차단
+이력(<code>safety-log.jsonl</code>)이 무기한 쌓이지 않도록 30일(기본,
+조정 가능) 지난 항목을 자동 정리. 원문이 아닌 해시만 지우는 것이라 안전
+판정에는 영향 없음.</li>
+<li>기획 문서(PRD) 내부 기록 4건의 누락·오기 수정(사용자에게 보이는 기능
+변경은 없음).</li>
+</ul>
+</details>
 <blockquote>
 <p>개발 상세 이력은 <code>CHECKPOINT.md</code>(개발자용)를
 참고하세요.</p>
 </blockquote>
 <hr />
 <p><em>English version: <a href="./README.en.md">README.en.md</a></em>
-<em>상세 사용 설명서: <a href="./GUIDE.md">GUIDE.md</a></em> <em>오류
-해결: <a href="./TROUBLESHOOTING.md">TROUBLESHOOTING.md</a></em></p>
+<em>오류 해결: <a
+href="./TROUBLESHOOTING.md">TROUBLESHOOTING.md</a></em></p>
 </body>
 </html>
