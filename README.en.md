@@ -10,6 +10,7 @@
 
 ## Table of Contents
 
+0. [Completely New to Computers or AI? (Basic Terms)](#0-completely-new-to-computers-or-ai-basic-terms)
 1. [What Is This?](#1-what-is-this)
 2. [What Does It Do?](#2-what-does-it-do)
 3. [What Does It Refuse?](#3-what-does-it-refuse-safety-boundary)
@@ -26,6 +27,27 @@
 13. [License · Copyright · Commercial Use](#13-license--copyright--commercial-use)
 14. [Contact · Contributing](#14-contact--contributing)
 15. [Update Summary](#15-update-summary)
+
+---
+
+## 0. Completely New to Computers or AI? (Basic Terms)
+
+> If you're already comfortable with computers and smartphones, skip ahead to [1. What Is This?](#1-what-is-this)
+> This document is written so you can follow it step by step to the end even without knowing these terms in advance — come back to this table any time you get stuck.
+
+| Term | Plain-language explanation |
+|---|---|
+| **Folder** | A "drawer" inside your computer that holds files — similar to an "album" or "group" on a smartphone. |
+| **Terminal / PowerShell** | A black (or blue) window where you type text to give the computer commands, instead of clicking with a mouse. Whenever this document says "PowerShell window," this is what it means. |
+| **Download** | Bringing a file from the internet onto your own computer, usually by clicking a "Download" button on a website. |
+| **Install** | Turning a downloaded program into something you can actually use on your computer — the same idea as "installing" an app on a smartphone. |
+| **Double-click** | Pressing the left mouse button twice, quickly. Used to open files or programs. |
+| **Copy (Ctrl+C) / Paste (Ctrl+V)** | Moving text or files from one place to another. Hold the Ctrl key and press C to copy, or V to paste. |
+| **AI (Artificial Intelligence)** | A computer program that can read and understand text like a person and give you an answer. In this document, "AI" refers to **Claude**. |
+| **Claude Code** | A program made by Anthropic that lets you talk to an AI to get computer work done (like analyzing code). This entire document explains how to use things **inside** this program. |
+| **Plugin** | A small add-on that "plugs into" an existing program to give it new features. **SoDam-Reverse-Eng itself — the thing this document describes — is one such plugin.** |
+| **Command** | A special line of text you type into the Claude Code chat window starting with `/` (a slash), e.g. `/re-ping`. Typing it and pressing Enter runs a specific action. |
+| **How is this different from a messenger app (e.g. WhatsApp, KakaoTalk)?** | A messenger lets you chat with **people**; Claude Code lets you chat with an **AI** to get computer tasks done. Both work by typing text into a chat window, so if you're comfortable with messaging apps, you're already halfway there. |
 
 ---
 
@@ -279,7 +301,9 @@ Copy the **hash of the core safety file (`hooks/re-deny-guard.mjs`)** from the s
 ### 6-2. (Phase 2·3) Additional Tool Installation — Optional
 
 > If you only use `/re-start` (source code analysis), you can skip this section.
-> `/re-android` (APK analysis) or `/re-binary` (executable analysis) need the tools below.
+> `/re-android` (APK analysis) or `/re-binary` (executable analysis) need extra programs like Java·JADX·Apktool (Android) or Java·Ghidra (binary).
+>
+> 📄 **A more detailed reference with the exact download links, verify-commands, and the specific versions confirmed on the dev machine also exists as [`INSTALL.md`](./INSTALL.md) — note that file is Korean-only for now.** The English summary below covers the same tools and is enough to get started.
 
 <details>
 <summary><strong>Android Analysis Tools — Java 17 · JADX · Apktool (✅ Live-verified 2026-07-13)</strong></summary>
@@ -288,17 +312,17 @@ Copy the **hash of the core safety file (`hooks/re-deny-guard.mjs`)** from the s
 
 **1) Java 17 or higher**
 - Official: [adoptium.net](https://adoptium.net) → "Temurin 17 (LTS)" → install the Windows `.msi`
-- Verify: `java -version` → `17` or higher means OK
+- Verify: `java -version` → `17` or higher means OK (confirmed working version on the dev machine: `Temurin-17.0.19`)
 
 **2) JADX (APK → Java code)**
 - Official: [github.com/skylot/jadx/releases](https://github.com/skylot/jadx/releases) → download `jadx-x.x.x.zip` (the CLI+GUI bundle; skip `jadx-gui-*`, which is GUI-only) → unzip to a location of your choice (e.g. `C:\jadx`)
 - **Register PATH (required)**: Windows search → "environment variables" → "Edit the system environment variables" → "Environment Variables..." → edit the `Path` user variable → "New" → add `C:\jadx\bin` → OK → **fully restart Claude Code**
-- Verify: `jadx --version`
+- Verify: `jadx --version` (confirmed working version: `1.5.6`)
 
 **3) Apktool (resources and manifest)**
 - Official: follow the Windows steps at [apktool.org/docs/install](https://apktool.org/docs/install) — download `apktool.bat` and the latest jar (rename it to exactly `apktool.jar`), place both in the same folder (e.g. `C:\apktool`)
 - Register PATH the same way as JADX, adding `C:\apktool` → **fully restart Claude Code**
-- Verify: `apktool --version`
+- Verify: `apktool --version` (confirmed installed and working at `C:\apktool\apktool.bat`)
 
 > 💡 Still not recognized after registering PATH? A new terminal alone may not be enough — **fully quit and relaunch Claude Code itself**.
 
@@ -307,7 +331,7 @@ Once all 3 respond to `--version`, start analyzing with `/re-android [APK-path]`
 </details>
 
 <details>
-<summary><strong>Binary Analysis Tools — Java · Ghidra (⚠️ Scaffolding complete, not yet live-verified)</strong></summary>
+<summary><strong>Binary Analysis Tools — Java · Ghidra (⚠️ Scaffolding complete, still not live-verified — Ghidra itself remains uninstalled on the dev machine)</strong></summary>
 
 2 free tools are needed. Install **Java first** (Ghidra runs on top of Java).
 
@@ -318,7 +342,7 @@ Once all 3 respond to `--version`, start analyzing with `/re-android [APK-path]`
 - After extracting, verify `ghidraRun.bat` (Windows) launches
 - If `ghidraRun` won't launch, it's usually a missing `JAVA_HOME` — point it at your Java install path and retry from a new terminal
 
-**(Alternative) Installation feels heavy?**: `pip install lief` gives lightweight structure analysis only (no disassembly, not yet live-verified)
+**(Alternative) Installation feels heavy?**: `pip install lief` gives lightweight structure analysis only (headers, sections, imports — no disassembly). This alternative path **has been installed and smoke-tested** on the dev machine: `Python 3.13.7` + `LIEF 1.0.0`, verified with `python -c "import lief; print(lief.__version__)"` (use `py` instead of `python` if Windows doesn't recognize the latter).
 
 **(Optional) IDA Pro integration**: if you own a commercial license, run the following then reopen your terminal:
 ```powershell
@@ -355,22 +379,29 @@ Once Java and Ghidra are ready, start analyzing with `/re-binary [executable-pat
 ```
 User: /re-start my-code/login.js
           ↓
+[Step 0] Safety Self-Check (automatic, runs before the consent gate since 2026-08-02)
+  Runs `node hooks/_selftest.mjs` to re-confirm all 3 safety layers (below) are intact.
+  If even one check shows ❌, the flow stops right here — it never reaches the consent
+  gate (fail-closed).
+          ↓
 [Step 1] Consent Gate (3 button-choice questions, since 2026-07-27)
   The AI shows 3 questions at once — covering ownership, purpose, and responsibility.
   Answer with buttons, not free typing. All three need a "Yes"-type answer to proceed;
   any "No" stops immediately. (See §12 Q5 for the exact question wording)
+  Passing it appends one line to `.sodam-re/consent-log.jsonl` (path + timestamp,
+  since 2026-08-02).
           ↓
-[Step 2] 3-Layer Safety Check (automatic)
+(Step 0's 3-layer detail — for reference, execution order is [Step 0] above)
   Layer 1: AI self-judges whether content involves cracking/bypass
   Layer 2: deny-hook blocks dangerous patterns in real time
   Layer 3: SHA-256 integrity check on safety files
           ↓
-[Step 3] Analysis Begins (read-only)
+[Step 2] Analysis Begins (read-only)
   - File reading ONLY (never executed)
   - Path manipulation (../, symlinks) blocking is attempted — **AI-judgment based (layer 1)**, not 100% code-enforced (confirmed in the 2026-07-13 security review)
   - Passwords and keys auto-masked
           ↓
-[Step 4] Standard Report Output
+[Step 3] Standard Report Output
   ┌─────────────────────────────────────────────┐
   │ ■ One-line summary (what this code does)    │
   │ ■ Per-function explanation (file:line refs) │
@@ -378,7 +409,7 @@ User: /re-start my-code/login.js
   │ ■ Next steps (suggestions for follow-up)    │
   └─────────────────────────────────────────────┘
           ↓
-[Step 5] Local Storage
+[Step 4] Local Storage
   Saved to .sodam-re/ folder (.gitignore registered)
   No upload to external servers
 ```
@@ -415,11 +446,12 @@ Saved to .sodam-re/ on my computer
 
 ```
 [plugin-folder]/
-└── .sodam-re/                  ← Results folder (auto-created)
-    ├── reports/                ← Report files
-    ├── consent/                ← Consent records (con-TIMESTAMP.json)
-    └── safety-log.jsonl        ← Block event log (content is hashed)
+└── .sodam-re/                     ← Results folder (auto-created)
+    ├── consent-log.jsonl          ← Consent records (one line appended per pass, never overwritten)
+    └── safety-log.jsonl           ← Block event log (SHA-256 hash only, never raw text)
 ```
+
+> ⚠️ **Accuracy note**: only "reports stay inside `.sodam-re/` and are never sent externally" is a confirmed rule — the exact file-naming convention for report output itself is not yet fixed in the code. The two files above (`consent-log.jsonl`, `safety-log.jsonl`) are the only ones actually confirmed in the source; no unconfirmed folder structure is listed here.
 
 The `.sodam-re/` folder is registered in `.gitignore` — **never uploaded to Git**.
 
@@ -483,6 +515,7 @@ SoDam-Reverse-Eng/
 │
 ├── README.md                    ← Korean overview
 ├── README.en.md                 ← This file (English overview)
+├── INSTALL.md                   ← Additional tool (Android · binary) install detail (Korean only)
 ├── TROUBLESHOOTING.md           ← Error resolution guide
 ├── CHECKPOINT.md                ← Development progress (for developers)
 ├── SETUP_BLOCKED_FILES.md       ← Full source of the manually-created safety files
@@ -498,6 +531,7 @@ SoDam-Reverse-Eng/
 |---|---|---|
 | Korean README | `README.md` | Korean overview |
 | English README | `README.en.md` | This file |
+| Additional Tool Install Guide | `INSTALL.md` | Detailed install steps for Android (JADX·Apktool) and binary (Ghidra) tools — **Korean only**, but §6-2 above already covers the same tools in English |
 | Error Resolution | `TROUBLESHOOTING.md` | Full troubleshooting reference |
 | Safety File Code | `SETUP_BLOCKED_FILES.md` | Manual setup file contents |
 | License Full Text | `LICENSE` | Apache-2.0 full text |
@@ -668,6 +702,21 @@ node scripts/re-inject-harness.mjs
 | Claude API usage | Anthropic Terms of Service apply **separately** |
 | IDA Pro (Phase 3, optional) | Requires **separate** commercial license purchase |
 
+### ⚠️ Legal Responsibility Limits You Must Understand (Strict)
+
+> This section is **not legal advice.** If your situation actually requires a legal judgment, consult a lawyer. The point here is that "this tool is safe" and "what I'm analyzing is always legal" are **two separate questions.**
+
+| Situation | What you must understand |
+|---|---|
+| **Analyzing someone else's code or app** | Even if you answered "I own this" at the consent gate, doing so without the actual copyright holder's permission can itself constitute **copyright infringement**. This tool has no way to verify whether your answer is true — responsibility for a false answer rests **entirely with you**. |
+| **Code written at your job** | Code written during employment is often **owned by your employer**, not you personally, under work-for-hire principles in many jurisdictions. Having typed it yourself does not automatically mean you "own" it — check your employment contract and company policy first. |
+| **Analysis targets containing someone else's personal data** | If the code or config files contain real names, emails, phone numbers, etc. belonging to other people, sending that content to an AI for analysis can itself be subject to **data protection law (e.g. GDPR in the EU, or your local equivalent)**. Remove or mask personal data before analysis when possible. |
+| **Reverse engineering law varies by jurisdiction** | The extent to which reverse engineering is legally permitted differs by country/region, and is often **allowed only for limited purposes** such as achieving interoperability (e.g. the EU Software Directive, the DMCA's narrow exemptions in the US). Even for software you own, check the law where you live separately. |
+| **The target software's own EULA** | Many commercial software EULAs contractually prohibit reverse engineering outright. Having purchased a legitimate license does not mean reverse engineering it is permitted — check that software's EULA first. |
+| **Commercial redistribution of analysis reports** | If you plan to commercially redistribute or sell a report this tool generates, and that report quotes a substantial portion of the original code, **the original work's copyright** may apply separately. |
+
+> **Summary**: this tool's own license (Apache-2.0) freely permits commercial use, but **legal responsibility for what you choose to analyze is entirely separate from the tool's license**. A tool having safety guardrails does not make every use of it automatically lawful — when in doubt, consult a lawyer before you analyze.
+
 ### Disclaimer
 
 - Provided **"AS-IS"**
@@ -780,6 +829,16 @@ node scripts/re-inject-harness.mjs
 - Converted all 4 consent gates (`/re-start`, `/re-android`, `/re-binary`, `/re-agent`) from free-text "yes/no" typing to **button (choice) selection** — reduces misfires from typos or ambiguous answers.
 - New `scripts/rotate-safety-log.mjs`: automatically prunes block-history entries (`safety-log.jsonl`) older than 30 days (default, adjustable) so the log doesn't grow forever. Only hashes are removed, never raw text, so this has no effect on safety-layer decisions.
 - Fixed 4 internal recording gaps/typos in the planning docs (PRD) — no user-facing behavior changed.
+
+</details>
+
+<details>
+<summary><strong>Safety Precision Improvements — Fixed a Negation False-Positive + Hardened Bypass-Attempt Detection (2026-08-04)</strong></summary>
+
+- Fixed a false-positive bug in the Layer-2 deny-hook (`hooks/re-deny-guard.mjs`): a sentence that merely *observes* a risky pattern is **not present** in the code was getting blocked as if it were a dangerous request. It now recognizes negation wording (e.g. "does not," "none found," "not present") and lets such safe observations through — while the same wording paired with a request phrase (e.g. "please tell me how to...") is still blocked, so real danger detection is never weakened.
+- Hardened detection of attempts that hide risky keywords using invisible zero-width characters or Cyrillic look-alike letters that visually mimic the Latin alphabet.
+- After this change, the full safety self-test (13 checks) and a separate boundary-case battery (empty input, malformed data, oversized input, case variants, and 9 more — 13 cases total) were run directly, confirming no regression.
+- Alongside this, all 4 analysis commands were hardened to automatically run the safety self-check *before* the consent gate, and consent passes are now recorded to `consent-log.jsonl`.
 
 </details>
 

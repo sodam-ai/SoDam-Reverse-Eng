@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
 <head>
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc" />
@@ -251,7 +251,9 @@ id="sodam-reverse-eng-소담-리버스-내-코드를-쉬운-한국어로-설명�
 </blockquote>
 <hr />
 <h2 id="목차">목차</h2>
-<ol type="1">
+<ol start="0" type="1">
+<li><a href="#0-컴퓨터ai가-정말-처음이신가요-기본-용어">컴퓨터·AI가 정말
+처음이신가요? (기본 용어)</a></li>
 <li><a href="#1-이게-뭔가요">이게 뭔가요?</a></li>
 <li><a href="#2-무엇을-해-주나요">무엇을 해 주나요?</a></li>
 <li><a href="#3-무엇을-거부하나요-안전-경계">무엇을 거부하나요?</a></li>
@@ -272,6 +274,90 @@ id="sodam-reverse-eng-소담-리버스-내-코드를-쉬운-한국어로-설명�
 <li><a href="#14-연락기여">연락·기여</a></li>
 <li><a href="#15-업데이트-내용-요약">업데이트 내용 요약</a></li>
 </ol>
+<hr />
+<h2 id="컴퓨터ai가-정말-처음이신가요-기본-용어">0. 컴퓨터·AI가 정말
+처음이신가요? (기본 용어)</h2>
+<blockquote>
+<p>이미 컴퓨터·스마트폰 사용이 익숙하시면 이 부분은 건너뛰고 바로 <a
+href="#1-이게-뭔가요">1. 이게 뭔가요?</a>로 이동하세요. 이 문서는 아래
+용어를 몰라도 처음부터 순서대로 따라오면 끝까지 실행할 수 있도록
+만들어졌습니다 — 막히면 이 표로 돌아와 다시 확인하세요.</p>
+</blockquote>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>용어</th>
+<th>쉬운 설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>폴더(Folder)</strong></td>
+<td>컴퓨터 안에서 파일을 담아두는 “서랍” 같은 것. 스마트폰의 “앨범”이나
+“그룹”과 비슷한 개념입니다.</td>
+</tr>
+<tr>
+<td><strong>터미널 / PowerShell</strong></td>
+<td>마우스 클릭 대신 <strong>글자를 입력해서</strong> 컴퓨터에게 명령을
+내리는 검은(또는 파란) 화면. 이 문서에서 “PowerShell 창”이라고 부르는
+것이 바로 이것입니다.</td>
+</tr>
+<tr>
+<td><strong>다운로드(Download)</strong></td>
+<td>인터넷에 있는 파일을 내 컴퓨터로 가져와 저장하는 것. 보통 웹사이트의
+“Download” 버튼을 누르면 시작됩니다.</td>
+</tr>
+<tr>
+<td><strong>설치(Install)</strong></td>
+<td>다운로드한 프로그램을 내 컴퓨터에서 실제로 쓸 수 있게 만드는 과정.
+스마트폰에서 앱을 “설치”하는 것과 똑같은 개념입니다.</td>
+</tr>
+<tr>
+<td><strong>더블클릭</strong></td>
+<td>마우스 왼쪽 버튼을 빠르게 두 번 누르는 동작. 파일이나 프로그램을 열
+때 사용합니다.</td>
+</tr>
+<tr>
+<td><strong>복사(Ctrl+C) / 붙여넣기(Ctrl+V)</strong></td>
+<td>글자나 파일을 그대로 다른 곳으로 옮기는 기능. 키보드의 Ctrl 키를
+누른 채 C(복사) 또는 V(붙여넣기)를 누릅니다.</td>
+</tr>
+<tr>
+<td><strong>AI(인공지능)</strong></td>
+<td>사람처럼 글을 읽고 이해해서 답을 해 주는 컴퓨터 프로그램. 이
+문서에서 “AI”는 <strong>Claude</strong>라는 이름의 AI를 가리킵니다.</td>
+</tr>
+<tr>
+<td><strong>Claude Code</strong></td>
+<td>Anthropic이라는 회사가 만든, AI와 대화하면서 컴퓨터 작업(코드 분석
+등)을 시키는 프로그램. 이 문서 전체는 이 프로그램
+<strong>안에서</strong> 사용하는 방법을 설명합니다.</td>
+</tr>
+<tr>
+<td><strong>플러그인(Plugin)</strong></td>
+<td>이미 있는 프로그램에 새 기능을 “끼워 넣는” 작은 추가 도구. 지금 보고
+계신 <strong>SoDam-Reverse-Eng 자체가 하나의
+플러그인</strong>입니다.</td>
+</tr>
+<tr>
+<td><strong>명령어(Command)</strong></td>
+<td>Claude Code 채팅창에 <code>/</code>(슬래시)로 시작해서 입력하는
+특별한 글자. 예: <code>/re-ping</code>. 입력하고 Enter를 누르면 정해진
+동작이 실행됩니다.</td>
+</tr>
+<tr>
+<td><strong>메신저(예: 카카오톡)와 무엇이 다른가요?</strong></td>
+<td>메신저는 <strong>사람과</strong> 대화하는 도구고, Claude Code는
+<strong>AI와</strong> 대화하며 컴퓨터 작업을 시키는 도구입니다. 채팅창에
+글자를 입력한다는 조작 방법은 메신저와 비슷하니, 타이핑이 익숙하다면
+이미 절반은 익숙한 것입니다.</td>
+</tr>
+</tbody>
+</table>
 <hr />
 <h2 id="이게-뭔가요">1. 이게 뭔가요?</h2>
 <p><strong>플러그인</strong>이란 기존 프로그램에 새로운 기능을 추가하는
@@ -620,69 +706,14 @@ class="sourceCode json"><code class="sourceCode json"><span id="cb10-1"><a href=
 <blockquote>
 <p><code>/re-start</code>(소스 코드 분석)만 쓴다면 이 항목은 건너뛰어도
 됩니다. <code>/re-android</code>(APK 분석) 또는
-<code>/re-binary</code>(실행파일 분석)를 쓰려면 아래 도구가
-필요합니다.</p>
+<code>/re-binary</code>(실행파일 분석)를 쓰려면
+Java·JADX·Apktool(안드로이드) 또는 Java·Ghidra(바이너리) 같은 추가
+프로그램이 필요합니다.</p>
+<p><strong>상세 설치 방법(공식 배포처 링크·확인 명령·실제 검증된 버전)은
+별도 문서로 정리했습니다:</strong> <strong>📄 <a
+href="./INSTALL.md">INSTALL.md — 필요 프로그램 설치
+안내</a></strong></p>
 </blockquote>
-<details>
-<summary>
-<strong>Android 분석 도구 설치 — Java 17 · JADX · Apktool (✅ 2026-07-13
-라이브 검증 완료)</strong>
-</summary>
-<p>무료 도구 3개가 필요합니다. <strong>Java를 가장 먼저</strong>
-설치하세요(JADX·Apktool이 Java 위에서 동작).</p>
-<p><strong>1) Java 17 이상</strong> - 공식: <a
-href="https://adoptium.net">adoptium.net</a> → “Temurin 17 (LTS)” →
-Windows <code>.msi</code> 설치 - 확인: <code>java -version</code> →
-<code>17</code> 이상 숫자면 OK</p>
-<p><strong>2) JADX (APK → 자바 코드 복원)</strong> - 공식: <a
-href="https://github.com/skylot/jadx/releases">github.com/skylot/jadx/releases</a>
-→ <code>jadx-x.x.x.zip</code>(cli+gui 통합본, <code>jadx-gui-*</code>는
-GUI 전용이라 제외) 다운로드 → 원하는 위치에 압축 해제(예:
-<code>C:\jadx</code>) - <strong>PATH 등록(필수)</strong>: Windows 검색 →
-“환경 변수” → “시스템 환경 변수 편집” → “환경 변수(N)…” → 사용자 변수
-<code>Path</code> 편집 → “새로 만들기” → <code>C:\jadx\bin</code> 추가 →
-확인 → <strong>Claude Code 완전 재시작</strong> - 확인:
-<code>jadx --version</code></p>
-<p><strong>3) Apktool (리소스·매니페스트 복원)</strong> - 공식: <a
-href="https://apktool.org/docs/install">apktool.org/docs/install</a>
-Windows 안내대로 <code>apktool.bat</code>과 최신 jar(반드시
-<code>apktool.jar</code>로 이름 변경) 다운로드 → 같은 폴더에 배치(예:
-<code>C:\apktool</code>) - PATH 등록: JADX와 동일한 방법으로
-<code>C:\apktool</code> 추가 → <strong>Claude Code 완전 재시작</strong>
-- 확인: <code>apktool --version</code></p>
-<blockquote>
-<p>💡 PATH 등록 후에도 인식이 안 되면 새 터미널만으로는 부족할 수
-있습니다 — <strong>Claude Code 자체를 완전히 종료 후 재실행</strong>해야
-합니다.</p>
-</blockquote>
-<p>3개 모두 준비되면 <code>/re-android [APK경로]</code>로 분석을
-시작하세요.</p>
-</details>
-<details>
-<summary>
-<strong>바이너리 분석 도구 설치 — Java · Ghidra (⚠️ 골격 완료, 라이브
-미검증)</strong>
-</summary>
-<p>무료 도구 2개가 필요합니다. <strong>Java를 먼저</strong>
-설치하세요(Ghidra가 Java 위에서 동작).</p>
-<p><strong>1) Java 17 이상</strong> — 공식: <a
-href="https://adoptium.net">adoptium.net</a> · 확인:
-<code>java --version</code></p>
-<p><strong>2) Ghidra (무료, NSA 개발)</strong> - 공식: <a
-href="https://ghidra-sre.org/">ghidra-sre.org</a> - 압축 해제 후
-<code>ghidraRun.bat</code>(Windows) 실행 확인 - <code>ghidraRun</code>이
-안 열리면 대부분 <code>JAVA_HOME</code> 환경변수 미설정이 원인 — Java
-설치 경로를 <code>JAVA_HOME</code>으로 지정 후 새 터미널에서 재시도</p>
-<p><strong>(대안) 설치가 부담스럽다면</strong>:
-<code>pip install lief</code>로 가벼운 구조 분석만 가능(디스어셈블은
-불가, 라이브 미검증)</p>
-<p><strong>(선택) IDA Pro 연동</strong>: 본인 소유 상용 라이선스가
-있다면 아래 명령 실행 후 새 터미널에서 사용 가능:</p>
-<div class="sourceCode" id="cb11"><pre
-class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>setx SODAM_RE_IDA_PATH <span class="st">&quot;C:\Program Files\IDA Pro 8.x\ida64.exe&quot;</span></span></code></pre></div>
-<p>Java·Ghidra가 준비되면 <code>/re-binary [실행파일경로]</code>로
-분석을 시작하세요.</p>
-</details>
 <hr />
 <h2 id="명령어">7. 명령어</h2>
 <table>
@@ -757,22 +788,27 @@ class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb11
 <h2 id="분석-흐름-워크플로우">8. 분석 흐름 (워크플로우)</h2>
 <pre><code>사용자: /re-start 내코드/login.js
           ↓
+[0단계] 안전장치 자가검증 (자동, 2026-08-02부터 동의 게이트 앞에 선행)
+  `node hooks/_selftest.mjs`로 안전 3층(아래 참고)이 전부 정상인지 자동 재확인합니다.
+  ❌가 하나라도 있으면 동의 게이트로 넘어가지 않고 여기서 즉시 중단합니다(fail-closed).
+          ↓
 [1단계] 동의 게이트 (버튼 선택형 질문 3개, 2026-07-27부터)
   AI가 소유권·분석 목적·이용 동의 질문 3개를 한 번에 띄웁니다 — 타이핑 대신 버튼(선택지)을 눌러 답합니다.
   세 질문 모두 &quot;예&quot; 계열 선택 → 다음 단계로. 하나라도 &quot;아니오&quot; → 즉시 중단
   (정확한 질문 문구는 §12 Q5 참고)
+  통과하면 `.sodam-re/consent-log.jsonl`에 동의 기록 1줄이 추가됩니다(경로·시각, 2026-08-02부터).
           ↓
-[2단계] 안전 3층 점검 (자동)
+(0단계 안전 3층 상세 — 참고용, 실행 순서는 위 [0단계] 참고)
   1층: AI가 크랙·우회 내용인지 자체 판단
   2층: deny-hook이 위험 패턴 실시간 차단
   3층: 안전파일 변조 여부 SHA-256으로 확인
           ↓
-[3단계] 분석 시작 (읽기 전용)
+[2단계] 분석 시작 (읽기 전용)
   - 파일 읽기만 (절대 실행 안 함)
   - 경로 조작 (../, 심볼릭 링크) 차단 시도 — **AI(1층) 판단 기반**(코드로 100% 강제되는 것은 아님, 2026-07-13 보안점검에서 확인)
   - 비밀번호 · 키 발견 시 자동 마스킹
           ↓
-[4단계] 표준 보고서 출력
+[3단계] 표준 보고서 출력
   ┌─────────────────────────────────────────────┐
   │ ■ 한 줄 요약 (이 코드가 하는 일 1줄로)       │
   │ ■ 함수별 설명 (파일명:줄번호 근거 포함)       │
@@ -780,7 +816,7 @@ class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb11
   │ ■ 다음 확인사항 (추가로 볼 것 제안)          │
   └─────────────────────────────────────────────┘
           ↓
-[5단계] 로컬 저장
+[4단계] 로컬 저장
   .sodam-re/ 폴더에 저장 (.gitignore 등록됨)
   외부 서버 전송 없음</code></pre>
 <hr />
@@ -841,10 +877,17 @@ Claude AI (Anthropic 서버)
 아니라 <strong>분석 즉시 중단</strong>입니다.</p>
 <h3 id="분석-결과-저장-위치">분석 결과 저장 위치</h3>
 <pre><code>[플러그인 폴더]/
-└── .sodam-re/                  ← 분석 결과 저장 폴더 (자동 생성)
-    ├── reports/                ← 보고서 파일들
-    ├── consent/                ← 동의 기록 (con-TIMESTAMP.json)
-    └── safety-log.jsonl        ← 차단 이벤트 기록 (원문 해시 처리됨)</code></pre>
+└── .sodam-re/                     ← 분석 결과 저장 폴더 (자동 생성)
+    ├── consent-log.jsonl          ← 동의 통과 기록 (한 줄에 하나씩 append, 덮어쓰기 없음)
+    └── safety-log.jsonl           ← 차단 이벤트 기록 (원문 대신 SHA-256 해시만 저장)</code></pre>
+<blockquote>
+<p>⚠️ <strong>정확성을 위한 표시</strong>: 분석 보고서 자체는
+“<code>.sodam-re/</code> 폴더 안에만 저장되고 외부로 전송되지 않는다”는
+원칙만 확정돼 있으며, 파일별로 어떤 이름 규칙으로 저장할지는 아직 고정돼
+있지 않습니다. 확실히 코드로 확인된 것은 위 두
+파일(<code>consent-log.jsonl</code>·<code>safety-log.jsonl</code>)뿐이라,
+확인 안 된 폴더 구조를 임의로 적지 않았습니다.</p>
+</blockquote>
 <p><code>.sodam-re/</code> 폴더는 <code>.gitignore</code>에 등록되어
 <strong>Git에 업로드되지 않습니다.</strong></p>
 <hr />
@@ -904,6 +947,7 @@ Claude AI (Anthropic 서버)
 │
 ├── README.md                    ← 이 파일 (한국어 개요)
 ├── README.en.md                 ← English overview
+├── INSTALL.md                   ← 추가 도구(Android·바이너리) 설치 상세
 ├── TROUBLESHOOTING.md           ← 오류 해결 가이드
 ├── CHECKPOINT.md                ← 개발 진행 상태 (개발자용)
 ├── SETUP_BLOCKED_FILES.md       ← 안전파일 코드 전문
@@ -938,6 +982,11 @@ Claude AI (Anthropic 서버)
 <td>영어 README</td>
 <td><code>README.en.md</code></td>
 <td>English overview</td>
+</tr>
+<tr>
+<td>추가 도구 설치 안내</td>
+<td><code>INSTALL.md</code></td>
+<td>Android(JADX·Apktool)·바이너리(Ghidra) 등 선택 도구 상세 설치법</td>
 </tr>
 <tr>
 <td>오류 해결 가이드</td>
@@ -1037,9 +1086,9 @@ Claude AI (Anthropic 서버)
 <h3 id="q4.-정상-작업이-계속-막혀요">Q4. 정상 작업이 계속 막혀요</h3>
 <p><code>C:\Users\이름</code> (홈 폴더)에서 실행하고 있을 가능성이
 큽니다.</p>
-<div class="sourceCode" id="cb17"><pre
-class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cd</span> D<span class="op">:</span>\내프로젝트폴더</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>claude</span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cd</span> D<span class="op">:</span>\내프로젝트폴더</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>claude</span></code></pre></div>
 <p><strong>프로젝트 폴더</strong>에서 Claude Code를 다시 시작하세요.</p>
 <hr />
 <h3 id="q5.-동의-질문에서-막혀요">Q5. 동의 질문에서 막혀요</h3>
@@ -1072,8 +1121,8 @@ class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb17
 · <code>references/deny-corpus.json</code> ·
 <code>references/mask-patterns.json</code> 중 하나)를 아래 명령의
 <code>&lt;파일경로&gt;</code> 자리에 넣어 새 해시를 직접 확인하세요:</p>
-<div class="sourceCode" id="cb19"><pre
-class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>node <span class="op">-</span>e <span class="st">&quot;console.log(require(&#39;crypto&#39;).createHash(&#39;sha256&#39;).update(require(&#39;fs&#39;).readFileSync(&#39;&lt;파일경로&gt;&#39;)).digest(&#39;hex&#39;))&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre
+class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>node <span class="op">-</span>e <span class="st">&quot;console.log(require(&#39;crypto&#39;).createHash(&#39;sha256&#39;).update(require(&#39;fs&#39;).readFileSync(&#39;&lt;파일경로&gt;&#39;)).digest(&#39;hex&#39;))&quot;</span></span></code></pre></div>
 </blockquote>
 <hr />
 <h3 id="q8.-보고서에서-비밀번호가-그대로-보여요">Q8. 보고서에서
@@ -1228,6 +1277,78 @@ href="./TROUBLESHOOTING.md">TROUBLESHOOTING.md</a></strong> — 실패 패턴
 </tr>
 </tbody>
 </table>
+<h3 id="반드시-알아야-할-법적-책임-한계-엄격-적용">⚠️ 반드시 알아야 할
+법적 책임 한계 (엄격 적용)</h3>
+<blockquote>
+<p>이 섹션은 <strong>법률 자문이 아닙니다.</strong> 실제 법적 판단이
+필요한 상황이라면 반드시 변호사와 상담하세요. 아래는 “이 도구가
+안전하다”는 것과 “내가 무엇을 분석하는가가 항상 합법이다”는 것이
+<strong>서로 다른 문제</strong>임을 알려드리기 위한 안내입니다.</p>
+</blockquote>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>상황</th>
+<th>반드시 알아야 할 것</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>타인·제3자의 코드·앱 분석</strong></td>
+<td>동의 게이트에서 “본인 소유”라고 답했더라도, 실제로 저작권자의 허락이
+없다면 그 자체로 <strong>저작권법·컴퓨터프로그램보호법 위반
+소지</strong>가 있습니다. 이 도구는 사용자의 답변이 사실인지 검증할
+방법이 없으며, 허위 답변에 대한 책임은 <strong>전적으로 사용자
+본인</strong>에게 있습니다.</td>
+</tr>
+<tr>
+<td><strong>회사·직장에서 작성한 코드</strong></td>
+<td>재직 중 업무로 작성한 코드는 통상 <strong>회사(고용주)
+소유</strong>인 경우가 많습니다(업무상저작물 법리). 본인이 직접
+타이핑했다고 해서 “본인 소유”가 아닐 수 있습니다 — 분석 전 회사
+정책·근로계약을 먼저 확인하세요.</td>
+</tr>
+<tr>
+<td><strong>분석 대상에 타인의 개인정보가 포함된 경우</strong></td>
+<td>코드나 설정 파일에 실제 사용자의 이름·이메일·전화번호 등이
+들어있다면, 이를 AI에 전송해 분석하는 행위 자체가
+<strong>개인정보보호법(국내)·GDPR(EU) 등 관련 법령의 적용을 받을 수
+있습니다.</strong> 가능하면 분석 전에 해당 개인정보를 제거하거나
+마스킹하세요.</td>
+</tr>
+<tr>
+<td><strong>국가·지역별 리버스 엔지니어링 법규 차이</strong></td>
+<td>리버스 엔지니어링(역공학)이 허용되는 범위는 국가·지역마다 다르며,
+상호운용성 확보 등 <strong>제한된 목적에서만 허용</strong>되는 경우가
+많습니다(예: EU 소프트웨어 지침, 미국 DMCA의 제한적 예외 조항 등). 본인
+소유 소프트웨어라도 거주 국가·지역의 법률을 별도로 확인하세요.</td>
+</tr>
+<tr>
+<td><strong>분석 대상 소프트웨어의 이용약관(EULA)</strong></td>
+<td>많은 상용 소프트웨어의 EULA는 리버스 엔지니어링 자체를 계약으로
+금지합니다. “내가 정식으로 구매했다”는 사실이 “역공학해도 된다”는 뜻은
+아닙니다 — 반드시 해당 소프트웨어의 EULA를 먼저 확인하세요.</td>
+</tr>
+<tr>
+<td><strong>분석 보고서의 상업적 재배포</strong></td>
+<td>이 도구가 생성한 분석 보고서를 상업적으로 재배포·판매하려는 경우,
+보고서 안에 원본 코드의 상당 부분이 그대로 인용돼 있다면 <strong>원본
+저작물의 저작권</strong>이 별도로 적용될 수 있습니다.</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>요약</strong>: 이 도구(SoDam-Reverse-Eng) 자체의
+라이선스(Apache-2.0)는 상업적 사용을 포함해 자유롭게 허용하지만,
+<strong>“무엇을 분석하는가”에 대한 법적 책임은 도구의 라이선스와 완전히
+별개</strong>입니다. 도구가 안전장치를 갖췄다고 해서 분석 행위 자체가
+항상 합법인 것은 아닙니다 — 확신이 서지 않으면 분석 전에 변호사와
+상담하세요.</p>
+</blockquote>
 <h3 id="면책-조항">면책 조항</h3>
 <ul>
 <li><strong>“있는 그대로(AS-IS)”</strong> 제공</li>
@@ -1386,6 +1507,13 @@ GitHub·브라우저 모두 접기/펼치기 지원)</p>
 유일했던 설치 정보(Android/JADX/Apktool·바이너리/Ghidra 도구 설치
 절차)를 이 문서 §6-2로 이전했습니다. README 하나로
 설치·실행·문제해결까지 끝나도록 문서 구조를 단순화했습니다.</li>
+<li><strong>[추가 정리 · 2026-08-04]</strong> §6-2의 도구별 상세 설치
+내용(공식 배포처·확인 명령·실제 검증된 버전)이 점점 길어져, 별도 문서
+<strong><a href="./INSTALL.md"><code>INSTALL.md</code></a></strong>로
+다시 분리했습니다. README §6-2에는 요약 + 링크만 남아 있습니다. GUIDE를
+부활시킨 것이 아니라, README 안에서 비대해진 한 절만 떼어낸 것입니다 —
+“README 하나로 시작 가능”이라는 §10.4 원칙은 그대로 유지됩니다(핵심
+흐름은 README만으로 완결, INSTALL.md는 선택 기능 이용자만 필요).</li>
 <li>남은 상세 오류 해결은 <code>TROUBLESHOOTING.md</code>가 계속
 담당합니다.</li>
 </ul>
@@ -1407,6 +1535,29 @@ GitHub·브라우저 모두 접기/펼치기 지원)</p>
 판정에는 영향 없음.</li>
 <li>기획 문서(PRD) 내부 기록 4건의 누락·오기 수정(사용자에게 보이는 기능
 변경은 없음).</li>
+</ul>
+</details>
+<details>
+<summary>
+<strong>안전장치 정밀도 개선 — 부정문 오탐 해소 + 우회 차단 강화
+(2026-08-04)</strong>
+</summary>
+<ul>
+<li>2층 deny-hook(<code>hooks/re-deny-guard.mjs</code>)이 “이 코드에는
+인증 우회 로직이 없습니다”처럼 <strong>위험이 없다고 말하는 정상적인
+문장까지 차단하던 문제</strong>를 고쳤습니다. 이제는
+“없습니다”·“아닙니다” 같은 부정 표현이 가까이 있으면 정상 통과시키되,
+“<sub>해줘”·”</sub>방법 알려줘”처럼 실제 요청으로 보이는 문구가 함께
+있으면 여전히 차단합니다(안전 우선 원칙 유지).</li>
+<li>눈에 보이지 않는 특수문자(제로폭 문자)나 로마자와 비슷하게 생긴 키릴
+문자로 위험 단어를 숨겨 우회하려는 시도를 감지해 차단하도록
+보강했습니다.</li>
+<li>이 변경 후 안전 셀프테스트(13개 항목)와 별도의 경계값 테스트(빈
+입력·손상된 데이터·대용량 입력·대소문자 변형 등 13종)를 직접 실행해 기존
+기능에 회귀가 없음을 확인했습니다.</li>
+<li>위 개선에 맞춰 <code>/re-start</code>를 포함한 4개 분석 명령이 분석
+시작 전 안전장치 자가검증을 자동으로 먼저 실행하도록 강화했고, 동의 통과
+기록(<code>consent-log.jsonl</code>)을 남기도록 개선했습니다.</li>
 </ul>
 </details>
 <blockquote>

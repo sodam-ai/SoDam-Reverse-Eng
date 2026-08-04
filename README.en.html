@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
 <head>
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc" />
@@ -252,7 +252,10 @@ defense, education, and analysis of code you own.</p>
 </blockquote>
 <hr />
 <h2 id="table-of-contents">Table of Contents</h2>
-<ol type="1">
+<ol start="0" type="1">
+<li><a
+href="#0-completely-new-to-computers-or-ai-basic-terms">Completely New
+to Computers or AI? (Basic Terms)</a></li>
 <li><a href="#1-what-is-this">What Is This?</a></li>
 <li><a href="#2-what-does-it-do">What Does It Do?</a></li>
 <li><a href="#3-what-does-it-refuse-safety-boundary">What Does It
@@ -277,6 +280,94 @@ Locations</a></li>
 <li><a href="#14-contact--contributing">Contact · Contributing</a></li>
 <li><a href="#15-update-summary">Update Summary</a></li>
 </ol>
+<hr />
+<h2 id="completely-new-to-computers-or-ai-basic-terms">0. Completely New
+to Computers or AI? (Basic Terms)</h2>
+<blockquote>
+<p>If you’re already comfortable with computers and smartphones, skip
+ahead to <a href="#1-what-is-this">1. What Is This?</a> This document is
+written so you can follow it step by step to the end even without
+knowing these terms in advance — come back to this table any time you
+get stuck.</p>
+</blockquote>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Term</th>
+<th>Plain-language explanation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Folder</strong></td>
+<td>A “drawer” inside your computer that holds files — similar to an
+“album” or “group” on a smartphone.</td>
+</tr>
+<tr>
+<td><strong>Terminal / PowerShell</strong></td>
+<td>A black (or blue) window where you type text to give the computer
+commands, instead of clicking with a mouse. Whenever this document says
+“PowerShell window,” this is what it means.</td>
+</tr>
+<tr>
+<td><strong>Download</strong></td>
+<td>Bringing a file from the internet onto your own computer, usually by
+clicking a “Download” button on a website.</td>
+</tr>
+<tr>
+<td><strong>Install</strong></td>
+<td>Turning a downloaded program into something you can actually use on
+your computer — the same idea as “installing” an app on a
+smartphone.</td>
+</tr>
+<tr>
+<td><strong>Double-click</strong></td>
+<td>Pressing the left mouse button twice, quickly. Used to open files or
+programs.</td>
+</tr>
+<tr>
+<td><strong>Copy (Ctrl+C) / Paste (Ctrl+V)</strong></td>
+<td>Moving text or files from one place to another. Hold the Ctrl key
+and press C to copy, or V to paste.</td>
+</tr>
+<tr>
+<td><strong>AI (Artificial Intelligence)</strong></td>
+<td>A computer program that can read and understand text like a person
+and give you an answer. In this document, “AI” refers to
+<strong>Claude</strong>.</td>
+</tr>
+<tr>
+<td><strong>Claude Code</strong></td>
+<td>A program made by Anthropic that lets you talk to an AI to get
+computer work done (like analyzing code). This entire document explains
+how to use things <strong>inside</strong> this program.</td>
+</tr>
+<tr>
+<td><strong>Plugin</strong></td>
+<td>A small add-on that “plugs into” an existing program to give it new
+features. <strong>SoDam-Reverse-Eng itself — the thing this document
+describes — is one such plugin.</strong></td>
+</tr>
+<tr>
+<td><strong>Command</strong></td>
+<td>A special line of text you type into the Claude Code chat window
+starting with <code>/</code> (a slash), e.g. <code>/re-ping</code>.
+Typing it and pressing Enter runs a specific action.</td>
+</tr>
+<tr>
+<td><strong>How is this different from a messenger app (e.g. WhatsApp,
+KakaoTalk)?</strong></td>
+<td>A messenger lets you chat with <strong>people</strong>; Claude Code
+lets you chat with an <strong>AI</strong> to get computer tasks done.
+Both work by typing text into a chat window, so if you’re comfortable
+with messaging apps, you’re already halfway there.</td>
+</tr>
+</tbody>
+</table>
 <hr />
 <h2 id="what-is-this">1. What Is This?</h2>
 <p>A <strong>plugin</strong> is a small add-on that gives an existing
@@ -644,7 +735,13 @@ Additional Tool Installation — Optional</h3>
 <blockquote>
 <p>If you only use <code>/re-start</code> (source code analysis), you
 can skip this section. <code>/re-android</code> (APK analysis) or
-<code>/re-binary</code> (executable analysis) need the tools below.</p>
+<code>/re-binary</code> (executable analysis) need extra programs like
+Java·JADX·Apktool (Android) or Java·Ghidra (binary).</p>
+<p>📄 <strong>A more detailed reference with the exact download links,
+verify-commands, and the specific versions confirmed on the dev machine
+also exists as <a href="./INSTALL.md"><code>INSTALL.md</code></a> — note
+that file is Korean-only for now.</strong> The English summary below
+covers the same tools and is enough to get started.</p>
 </blockquote>
 <details>
 <summary>
@@ -656,7 +753,9 @@ and Apktool run on top of Java).</p>
 <p><strong>1) Java 17 or higher</strong> - Official: <a
 href="https://adoptium.net">adoptium.net</a> → “Temurin 17 (LTS)” →
 install the Windows <code>.msi</code> - Verify:
-<code>java -version</code> → <code>17</code> or higher means OK</p>
+<code>java -version</code> → <code>17</code> or higher means OK
+(confirmed working version on the dev machine:
+<code>Temurin-17.0.19</code>)</p>
 <p><strong>2) JADX (APK → Java code)</strong> - Official: <a
 href="https://github.com/skylot/jadx/releases">github.com/skylot/jadx/releases</a>
 → download <code>jadx-x.x.x.zip</code> (the CLI+GUI bundle; skip
@@ -666,7 +765,8 @@ your choice (e.g. <code>C:\jadx</code>) - <strong>Register PATH
 the system environment variables” → “Environment Variables…” → edit the
 <code>Path</code> user variable → “New” → add <code>C:\jadx\bin</code> →
 OK → <strong>fully restart Claude Code</strong> - Verify:
-<code>jadx --version</code></p>
+<code>jadx --version</code> (confirmed working version:
+<code>1.5.6</code>)</p>
 <p><strong>3) Apktool (resources and manifest)</strong> - Official:
 follow the Windows steps at <a
 href="https://apktool.org/docs/install">apktool.org/docs/install</a> —
@@ -674,7 +774,8 @@ download <code>apktool.bat</code> and the latest jar (rename it to
 exactly <code>apktool.jar</code>), place both in the same folder
 (e.g. <code>C:\apktool</code>) - Register PATH the same way as JADX,
 adding <code>C:\apktool</code> → <strong>fully restart Claude
-Code</strong> - Verify: <code>apktool --version</code></p>
+Code</strong> - Verify: <code>apktool --version</code> (confirmed
+installed and working at <code>C:\apktool\apktool.bat</code>)</p>
 <blockquote>
 <p>💡 Still not recognized after registering PATH? A new terminal alone
 may not be enough — <strong>fully quit and relaunch Claude Code
@@ -686,7 +787,8 @@ itself</strong>.</p>
 <details>
 <summary>
 <strong>Binary Analysis Tools — Java · Ghidra (⚠️ Scaffolding complete,
-not yet live-verified)</strong>
+still not live-verified — Ghidra itself remains uninstalled on the dev
+machine)</strong>
 </summary>
 <p>2 free tools are needed. Install <strong>Java first</strong> (Ghidra
 runs on top of Java).</p>
@@ -701,7 +803,12 @@ verify <code>ghidraRun.bat</code> (Windows) launches - If
 from a new terminal</p>
 <p><strong>(Alternative) Installation feels heavy?</strong>:
 <code>pip install lief</code> gives lightweight structure analysis only
-(no disassembly, not yet live-verified)</p>
+(headers, sections, imports — no disassembly). This alternative path
+<strong>has been installed and smoke-tested</strong> on the dev machine:
+<code>Python 3.13.7</code> + <code>LIEF 1.0.0</code>, verified with
+<code>python -c "import lief; print(lief.__version__)"</code> (use
+<code>py</code> instead of <code>python</code> if Windows doesn’t
+recognize the latter).</p>
 <p><strong>(Optional) IDA Pro integration</strong>: if you own a
 commercial license, run the following then reopen your terminal:</p>
 <div class="sourceCode" id="cb11"><pre
@@ -783,22 +890,29 @@ class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb11
 <h2 id="analysis-workflow">8. Analysis Workflow</h2>
 <pre><code>User: /re-start my-code/login.js
           ↓
+[Step 0] Safety Self-Check (automatic, runs before the consent gate since 2026-08-02)
+  Runs `node hooks/_selftest.mjs` to re-confirm all 3 safety layers (below) are intact.
+  If even one check shows ❌, the flow stops right here — it never reaches the consent
+  gate (fail-closed).
+          ↓
 [Step 1] Consent Gate (3 button-choice questions, since 2026-07-27)
   The AI shows 3 questions at once — covering ownership, purpose, and responsibility.
   Answer with buttons, not free typing. All three need a &quot;Yes&quot;-type answer to proceed;
   any &quot;No&quot; stops immediately. (See §12 Q5 for the exact question wording)
+  Passing it appends one line to `.sodam-re/consent-log.jsonl` (path + timestamp,
+  since 2026-08-02).
           ↓
-[Step 2] 3-Layer Safety Check (automatic)
+(Step 0&#39;s 3-layer detail — for reference, execution order is [Step 0] above)
   Layer 1: AI self-judges whether content involves cracking/bypass
   Layer 2: deny-hook blocks dangerous patterns in real time
   Layer 3: SHA-256 integrity check on safety files
           ↓
-[Step 3] Analysis Begins (read-only)
+[Step 2] Analysis Begins (read-only)
   - File reading ONLY (never executed)
   - Path manipulation (../, symlinks) blocking is attempted — **AI-judgment based (layer 1)**, not 100% code-enforced (confirmed in the 2026-07-13 security review)
   - Passwords and keys auto-masked
           ↓
-[Step 4] Standard Report Output
+[Step 3] Standard Report Output
   ┌─────────────────────────────────────────────┐
   │ ■ One-line summary (what this code does)    │
   │ ■ Per-function explanation (file:line refs) │
@@ -806,7 +920,7 @@ class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb11
   │ ■ Next steps (suggestions for follow-up)    │
   └─────────────────────────────────────────────┘
           ↓
-[Step 5] Local Storage
+[Step 4] Local Storage
   Saved to .sodam-re/ folder (.gitignore registered)
   No upload to external servers</code></pre>
 <hr />
@@ -867,10 +981,18 @@ error, analysis is <strong>immediately halted</strong> — not passed
 through.</p>
 <h3 id="analysis-result-storage">Analysis Result Storage</h3>
 <pre><code>[plugin-folder]/
-└── .sodam-re/                  ← Results folder (auto-created)
-    ├── reports/                ← Report files
-    ├── consent/                ← Consent records (con-TIMESTAMP.json)
-    └── safety-log.jsonl        ← Block event log (content is hashed)</code></pre>
+└── .sodam-re/                     ← Results folder (auto-created)
+    ├── consent-log.jsonl          ← Consent records (one line appended per pass, never overwritten)
+    └── safety-log.jsonl           ← Block event log (SHA-256 hash only, never raw text)</code></pre>
+<blockquote>
+<p>⚠️ <strong>Accuracy note</strong>: only “reports stay inside
+<code>.sodam-re/</code> and are never sent externally” is a confirmed
+rule — the exact file-naming convention for report output itself is not
+yet fixed in the code. The two files above
+(<code>consent-log.jsonl</code>, <code>safety-log.jsonl</code>) are the
+only ones actually confirmed in the source; no unconfirmed folder
+structure is listed here.</p>
+</blockquote>
 <p>The <code>.sodam-re/</code> folder is registered in
 <code>.gitignore</code> — <strong>never uploaded to Git</strong>.</p>
 <hr />
@@ -931,6 +1053,7 @@ Structure</h2>
 │
 ├── README.md                    ← Korean overview
 ├── README.en.md                 ← This file (English overview)
+├── INSTALL.md                   ← Additional tool (Android · binary) install detail (Korean only)
 ├── TROUBLESHOOTING.md           ← Error resolution guide
 ├── CHECKPOINT.md                ← Development progress (for developers)
 ├── SETUP_BLOCKED_FILES.md       ← Full source of the manually-created safety files
@@ -961,6 +1084,13 @@ Structure</h2>
 <td>English README</td>
 <td><code>README.en.md</code></td>
 <td>This file</td>
+</tr>
+<tr>
+<td>Additional Tool Install Guide</td>
+<td><code>INSTALL.md</code></td>
+<td>Detailed install steps for Android (JADX·Apktool) and binary
+(Ghidra) tools — <strong>Korean only</strong>, but §6-2 above already
+covers the same tools in English</td>
 </tr>
 <tr>
 <td>Error Resolution</td>
@@ -1271,6 +1401,83 @@ this product</li>
 </tr>
 </tbody>
 </table>
+<h3 id="legal-responsibility-limits-you-must-understand-strict">⚠️ Legal
+Responsibility Limits You Must Understand (Strict)</h3>
+<blockquote>
+<p>This section is <strong>not legal advice.</strong> If your situation
+actually requires a legal judgment, consult a lawyer. The point here is
+that “this tool is safe” and “what I’m analyzing is always legal” are
+<strong>two separate questions.</strong></p>
+</blockquote>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Situation</th>
+<th>What you must understand</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Analyzing someone else’s code or app</strong></td>
+<td>Even if you answered “I own this” at the consent gate, doing so
+without the actual copyright holder’s permission can itself constitute
+<strong>copyright infringement</strong>. This tool has no way to verify
+whether your answer is true — responsibility for a false answer rests
+<strong>entirely with you</strong>.</td>
+</tr>
+<tr>
+<td><strong>Code written at your job</strong></td>
+<td>Code written during employment is often <strong>owned by your
+employer</strong>, not you personally, under work-for-hire principles in
+many jurisdictions. Having typed it yourself does not automatically mean
+you “own” it — check your employment contract and company policy
+first.</td>
+</tr>
+<tr>
+<td><strong>Analysis targets containing someone else’s personal
+data</strong></td>
+<td>If the code or config files contain real names, emails, phone
+numbers, etc. belonging to other people, sending that content to an AI
+for analysis can itself be subject to <strong>data protection law
+(e.g. GDPR in the EU, or your local equivalent)</strong>. Remove or mask
+personal data before analysis when possible.</td>
+</tr>
+<tr>
+<td><strong>Reverse engineering law varies by jurisdiction</strong></td>
+<td>The extent to which reverse engineering is legally permitted differs
+by country/region, and is often <strong>allowed only for limited
+purposes</strong> such as achieving interoperability (e.g. the EU
+Software Directive, the DMCA’s narrow exemptions in the US). Even for
+software you own, check the law where you live separately.</td>
+</tr>
+<tr>
+<td><strong>The target software’s own EULA</strong></td>
+<td>Many commercial software EULAs contractually prohibit reverse
+engineering outright. Having purchased a legitimate license does not
+mean reverse engineering it is permitted — check that software’s EULA
+first.</td>
+</tr>
+<tr>
+<td><strong>Commercial redistribution of analysis reports</strong></td>
+<td>If you plan to commercially redistribute or sell a report this tool
+generates, and that report quotes a substantial portion of the original
+code, <strong>the original work’s copyright</strong> may apply
+separately.</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Summary</strong>: this tool’s own license (Apache-2.0) freely
+permits commercial use, but <strong>legal responsibility for what you
+choose to analyze is entirely separate from the tool’s license</strong>.
+A tool having safety guardrails does not make every use of it
+automatically lawful — when in doubt, consult a lawyer before you
+analyze.</p>
+</blockquote>
 <h3 id="disclaimer">Disclaimer</h3>
 <ul>
 <li>Provided <strong>“AS-IS”</strong></li>
@@ -1473,6 +1680,33 @@ removed, never raw text, so this has no effect on safety-layer
 decisions.</li>
 <li>Fixed 4 internal recording gaps/typos in the planning docs (PRD) —
 no user-facing behavior changed.</li>
+</ul>
+</details>
+<details>
+<summary>
+<strong>Safety Precision Improvements — Fixed a Negation False-Positive
++ Hardened Bypass-Attempt Detection (2026-08-04)</strong>
+</summary>
+<ul>
+<li>Fixed a false-positive bug in the Layer-2 deny-hook
+(<code>hooks/re-deny-guard.mjs</code>): a sentence that merely
+<em>observes</em> a risky pattern is <strong>not present</strong> in the
+code was getting blocked as if it were a dangerous request. It now
+recognizes negation wording (e.g. “does not,” “none found,” “not
+present”) and lets such safe observations through — while the same
+wording paired with a request phrase (e.g. “please tell me how to…”) is
+still blocked, so real danger detection is never weakened.</li>
+<li>Hardened detection of attempts that hide risky keywords using
+invisible zero-width characters or Cyrillic look-alike letters that
+visually mimic the Latin alphabet.</li>
+<li>After this change, the full safety self-test (13 checks) and a
+separate boundary-case battery (empty input, malformed data, oversized
+input, case variants, and 9 more — 13 cases total) were run directly,
+confirming no regression.</li>
+<li>Alongside this, all 4 analysis commands were hardened to
+automatically run the safety self-check <em>before</em> the consent
+gate, and consent passes are now recorded to
+<code>consent-log.jsonl</code>.</li>
 </ul>
 </details>
 <blockquote>
