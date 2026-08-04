@@ -137,8 +137,6 @@ If not, install Claude Code from the Anthropic official website.
 
 ## 6. Installation
 
-> 📌 **Detailed step-by-step guide:** See [GUIDE.en.md](./GUIDE.en.md) Chapter 2
-
 ---
 
 ### ⚠️ Read Before Installing — Most Common Failure Cause
@@ -245,7 +243,7 @@ The `(sodam-reverse)` tag confirms the plugin loaded correctly.
 
 **Expected result:** ✅✅✅ All three green
 
-If any are not green → See [GUIDE.en.md](./GUIDE.en.md) Chapter 2
+If any are not green → See Q7 in section 12 "Troubleshooting · FAQ" below
 
 ### Step 6: Register Integrity Hash (Activate Layer 3)
 
@@ -398,8 +396,6 @@ SoDam-Reverse-Eng/
 │
 ├── README.md                    ← Korean overview
 ├── README.en.md                 ← This file (English overview)
-├── GUIDE.md                     ← Korean detailed guide
-├── GUIDE.en.md                  ← English detailed guide
 ├── TROUBLESHOOTING.md           ← Error resolution guide
 ├── LICENSE                      ← Apache-2.0 full text
 └── NOTICE                       ← Copyright notice
@@ -413,8 +409,6 @@ SoDam-Reverse-Eng/
 |---|---|---|
 | Korean README | `README.md` | Korean overview |
 | English README | `README.en.md` | This file |
-| Korean Guide | `GUIDE.md` | Comprehensive Korean guide |
-| English Guide | `GUIDE.en.md` | Comprehensive English guide |
 | Error Resolution | `TROUBLESHOOTING.md` | Full troubleshooting reference |
 | Safety File Code | `SETUP_BLOCKED_FILES.md` | Manual setup file contents |
 | License Full Text | `LICENSE` | Apache-2.0 full text |
@@ -524,7 +518,6 @@ node scripts/re-inject-harness.mjs
 
 ### Q11. More detailed error resolution
 
-→ **[GUIDE.en.md](./GUIDE.en.md)** — 25 FAQs and detailed guide
 → **[TROUBLESHOOTING.md](./TROUBLESHOOTING.md)** — Full error pattern reference
 
 ---
@@ -586,7 +579,6 @@ node scripts/re-inject-harness.mjs
 - No security tool can guarantee 100% safety
 
 **Full license text:** [LICENSE](./LICENSE) · **Copyright notice:** [NOTICE](./NOTICE)
-**Detailed license explanation:** See [GUIDE.en.md](./GUIDE.en.md) Chapter 12
 
 ---
 
@@ -600,5 +592,4 @@ node scripts/re-inject-harness.mjs
 ---
 
 *Korean version: [README.md](./README.md)*
-*Detailed English guide: [GUIDE.en.md](./GUIDE.en.md)*
 *Error resolution: [TROUBLESHOOTING.md](./TROUBLESHOOTING.md)*

@@ -139,8 +139,6 @@ node scripts/re-inject-harness.mjs
 
 ## 6. 설치 방법
 
-> 📌 **더 자세한 단계별 안내:** [GUIDE.md](./GUIDE.md) 2장 참고
-
 ---
 
 ### ⚠️ 설치 전 반드시 읽기 — 가장 흔한 실패 원인
@@ -247,7 +245,7 @@ Claude Code가 열리면 `/re-p` 입력 → 자동완성에 아래가 떠야 정
 
 **기대 결과:** ✅✅✅ 3개 모두 초록색
 
-초록색 3개가 나오지 않으면 → [GUIDE.md](./GUIDE.md) 2장 참고
+초록색 3개가 나오지 않으면 → 아래 12번 "문제 해결·FAQ"의 Q7 참고
 
 ### 단계 6: 무결성 해시 등록 (3층 활성화)
 
@@ -403,8 +401,6 @@ SoDam-Reverse-Eng/
 │
 ├── README.md                    ← 이 파일 (한국어 개요)
 ├── README.en.md                 ← English overview
-├── GUIDE.md                     ← 초보 완전 사용 설명서 (한국어)
-├── GUIDE.en.md                  ← English detailed guide
 ├── TROUBLESHOOTING.md           ← 오류 해결 가이드
 ├── CHECKPOINT.md                ← 개발 진행 상태 (개발자용)
 ├── SETUP_BLOCKED_FILES.md       ← 안전파일 코드 전문
@@ -427,8 +423,6 @@ SoDam-Reverse-Eng/
 |---|---|---|
 | 한국어 README | `README.md` | 이 파일 (전체 개요) |
 | 영어 README | `README.en.md` | English overview |
-| 한국어 상세 가이드 | `GUIDE.md` | 초보 완전 사용 설명서 |
-| 영어 상세 가이드 | `GUIDE.en.md` | English detailed guide |
 | 오류 해결 가이드 | `TROUBLESHOOTING.md` | 실패 패턴 전체 해결법 |
 | 안전파일 코드 전문 | `SETUP_BLOCKED_FILES.md` | 수동 설정 파일 코드 |
 | 라이선스 원문 | `LICENSE` | Apache-2.0 전문 |
@@ -541,7 +535,6 @@ node scripts/re-inject-harness.mjs
 
 ### Q11. 더 자세한 오류 해결
 
-→ **[GUIDE.md](./GUIDE.md)** — FAQ 25가지 포함 상세 가이드
 → **[TROUBLESHOOTING.md](./TROUBLESHOOTING.md)** — 실패 패턴 전체 해결법
 
 ---
@@ -603,7 +596,6 @@ node scripts/re-inject-harness.mjs
 - "100% 안전"은 어떤 보안 도구도 보장할 수 없습니다
 
 **라이선스 전문:** [LICENSE](./LICENSE) · **저작권 고지:** [NOTICE](./NOTICE)
-**더 자세한 라이선스 해설:** [GUIDE.md](./GUIDE.md) 11장 참고
 
 ---
 
@@ -617,5 +609,4 @@ node scripts/re-inject-harness.mjs
 ---
 
 *English version: [README.en.md](./README.en.md)*
-*상세 사용 설명서: [GUIDE.md](./GUIDE.md)*
 *오류 해결: [TROUBLESHOOTING.md](./TROUBLESHOOTING.md)*
