@@ -3,6 +3,7 @@
 > 기준: **관리상태 + 라이선스** (별 수 아님). 실측: 2026-06-28 (gh CLI).
 > MVP엔 wrap 도구가 없다(소스 직접 읽기). 이 표는 **P2부터 노출할 후보의 등급 체계 + 스냅샷**이다.
 > ⚠️ **카탈로그 신선도**: 스냅샷이므로 설치/사용 시 gh API로 last_commit 재확인, archived 감지 시 자동 강등·제외(H8).
+> **2026-07-26 정체일수 재확인**(`node scripts/check-trust-freshness.mjs`): 아래 표의 정체일수만 최신값으로 갱신. 별점·라이선스 등 나머지 항목은 전체 재조회한 것은 아님(범위 밖).
 
 ## 등급 정의
 
@@ -25,9 +26,9 @@
 | radareorg/radare2 | 24,212 | NOASSERTION⚠️ | 활발 | 🟡(라이선스 수동검토) | 후보 |
 | frida/frida | 21,142 | NOASSERTION⚠️ | 활발 | 🟡(라이선스 수동검토) | 후보 |
 | incogbyte/iOS-reverse-engineering-claude-skill | 44 | 확인필요 | 활발 | 🟡 | 백로그(iOS) |
-| LaurieWired/GhidraMCP | 9,350 | Apache-2.0 | ⚠️약1년 정체 | 🟡조건부 | 비선호(bethington 우선) |
+| LaurieWired/GhidraMCP | 9,350 | Apache-2.0 | ⚠️397일 정체(2026-07-26 재확인) | 🟡조건부 | 비선호(bethington 우선) |
 | OwenPawl/ghidra-re-skill | 86 | ❌무라이선스 | 활발 | 🔴제외(법적) | — |
-| Yuyz0112/claude-code-reverse | 2,390 | ❌무라이선스 | ⚠️정체 | 🔴제외(법적) | — |
+| Yuyz0112/claude-code-reverse | 2,390 | ❌무라이선스 | ⚠️333일 정체(2026-07-26 재확인) | 🔴제외(법적) | — |
 | DaCodeChick/GhidraMCP | 26 | Apache-2.0 | ❌archived | 🔴제외(폐기) | — |
 
 ## 규칙

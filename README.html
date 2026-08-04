@@ -1,0 +1,1583 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>SoDam-Reverse-Eng · README (한국어)</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">SoDam-Reverse-Eng · README (한국어)</h1>
+</header>
+<h1
+id="sodam-reverse-eng-소담-리버스-내-코드를-쉬운-한국어로-설명해-주는-도구">SoDam-Reverse-Eng
+(소담-리버스) — 내 코드를 쉬운 한국어로 설명해 주는 도구</h1>
+<blockquote>
+<p><strong>컴퓨터·AI가 처음이어도 괜찮습니다. 이 문서를 처음부터
+따라가면 됩니다.</strong></p>
+<p>내가 만든(또는 허가받은) 코드·앱이 어떻게 동작하는지 <strong>AI가
+쉬운 한국어로 설명</strong>해 주는 Claude Code 플러그인입니다.</p>
+<p>⚠️ <strong>정직한 약속:</strong> 크랙·불법 복제·비밀번호 추출·보안
+우회 안내는 <strong>요청해도 거부</strong>합니다. 방어·교육·본인 소유물
+분석 <strong>전용</strong>입니다.</p>
+</blockquote>
+<hr />
+<h2 id="목차">목차</h2>
+<ol start="0" type="1">
+<li><a href="#0-컴퓨터ai가-정말-처음이신가요-기본-용어">컴퓨터·AI가 정말
+처음이신가요? (기본 용어)</a></li>
+<li><a href="#1-이게-뭔가요">이게 뭔가요?</a></li>
+<li><a href="#2-무엇을-해-주나요">무엇을 해 주나요?</a></li>
+<li><a href="#3-무엇을-거부하나요-안전-경계">무엇을 거부하나요?</a></li>
+<li><a href="#4-sodam-6형제-시너지">SoDam 6형제 시너지</a></li>
+<li><a href="#5-사전-준비물-무료-2가지">사전 준비물</a></li>
+<li><a href="#6-설치-방법">설치 방법</a>
+<ul>
+<li>6-1. <a href="#6-1-빠른-시작-5분-요약">빠른 시작 (5분 요약)</a></li>
+</ul></li>
+<li><a href="#7-명령어">명령어</a></li>
+<li><a href="#8-분석-흐름-워크플로우">분석 흐름 (워크플로우)</a></li>
+<li><a href="#9-보안데이터-흐름">보안·데이터 흐름</a></li>
+<li><a href="#10-아키텍처파일-구조">아키텍처·파일 구조</a></li>
+<li><a href="#11-파일문서-위치-전체-목록">파일·문서 위치</a></li>
+<li><a href="#12-문제-해결faq">문제 해결·FAQ</a></li>
+<li><a href="#13-라이선스저작권상업적-용도">라이선스·저작권·상업적
+용도</a></li>
+<li><a href="#14-연락기여">연락·기여</a></li>
+<li><a href="#15-업데이트-내용-요약">업데이트 내용 요약</a></li>
+</ol>
+<hr />
+<h2 id="컴퓨터ai가-정말-처음이신가요-기본-용어">0. 컴퓨터·AI가 정말
+처음이신가요? (기본 용어)</h2>
+<blockquote>
+<p>이미 컴퓨터·스마트폰 사용이 익숙하시면 이 부분은 건너뛰고 바로 <a
+href="#1-이게-뭔가요">1. 이게 뭔가요?</a>로 이동하세요. 이 문서는 아래
+용어를 몰라도 처음부터 순서대로 따라오면 끝까지 실행할 수 있도록
+만들어졌습니다 — 막히면 이 표로 돌아와 다시 확인하세요.</p>
+</blockquote>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>용어</th>
+<th>쉬운 설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>폴더(Folder)</strong></td>
+<td>컴퓨터 안에서 파일을 담아두는 “서랍” 같은 것. 스마트폰의 “앨범”이나
+“그룹”과 비슷한 개념입니다.</td>
+</tr>
+<tr>
+<td><strong>터미널 / PowerShell</strong></td>
+<td>마우스 클릭 대신 <strong>글자를 입력해서</strong> 컴퓨터에게 명령을
+내리는 검은(또는 파란) 화면. 이 문서에서 “PowerShell 창”이라고 부르는
+것이 바로 이것입니다.</td>
+</tr>
+<tr>
+<td><strong>다운로드(Download)</strong></td>
+<td>인터넷에 있는 파일을 내 컴퓨터로 가져와 저장하는 것. 보통 웹사이트의
+“Download” 버튼을 누르면 시작됩니다.</td>
+</tr>
+<tr>
+<td><strong>설치(Install)</strong></td>
+<td>다운로드한 프로그램을 내 컴퓨터에서 실제로 쓸 수 있게 만드는 과정.
+스마트폰에서 앱을 “설치”하는 것과 똑같은 개념입니다.</td>
+</tr>
+<tr>
+<td><strong>더블클릭</strong></td>
+<td>마우스 왼쪽 버튼을 빠르게 두 번 누르는 동작. 파일이나 프로그램을 열
+때 사용합니다.</td>
+</tr>
+<tr>
+<td><strong>복사(Ctrl+C) / 붙여넣기(Ctrl+V)</strong></td>
+<td>글자나 파일을 그대로 다른 곳으로 옮기는 기능. 키보드의 Ctrl 키를
+누른 채 C(복사) 또는 V(붙여넣기)를 누릅니다.</td>
+</tr>
+<tr>
+<td><strong>AI(인공지능)</strong></td>
+<td>사람처럼 글을 읽고 이해해서 답을 해 주는 컴퓨터 프로그램. 이
+문서에서 “AI”는 <strong>Claude</strong>라는 이름의 AI를 가리킵니다.</td>
+</tr>
+<tr>
+<td><strong>Claude Code</strong></td>
+<td>Anthropic이라는 회사가 만든, AI와 대화하면서 컴퓨터 작업(코드 분석
+등)을 시키는 프로그램. 이 문서 전체는 이 프로그램
+<strong>안에서</strong> 사용하는 방법을 설명합니다.</td>
+</tr>
+<tr>
+<td><strong>플러그인(Plugin)</strong></td>
+<td>이미 있는 프로그램에 새 기능을 “끼워 넣는” 작은 추가 도구. 지금 보고
+계신 <strong>SoDam-Reverse-Eng 자체가 하나의
+플러그인</strong>입니다.</td>
+</tr>
+<tr>
+<td><strong>명령어(Command)</strong></td>
+<td>Claude Code 채팅창에 <code>/</code>(슬래시)로 시작해서 입력하는
+특별한 글자. 예: <code>/re-ping</code>. 입력하고 Enter를 누르면 정해진
+동작이 실행됩니다.</td>
+</tr>
+<tr>
+<td><strong>메신저(예: 카카오톡)와 무엇이 다른가요?</strong></td>
+<td>메신저는 <strong>사람과</strong> 대화하는 도구고, Claude Code는
+<strong>AI와</strong> 대화하며 컴퓨터 작업을 시키는 도구입니다. 채팅창에
+글자를 입력한다는 조작 방법은 메신저와 비슷하니, 타이핑이 익숙하다면
+이미 절반은 익숙한 것입니다.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="이게-뭔가요">1. 이게 뭔가요?</h2>
+<p><strong>플러그인</strong>이란 기존 프로그램에 새로운 기능을 추가하는
+작은 도구입니다. (스마트폰에 앱을 추가 설치하는 것과 비슷한
+개념입니다.)</p>
+<p><strong>SoDam-Reverse-Eng</strong>는 <strong>Claude Code</strong>라는
+AI 도구에 “코드 분석” 기능을 추가하는 플러그인입니다.</p>
+<h3 id="간단히-말하면">간단히 말하면</h3>
+<ul>
+<li>AI에게 “이 코드가 뭐 하는 거야?” 라고 물으면</li>
+<li>AI가 코드를 읽고 <strong>쉬운 한국어로 설명</strong>해 줍니다</li>
+<li>분석 결과는 <strong>표준 보고서</strong>로 깔끔하게 정리됩니다</li>
+<li>위험한 요청(크랙·우회 등)은 <strong>자동으로
+거부</strong>합니다</li>
+</ul>
+<h3 id="어디에-써요">어디에 써요?</h3>
+<ul>
+<li>내가 예전에 만든 코드가 어떻게 동작하는지 다시 파악하고 싶을 때</li>
+<li>다른 사람이 만든 코드(허가받은 것)를 이해하고 싶을 때</li>
+<li>“이 함수가 왜 이렇게 작동하지?” 궁금할 때</li>
+<li>내 코드의 보안 취약점이 어디 있는지 찾고 싶을 때</li>
+</ul>
+<hr />
+<h2 id="무엇을-해-주나요">2. 무엇을 해 주나요?</h2>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>기능</th>
+<th>설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🔍 코드 설명</td>
+<td>“이 함수가 뭐 하는 거야?” → 한국어로 풀어서 설명</td>
+</tr>
+<tr>
+<td>📋 표준 보고서 자동 출력</td>
+<td>요약 · 함수별 설명 · 근거 위치 · 불확실한 점 · 다음 확인사항</td>
+</tr>
+<tr>
+<td>🛡️ 안전 3층 보호</td>
+<td>AI 거부(1층) + 위험 차단(2층) + 파일 변조 감지(3층) 동시 작동</td>
+</tr>
+<tr>
+<td>🔒 자동 마스킹</td>
+<td>비밀번호 · API키 · 토큰이 보고서에 평문 노출되지 않도록
+<code>••••</code> 처리</td>
+</tr>
+<tr>
+<td>🗣️ 전체 한국어 안내</td>
+<td>모든 안내 · 오류 메시지가 한국어</td>
+</tr>
+<tr>
+<td>📁 로컬 전용 저장</td>
+<td>분석 결과를 내 컴퓨터에만 저장 (외부 서버로 전송 없음)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="무엇을-거부하나요-안전-경계">3. 무엇을 거부하나요? (안전
+경계)</h2>
+<table>
+<thead>
+<tr>
+<th>요청</th>
+<th>결과</th>
+<th>이유</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>“이 코드가 어떻게 동작해?”</td>
+<td>✅ 분석 진행 (동의 후)</td>
+<td>허용 범위</td>
+</tr>
+<tr>
+<td>“버그 찾아줘”</td>
+<td>✅ 분석 진행 (동의 후)</td>
+<td>허용 범위</td>
+</tr>
+<tr>
+<td>“보안 취약점 어디야?”</td>
+<td>✅ 분석 진행 (동의 후)</td>
+<td>허용 범위</td>
+</tr>
+<tr>
+<td>“크랙 방법 알려줘”</td>
+<td>🛑 거부</td>
+<td>절대 금지</td>
+</tr>
+<tr>
+<td>“인증 우회 코드 만들어줘”</td>
+<td>🛑 거부</td>
+<td>절대 금지</td>
+</tr>
+<tr>
+<td>“토큰/비밀번호 추출해줘”</td>
+<td>🛑 거부</td>
+<td>절대 금지</td>
+</tr>
+<tr>
+<td>“DRM 해제 방법은?”</td>
+<td>🛑 거부</td>
+<td>절대 금지</td>
+</tr>
+<tr>
+<td>“라이선스 우회해줘”</td>
+<td>🛑 거부</td>
+<td>절대 금지</td>
+</tr>
+<tr>
+<td>분석 중 발견한 API 키</td>
+<td>🔒 <code>••••(마스킹됨)</code> 표시</td>
+<td>개인정보 보호</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="sodam-6형제-시너지">4. SoDam 6형제 시너지</h2>
+<p>SoDam-Reverse는 6형제 플러그인 중 <strong>막내</strong>입니다.
+형제들과 함께 설치하면 더 강력해집니다.</p>
+<p><strong>권장 설치 순서:</strong> Harness → Loop → Context → Agentic →
+Prompt → <strong>Reverse(이것)</strong></p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>형제 플러그인</th>
+<th>역할</th>
+<th>Reverse와 함께 쓰면</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>SoDam-Harness</strong></td>
+<td>안전벨트 · 백업</td>
+<td>RE 위험 패턴을 Harness 공유규칙에 실제 추가(단, hook 자체는 별도
+등록 유지 — 아래 “알려진 한계” 참고)</td>
+</tr>
+<tr>
+<td><strong>SoDam-Loop</strong></td>
+<td>반복 작업 안전 제어</td>
+<td>반복 분석 루프도 안전하게</td>
+</tr>
+<tr>
+<td><strong>SoDam-Context</strong></td>
+<td>CLAUDE.md 건강검진</td>
+<td>분석 범위 이탈 자동 감지</td>
+</tr>
+<tr>
+<td><strong>SoDam-Agentic</strong></td>
+<td>계획 · 쉬운 검토</td>
+<td>보고서를 비개발자 눈높이로 재검수</td>
+</tr>
+<tr>
+<td><strong>SoDam-Prompt</strong></td>
+<td>자연어 요청 개선</td>
+<td>“이거 분석해줘” 품질 향상</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>⚠️ <strong>중요:</strong> <code>C:\Users\이름</code> (홈 폴더)에서
+Claude Code를 시작하면 Harness · Loop guard가 정상 작업까지 막습니다.
+반드시 <strong>프로젝트 폴더</strong> (<code>D:\내프로젝트\</code>
+등)에서 시작하세요.</p>
+</blockquote>
+<p><strong>Harness가 설치된 경우 — 한 번만 실행:</strong></p>
+<pre><code>node scripts/re-inject-harness.mjs</code></pre>
+<p>→ RE 위험 패턴이 Harness 안전규칙에 실제로 추가됩니다. &gt; ⚠️
+<strong>알려진 한계</strong>: 규칙은 공유되지만 hook 자체는 Reverse가
+별도로 계속 등록합니다(Harness 존재 시 자체검사를 생략하는 기능을
+2026-07-12에 시도했으나 위험 요청이 무검증 통과하는 실제 회귀가 발견돼
+되돌림). 그래서 위험한 요청 1건에 차단 메시지가 2번 뜰 수 있으나, 같은
+위험을 두 번 잡는 것뿐이라 안전에는 영향 없습니다.</p>
+<hr />
+<h2 id="사전-준비물-무료-2가지">5. 사전 준비물 (무료, 2가지)</h2>
+<h3 id="준비물-1-node.js-버전-18-이상">준비물 1: Node.js (버전 18
+이상)</h3>
+<p><strong>Node.js</strong>란 이 플러그인의 안전장치가 동작하는 데
+필요한 “실행 엔진”입니다.</p>
+<p><strong>이미 있는지 확인:</strong> 1. 키보드에서 <strong>⊞ Windows
+키</strong> 누르기 2. <code>powershell</code> 입력 → <strong>Windows
+PowerShell</strong> 클릭 3. 검은 창이 열리면 아래를 입력하고
+<strong>Enter</strong>: <code>node --version</code> 4. <code>v18.</code>
+이상 숫자가 나오면 <strong>OK</strong> (예: <code>v20.19.0</code>,
+<code>v22.14.0</code>)</p>
+<p><strong>없다면 (또는 v18보다 낮다면) 설치 방법:</strong> 1.
+웹브라우저(크롬, 엣지 등) → <strong>nodejs.org</strong> 접속 2. 초록색
+<strong>“LTS”</strong> 버튼 클릭 → 설치 파일(.msi) 내려받기 3. 내려받은
+파일 더블클릭 → “<strong>다음(Next)</strong>”을 계속 누르기 → 설치 완료
+4. PowerShell 창 <strong>완전히 닫기</strong> → 새로 열기 5. 다시
+<code>node --version</code> 입력하여 버전 확인</p>
+<blockquote>
+<p>💡 컴퓨터를 재부팅해야 반영되는 경우도 있습니다.</p>
+</blockquote>
+<h3 id="준비물-2-claude-code">준비물 2: Claude Code</h3>
+<p>이 문서를 Claude Code에서 보고 있다면 <strong>이미 있는
+것</strong>입니다. 없다면 Anthropic 공식 사이트에서 Claude Code를
+설치하세요.</p>
+<hr />
+<h2 id="설치-방법">6. 설치 방법</h2>
+<hr />
+<h3 id="설치-전-반드시-읽기-가장-흔한-실패-원인">⚠️ 설치 전 반드시 읽기
+— 가장 흔한 실패 원인</h3>
+<blockquote>
+<p><strong>명령어가 안 뜨는 원인 1위: Claude Code를 잘못된 폴더에서
+시작했을 때</strong></p>
+<p>Claude Code는 <strong>켤 때의 폴더</strong>를 기준으로 명령어를
+읽습니다. 채팅창에서 <code>cd 다른폴더</code>를 입력해도 명령어는 다시
+읽히지 않습니다.</p>
+<p><strong>올바른 순서:</strong> 1. PowerShell(검은 창)을 열고 2.
+<code>cd D:\내프로젝트폴더</code> 입력 (프로젝트 폴더로 이동) 3.
+<code>claude</code> 입력해서 Claude Code 실행</p>
+<p>❌ 홈 폴더(<code>C:\Users\이름</code>)에서 실행하면
+<code>/re-start</code> 명령이 안 뜹니다.</p>
+</blockquote>
+<hr />
+<h3 id="단계-1-마켓플레이스-등록">단계 1: 마켓플레이스 등록</h3>
+<p>Claude Code 채팅창에 아래를 입력하세요:</p>
+<blockquote>
+<p>📦 <strong>이 플러그인은 비공개 저장소입니다.</strong> 아래 두 방법
+중 받은 방식에 맞는 것을 선택하세요.</p>
+</blockquote>
+<hr />
+<p><strong>방법 A — GitHub 저장소에서 복제 (저장소 초대를 받은
+분)</strong></p>
+<blockquote>
+<p>⚠️ GitHub 계정이 필요하며, 저장소 접근 권한(초대)이 있어야 합니다.
+초대 요청: startmxk@gmail.com</p>
+</blockquote>
+<ol type="1">
+<li><p>PowerShell(검은 창)을 열고 복제 명령어 입력:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>git clone https<span class="op">://</span>github<span class="op">.</span><span class="fu">com</span><span class="op">/</span>sodam-ai<span class="op">/</span>SoDam-Reverse-Eng<span class="op">.</span><span class="fu">git</span></span></code></pre></div>
+<p>→ 현재 폴더 안에 <code>SoDam-Reverse-Eng</code> 폴더가
+생성됩니다.</p></li>
+<li><p>복제된 폴더 경로 확인 (예:
+<code>C:\Users\내이름\SoDam-Reverse-Eng</code>)</p></li>
+<li><p>Claude Code 채팅창에 해당 경로로 입력:</p>
+<pre><code>/plugin marketplace add C:\Users\내이름\SoDam-Reverse-Eng</code></pre>
+<blockquote>
+<p>💡 <code>내이름</code> 부분을 실제 사용자 이름으로 바꿔
+입력하세요.</p>
+</blockquote></li>
+</ol>
+<hr />
+<p><strong>방법 B — 폴더/압축 파일로 전달받은 분 (git
+불필요)</strong></p>
+<ol type="1">
+<li><p>받은 zip 파일의 압축을 풀거나 폴더를 원하는 위치에 저장 (예:
+<code>C:\Users\내이름\SoDam-Reverse-Eng</code>)</p></li>
+<li><p>Claude Code 채팅창에 실제 경로 입력:</p>
+<pre><code>/plugin marketplace add C:\Users\내이름\SoDam-Reverse-Eng</code></pre>
+<blockquote>
+<p>💡 경로에 공백이 포함된 경우 큰따옴표로 감싸세요:
+<code>/plugin marketplace add "C:\내 이름 포함 경로\SoDam-Reverse-Eng"</code></p>
+</blockquote></li>
+</ol>
+<h3 id="단계-2-플러그인-설치">단계 2: 플러그인 설치</h3>
+<p>마켓플레이스 등록 후 아래를 입력:</p>
+<pre><code>/plugin install sodam-reverse@sodamreverse-marketplace</code></pre>
+<p>또는 <code>/plugin</code> 입력 → 메뉴에서 <strong>Browse marketplaces
+→ sodam-reverse → Install</strong> 선택.</p>
+<h3 id="단계-3-완전-재시작-반드시">단계 3: 완전 재시작 (반드시!)</h3>
+<p>플러그인은 Claude Code <strong>시작 시에만 로드</strong>됩니다.
+반드시 완전 종료 후 재시작해야 합니다.</p>
+<ol type="1">
+<li><p>채팅창에 <code>/exit</code> 입력 → Enter</p></li>
+<li><p>터미널(검은 창) <strong>완전히 닫기</strong></p></li>
+<li><p>PowerShell 새로 열기</p></li>
+<li><p><strong>반드시 프로젝트 폴더에서 시작:</strong></p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cd</span> D<span class="op">:</span>\내프로젝트폴더</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>claude</span></code></pre></div></li>
+</ol>
+<h3 id="단계-4-설치-확인">단계 4: 설치 확인</h3>
+<p>Claude Code가 열리면 <code>/re-p</code> 입력 → 자동완성에 아래가 떠야
+정상:</p>
+<pre><code>/re-ping    (sodam-reverse)  ← 진단용
+/re-start   (sodam-reverse)  ← 분석 시작</code></pre>
+<p><code>(sodam-reverse)</code> 꼬리표가 붙어 있으면 플러그인으로 제대로
+로딩된 것입니다.</p>
+<p><strong>진단 명령어 실행:</strong></p>
+<pre><code>/re-ping</code></pre>
+<p>→ <code>"Pong! /re-ping 정상 작동합니다."</code> 응답이 오면 설치
+완료.</p>
+<h3 id="단계-5-안전-3층-검증-필수">단계 5: 안전 3층 검증 (필수!)</h3>
+<pre><code>/re-selftest</code></pre>
+<p><strong>기대 결과:</strong> ✅✅✅ 3개 모두 초록색</p>
+<p>초록색 3개가 나오지 않으면 → <a
+href="./TROUBLESHOOTING.md">TROUBLESHOOTING.md</a> 참고</p>
+<h3 id="단계-6-무결성-해시-등록-3층-활성화">단계 6: 무결성 해시 등록
+(3층 활성화)</h3>
+<p>selftest 출력에서 <strong>핵심
+안전파일(<code>hooks/re-deny-guard.mjs</code>)의 해시</strong>를
+<code>references/integrity.json</code>에 저장하세요(이미 있는 항목은
+유지):</p>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode json"><code class="sourceCode json"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;hooks/re-deny-guard.mjs&quot;</span><span class="fu">:</span> <span class="st">&quot;&lt;셀프테스트가 출력한 해시&gt;&quot;</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<p>→ 다시 <code>/re-selftest</code> 실행 →
+<code>"3층 무결성: guard 해시 일치"</code> ✅ 확인</p>
+<blockquote>
+<p>💡 <code>references/integrity.json</code>에는 다른 안전파일 항목이
+미리 채워져 있을 수 있습니다(향후 검사 범위 확장을 대비한 준비값). 지금
+이 단계에서 실제로 검사에 쓰이는 항목은
+<code>hooks/re-deny-guard.mjs</code> 하나뿐입니다 — 개발자용 상세는
+<code>CHECKPOINT.md</code>를 참고하세요.</p>
+</blockquote>
+<hr />
+<h3 id="빠른-시작-5분-요약">6-1. 빠른 시작 (5분 요약)</h3>
+<blockquote>
+<p>위 6단계를 이미 하셨다면, 설치 후 <strong>첫 분석까지 이 5줄만 따라
+하면 됩니다.</strong></p>
+</blockquote>
+<ol type="1">
+<li>Claude Code 완전 재시작(설치 직후 필수) 후 <code>/re-ping</code>
+입력 → “Pong!” 뜨면 설치 성공.</li>
+<li><code>/re-selftest</code> 입력 → 안전장치 6개 항목 전부 ✅ 인지
+확인(1개라도 ❌면 §12 문제해결 먼저 참고).</li>
+<li><code>/re-start samples/safe-login.js</code> 입력 → “본인 소유/허가
+대상인가요?” 등 질문에 <strong>“예”</strong>로 답하기.</li>
+<li>잠시 기다리면 한국어 분석 보고서가 화면에
+출력됩니다(요약·함수설명·근거위치 포함).</li>
+<li>이후 내 코드로 실습: <code>/re-start [내 파일 경로]</code> — 이게
+전부입니다.</li>
+</ol>
+<blockquote>
+<p>막히면 §12(문제 해결·FAQ)를, 각 단계의 자세한 이유는 §6(설치 방법)을
+참고하세요.</p>
+</blockquote>
+<hr />
+<h3 id="phase-23-추가-도구-설치-선택-사항">6-2. (Phase 2·3) 추가 도구
+설치 — 선택 사항</h3>
+<blockquote>
+<p><code>/re-start</code>(소스 코드 분석)만 쓴다면 이 항목은 건너뛰어도
+됩니다. <code>/re-android</code>(APK 분석) 또는
+<code>/re-binary</code>(실행파일 분석)를 쓰려면
+Java·JADX·Apktool(안드로이드) 또는 Java·Ghidra(바이너리) 같은 추가
+프로그램이 필요합니다.</p>
+<p><strong>상세 설치 방법(공식 배포처 링크·확인 명령·실제 검증된 버전)은
+별도 문서로 정리했습니다:</strong> <strong>📄 <a
+href="./INSTALL.md">INSTALL.md — 필요 프로그램 설치
+안내</a></strong></p>
+</blockquote>
+<hr />
+<h2 id="명령어">7. 명령어</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>명령어</th>
+<th>언제 사용하나요</th>
+<th>예시</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/re-ping</code></td>
+<td>설치 확인 · 진단용 (가장 먼저 테스트)</td>
+<td><code>/re-ping</code></td>
+</tr>
+<tr>
+<td><code>/re-start [파일경로]</code></td>
+<td>새로운 분석을 시작할 때</td>
+<td><code>/re-start src/login.js</code></td>
+</tr>
+<tr>
+<td><code>/re-report</code></td>
+<td>마지막 분석 보고서를 다시 볼 때</td>
+<td><code>/re-report</code></td>
+</tr>
+<tr>
+<td><code>/re-selftest</code></td>
+<td>안전장치 3층 점검할 때</td>
+<td><code>/re-selftest</code></td>
+</tr>
+<tr>
+<td><code>/re-agent [설정폴더/repo 경로]</code></td>
+<td>내 Claude 설정이나 다른 플러그인 구조를 이해하고 싶을 때</td>
+<td><code>/re-agent ~/.claude</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Phase 2·3 명령어:</strong></p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>명령어</th>
+<th>상태</th>
+<th>설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/re-android [APK경로]</code></td>
+<td>✅ 실사용 라이브 검증 완료(2026-07-13)</td>
+<td>Android 앱 분석</td>
+</tr>
+<tr>
+<td><code>/re-binary [파일경로]</code></td>
+<td>🚧 골격 완료(라이브 미검증)</td>
+<td>바이너리/실행파일 분석</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="분석-흐름-워크플로우">8. 분석 흐름 (워크플로우)</h2>
+<pre><code>사용자: /re-start 내코드/login.js
+          ↓
+[0단계] 안전장치 자가검증 (자동, 2026-08-02부터 동의 게이트 앞에 선행)
+  `node hooks/_selftest.mjs`로 안전 3층(아래 참고)이 전부 정상인지 자동 재확인합니다.
+  ❌가 하나라도 있으면 동의 게이트로 넘어가지 않고 여기서 즉시 중단합니다(fail-closed).
+          ↓
+[1단계] 동의 게이트 (버튼 선택형 질문 3개, 2026-07-27부터)
+  AI가 소유권·분석 목적·이용 동의 질문 3개를 한 번에 띄웁니다 — 타이핑 대신 버튼(선택지)을 눌러 답합니다.
+  세 질문 모두 &quot;예&quot; 계열 선택 → 다음 단계로. 하나라도 &quot;아니오&quot; → 즉시 중단
+  (정확한 질문 문구는 §12 Q5 참고)
+  통과하면 `.sodam-re/consent-log.jsonl`에 동의 기록 1줄이 추가됩니다(경로·시각, 2026-08-02부터).
+          ↓
+(0단계 안전 3층 상세 — 참고용, 실행 순서는 위 [0단계] 참고)
+  1층: AI가 크랙·우회 내용인지 자체 판단
+  2층: deny-hook이 위험 패턴 실시간 차단
+  3층: 안전파일 변조 여부 SHA-256으로 확인
+          ↓
+[2단계] 분석 시작 (읽기 전용)
+  - 파일 읽기만 (절대 실행 안 함)
+  - 경로 조작 (../, 심볼릭 링크) 차단 시도 — **AI(1층) 판단 기반**(코드로 100% 강제되는 것은 아님, 2026-07-13 보안점검에서 확인)
+  - 비밀번호 · 키 발견 시 자동 마스킹
+          ↓
+[3단계] 표준 보고서 출력
+  ┌─────────────────────────────────────────────┐
+  │ ■ 한 줄 요약 (이 코드가 하는 일 1줄로)       │
+  │ ■ 함수별 설명 (파일명:줄번호 근거 포함)       │
+  │ ■ 불확실한 점 (AI가 확신 못하는 부분 명시)   │
+  │ ■ 다음 확인사항 (추가로 볼 것 제안)          │
+  └─────────────────────────────────────────────┘
+          ↓
+[4단계] 로컬 저장
+  .sodam-re/ 폴더에 저장 (.gitignore 등록됨)
+  외부 서버 전송 없음</code></pre>
+<hr />
+<h2 id="보안데이터-흐름">9. 보안·데이터 흐름</h2>
+<h3 id="내-코드-데이터는-어디로-가나요">내 코드 데이터는 어디로
+가나요?</h3>
+<pre><code>내 컴퓨터의 코드
+    ↓ (분석을 위해 AI에 전송)
+Claude AI (Anthropic 서버)
+    ↓ (분석 결과만 반환)
+내 컴퓨터 .sodam-re/ 저장</code></pre>
+<ul>
+<li><strong>AI에 전송:</strong> 코드 내용 (분석을 위해 필요 — Claude API
+이용 약관 적용)</li>
+<li><strong>외부 전송 안 됨:</strong> 분석 결과, 동의 기록, 차단
+로그</li>
+<li><strong>마스킹 처리 후 저장:</strong> 코드 중 발견된
+비밀번호·키·토큰</li>
+</ul>
+<h3 id="층-안전장치-구조">3층 안전장치 구조</h3>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th>층</th>
+<th>이름</th>
+<th>역할</th>
+<th>파일</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>1층</strong></td>
+<td>AI 거부 규칙</td>
+<td>AI 자체가 크랙·우회 내용 출력 거부</td>
+<td><code>skills/re-router/SKILL.md</code></td>
+</tr>
+<tr>
+<td><strong>2층</strong></td>
+<td>deny-hook</td>
+<td>위험 키워드·패턴 실시간 차단</td>
+<td><code>hooks/re-deny-guard.mjs</code></td>
+</tr>
+<tr>
+<td><strong>3층</strong></td>
+<td>무결성 점검</td>
+<td>안전파일이 변조됐는지 SHA-256으로 확인</td>
+<td><code>hooks/_selftest.mjs</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>fail-closed 원칙:</strong> hook에 오류가 생기면 “통과”가
+아니라 <strong>분석 즉시 중단</strong>입니다.</p>
+<h3 id="분석-결과-저장-위치">분석 결과 저장 위치</h3>
+<pre><code>[플러그인 폴더]/
+└── .sodam-re/                     ← 분석 결과 저장 폴더 (자동 생성)
+    ├── consent-log.jsonl          ← 동의 통과 기록 (한 줄에 하나씩 append, 덮어쓰기 없음)
+    └── safety-log.jsonl           ← 차단 이벤트 기록 (원문 대신 SHA-256 해시만 저장)</code></pre>
+<blockquote>
+<p>⚠️ <strong>정확성을 위한 표시</strong>: 분석 보고서 자체는
+“<code>.sodam-re/</code> 폴더 안에만 저장되고 외부로 전송되지 않는다”는
+원칙만 확정돼 있으며, 파일별로 어떤 이름 규칙으로 저장할지는 아직 고정돼
+있지 않습니다. 확실히 코드로 확인된 것은 위 두
+파일(<code>consent-log.jsonl</code>·<code>safety-log.jsonl</code>)뿐이라,
+확인 안 된 폴더 구조를 임의로 적지 않았습니다.</p>
+</blockquote>
+<p><code>.sodam-re/</code> 폴더는 <code>.gitignore</code>에 등록되어
+<strong>Git에 업로드되지 않습니다.</strong></p>
+<hr />
+<h2 id="아키텍처파일-구조">10. 아키텍처·파일 구조</h2>
+<pre><code>SoDam-Reverse-Eng/
+│
+├── .claude-plugin/              ← Claude Code 플러그인 선언
+│   ├── plugin.json
+│   └── marketplace.json
+│
+├── commands/                    ← 명령어 정의 (/re-start 등)
+│   ├── re-ping.md               ← 진단 명령어
+│   ├── re-start.md
+│   ├── re-report.md
+│   ├── re-selftest.md
+│   ├── re-agent.md              ← AI 에이전트 구조 분석
+│   ├── re-android.md            ← 실사용 라이브 검증 완료
+│   └── re-binary.md             ← 골격 완료(라이브 미검증)
+│
+├── skills/                      ← 분석 AI 로직
+│   ├── re-router/               ← 1층 안전규칙 + 요청 분류
+│   ├── re-analyze-mycode/       ← 소스코드 분석
+│   ├── re-report/               ← 보고서 생성
+│   ├── re-analyze-agent/        ← 라이브 검증 완료
+│   ├── re-analyze-android/      ← 실사용 라이브 검증 완료
+│   └── re-analyze-binary/       ← 골격 완료(라이브 미검증)
+│
+├── hooks/                       ← 안전장치 (2층 · 3층)
+│   ├── re-deny-guard.mjs        ← 2층: 위험 패턴 실시간 차단
+│   ├── _selftest.mjs            ← 3층: SHA-256 무결성 점검
+│   └── hooks.json               ← hook 설정
+│
+├── references/                  ← 데이터·규칙 파일
+│   ├── deny-corpus.json         ← 위험 패턴 (키워드 60개 + 정규식 7개)
+│   ├── mask-patterns.json       ← 마스킹 패턴 15개
+│   ├── trust-catalog.md         ← 신뢰 도구 카탈로그 (15개 repo)
+│   ├── report-template.md       ← 보고서 표준 양식
+│   └── integrity.json           ← 안전파일 SHA-256 해시 저장소
+│
+├── scripts/                     ← 유틸리티 스크립트
+│   ├── re-inject-harness.mjs    ← Harness 시너지 설정
+│   ├── re-inject-context.mjs    ← Context 시너지 설정
+│   ├── check-family.mjs         ← 6형제 상태 확인
+│   ├── check-trust-freshness.mjs← 도구 신뢰도 신선도 점검
+│   └── rotate-safety-log.mjs    ← 안전로그 보존기간 관리(자동만료)
+│
+├── mcp/
+│   └── catalog.json             ← Phase 2·3 외부 도구 큐레이션 설정(신뢰등급·라이선스)
+│
+├── samples/                     ← 테스트용 예제 파일
+│   ├── safe-login.js            ← 정상 분석 테스트용
+│   ├── deny-demo.txt            ← 차단 테스트용
+│   ├── agent-injection-demo.md  ← 프롬프트 인젝션 방어 테스트용
+│   └── agent-injection-demo-2.md← 결합공격(레드팀) 방어 테스트용
+│
+├── .sodam-re/                   ← 분석 결과 저장 (자동 생성, .gitignore)
+│
+├── README.md                    ← 이 파일 (한국어 개요)
+├── README.en.md                 ← English overview
+├── INSTALL.md                   ← 추가 도구(Android·바이너리) 설치 상세
+├── TROUBLESHOOTING.md           ← 오류 해결 가이드
+├── CHECKPOINT.md                ← 개발 진행 상태 (개발자용)
+├── SETUP_BLOCKED_FILES.md       ← 안전파일 코드 전문
+├── LICENSE                      ← Apache-2.0 라이선스 전문
+└── NOTICE                       ← 저작권 고지</code></pre>
+<p><strong>3층 안전 흐름 요약:</strong></p>
+<pre><code>[1층] skills/ 규칙    →  AI가 위험 출력 자체를 거부
+[2층] hooks/re-deny-guard.mjs  →  위험 도구 호출 즉시 차단
+[3층] hooks/_selftest.mjs      →  SHA-256으로 파일 변조 감지</code></pre>
+<hr />
+<h2 id="파일문서-위치-전체-목록">11. 파일·문서 위치 (전체 목록)</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>파일 / 문서</th>
+<th>위치</th>
+<th>목적</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>한국어 README</td>
+<td><a href="./README.md"><code>README.md</code></a></td>
+<td>이 파일 (전체 개요)</td>
+</tr>
+<tr>
+<td>영어 README</td>
+<td><a href="./README.en.md"><code>README.en.md</code></a></td>
+<td>English overview</td>
+</tr>
+<tr>
+<td>추가 도구 설치 안내</td>
+<td><a href="./INSTALL.md"><code>INSTALL.md</code></a></td>
+<td>Android(JADX·Apktool)·바이너리(Ghidra) 등 선택 도구 상세 설치법</td>
+</tr>
+<tr>
+<td>오류 해결 가이드</td>
+<td><a
+href="./TROUBLESHOOTING.md"><code>TROUBLESHOOTING.md</code></a></td>
+<td>실패 패턴 전체 해결법</td>
+</tr>
+<tr>
+<td>안전파일 코드 전문</td>
+<td><a
+href="./SETUP_BLOCKED_FILES.md"><code>SETUP_BLOCKED_FILES.md</code></a></td>
+<td>수동 설정 파일 코드</td>
+</tr>
+<tr>
+<td>라이선스 원문</td>
+<td><a href="./LICENSE"><code>LICENSE</code></a></td>
+<td>Apache-2.0 전문</td>
+</tr>
+<tr>
+<td>저작권 고지</td>
+<td><a href="./NOTICE"><code>NOTICE</code></a></td>
+<td>서드파티 고지</td>
+</tr>
+<tr>
+<td>개발 진행 상태</td>
+<td><code>CHECKPOINT.md</code></td>
+<td>개발자용 체크포인트 (로컬 전용 파일 · GitHub에는 올리지 않음이라
+링크 없음)</td>
+</tr>
+<tr>
+<td>위험 패턴 DB</td>
+<td><a
+href="./references/deny-corpus.json"><code>references/deny-corpus.json</code></a></td>
+<td>키워드 60개 + 정규식 7개</td>
+</tr>
+<tr>
+<td>마스킹 패턴</td>
+<td><a
+href="./references/mask-patterns.json"><code>references/mask-patterns.json</code></a></td>
+<td>15개 마스킹 규칙</td>
+</tr>
+<tr>
+<td>신뢰 도구 목록</td>
+<td><a
+href="./references/trust-catalog.md"><code>references/trust-catalog.md</code></a></td>
+<td>15개 도구 신뢰등급</td>
+</tr>
+<tr>
+<td>보고서 표준 양식</td>
+<td><a
+href="./references/report-template.md"><code>references/report-template.md</code></a></td>
+<td>보고서 형식 정의</td>
+</tr>
+<tr>
+<td>무결성 해시</td>
+<td><a
+href="./references/integrity.json"><code>references/integrity.json</code></a></td>
+<td>SHA-256 해시 저장</td>
+</tr>
+<tr>
+<td>외부 도구 큐레이션</td>
+<td><a href="./mcp/catalog.json"><code>mcp/catalog.json</code></a></td>
+<td>Phase 2·3 도구별 신뢰등급·라이선스·상태</td>
+</tr>
+<tr>
+<td>형제 상태 확인</td>
+<td><a
+href="./scripts/check-family.mjs"><code>scripts/check-family.mjs</code></a></td>
+<td>6형제 진단 스크립트</td>
+</tr>
+<tr>
+<td>신선도 점검</td>
+<td><a
+href="./scripts/check-trust-freshness.mjs"><code>scripts/check-trust-freshness.mjs</code></a></td>
+<td>신뢰 카탈로그 최신성 확인</td>
+</tr>
+<tr>
+<td>안전로그 보존기간 관리</td>
+<td><code>scripts/rotate-safety-log.mjs</code></td>
+<td>30일(기본) 지난 안전로그 항목 삭제(자기부죄 방지)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="문제-해결faq">12. 문제 해결·FAQ</h2>
+<h3 id="q1.-re-start-명령이-안-뜨거나-없어요-가장-흔한-문제">Q1.
+<code>/re-start</code> 명령이 안 뜨거나 없어요 (가장 흔한 문제)</h3>
+<p><strong>원인:</strong> Claude Code를 홈
+폴더(<code>C:\Users\이름</code>)에서 실행했거나, 채팅창에서
+<code>cd</code>로 이동한 것을 “이동했다”고 착각한 경우.</p>
+<p><strong>해결:</strong> 1. Claude Code 완전히 닫기 2. PowerShell 새로
+열기 3. <strong>프로젝트 폴더로 이동 후 실행:</strong>
+<code>powershell    cd D:\내프로젝트폴더    claude</code> 4.
+<code>/re-ping</code> 입력 → <code>"Pong!"</code> 응답 확인</p>
+<hr />
+<h3 id="q2.-re-ping-이-뭔가요">Q2. <code>/re-ping</code> 이 뭔가요?</h3>
+<p>설치 확인용 진단 명령어입니다.
+<code>"Pong! /re-ping 정상 작동합니다."</code> 라고 응답이 오면
+플러그인이 제대로 로딩된 것입니다. 이 명령이 안 되면
+<code>/re-start</code>도 안 됩니다.</p>
+<hr />
+<h3 id="q3.-node.js를-찾을-수-없습니다-오류">Q3. “Node.js를 찾을 수
+없습니다” 오류</h3>
+<p>nodejs.org → <strong>LTS</strong> 설치 → 터미널 껐다 켜기 →
+<code>node --version</code> 확인</p>
+<hr />
+<h3 id="q4.-정상-작업이-계속-막혀요">Q4. 정상 작업이 계속 막혀요</h3>
+<p><code>C:\Users\이름</code> (홈 폴더)에서 실행하고 있을 가능성이
+큽니다.</p>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cd</span> D<span class="op">:</span>\내프로젝트폴더</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>claude</span></code></pre></div>
+<p><strong>프로젝트 폴더</strong>에서 Claude Code를 다시 시작하세요.</p>
+<hr />
+<h3 id="q5.-동의-질문에서-막혀요">Q5. 동의 질문에서 막혀요</h3>
+<p>질문 3개가 뜨면 자연어로 타이핑하지 말고, <strong>버튼(선택지)을 직접
+클릭</strong>하거나 <strong>번호를 선택</strong>하세요. “예” 계열
+선택지를 골라야 동의로 처리됩니다 — “아니오”를 선택하거나 응답을
+거부하면 그 즉시 분석이 중단됩니다.</p>
+<hr />
+<h3 id="q6.-크랙우회-요청이-거부됐어요">Q6. 크랙/우회 요청이
+거부됐어요</h3>
+<p><strong>정상 동작</strong>입니다. 이 도구는 방어·교육·본인 소유물
+전용입니다.</p>
+<hr />
+<h3 id="q7.-re-selftest-에서-일부-항목이">Q7. <code>/re-selftest</code>
+에서 일부 항목이 ❌</h3>
+<p><a
+href="./SETUP_BLOCKED_FILES.md"><code>SETUP_BLOCKED_FILES.md</code></a>에서
+5개 파일이 모두 있는지 확인 → 없는 파일만 다시 만들기 → Claude Code 완전
+재시작 → 다시 <code>/re-selftest</code></p>
+<p>SHA-256 불일치:</p>
+<pre><code>node hooks/_selftest.mjs</code></pre>
+<p>출력 해시 → <code>references/integrity.json</code> 저장 → 재실행</p>
+<blockquote>
+<p>⚠️ <strong>주의:</strong> <code>integrity.json</code>에 <strong>이미
+값이 들어있는 상태</strong>에서 해시가 달라 ❌가 뜬 경우, 위 명령은
+“불일치(변조 의심)”라고만 알려주고 <strong>새 해시를 화면에 출력하지
+않습니다</strong>(해시 출력은 <code>integrity.json</code>이 비어있을
+때만 나옵니다). 이럴 때는 ❌가 뜬 파일
+경로(<code>hooks/hooks.json</code> ·
+<code>hooks/re-deny-guard.mjs</code> · <code>hooks/_selftest.mjs</code>
+· <code>references/deny-corpus.json</code> ·
+<code>references/mask-patterns.json</code> 중 하나)를 아래 명령의
+<code>&lt;파일경로&gt;</code> 자리에 넣어 새 해시를 직접 확인하세요:</p>
+<div class="sourceCode" id="cb18"><pre
+class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>node <span class="op">-</span>e <span class="st">&quot;console.log(require(&#39;crypto&#39;).createHash(&#39;sha256&#39;).update(require(&#39;fs&#39;).readFileSync(&#39;&lt;파일경로&gt;&#39;)).digest(&#39;hex&#39;))&quot;</span></span></code></pre></div>
+</blockquote>
+<hr />
+<h3 id="q8.-보고서에서-비밀번호가-그대로-보여요">Q8. 보고서에서
+비밀번호가 그대로 보여요</h3>
+<p><strong>버그입니다.</strong>
+<code>references/mask-patterns.json</code>에 해당 패턴이 없는 것입니다.
+해당 보고서를 공유하지 마시고 GitHub Issues에 신고해 주세요.</p>
+<hr />
+<h3 id="q9.-파일이-너무-커서-분석이-오래-걸려요">Q9. 파일이 너무 커서
+분석이 오래 걸려요</h3>
+<p>파일 하나씩 분석하세요:</p>
+<pre><code>/re-start src/auth.js</code></pre>
+<p>폴더 전체보다 파일 단위가 훨씬 잘 동작합니다.</p>
+<hr />
+<h3 id="q10.-harness-시너지가-안-연결돼요">Q10. Harness 시너지가 안
+연결돼요</h3>
+<pre><code>node scripts/re-inject-harness.mjs</code></pre>
+<p>“RE 규칙 N개 주입 완료” 메시지가 나오면 성공.</p>
+<hr />
+<h3 id="q11.-더-자세한-오류-해결">Q11. 더 자세한 오류 해결</h3>
+<p>→ <strong><a
+href="./TROUBLESHOOTING.md">TROUBLESHOOTING.md</a></strong> — 실패 패턴
+전체 해결법</p>
+<hr />
+<h2 id="라이선스저작권상업적-용도">13. 라이선스·저작권·상업적 용도</h2>
+<h3 id="적용-라이선스">적용 라이선스</h3>
+<p><strong>Apache License 2.0 · © 2026 SoDam AI Studio</strong></p>
+<h3 id="허용되는-것-명시적으로-허용">허용되는 것 (명시적으로 허용)</h3>
+<table>
+<thead>
+<tr>
+<th>행위</th>
+<th>가능 여부</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>개인적 사용</td>
+<td>✅ 허용</td>
+</tr>
+<tr>
+<td>수정 · 변경</td>
+<td>✅ 허용 (변경 사실 명시 의무)</td>
+</tr>
+<tr>
+<td>복제 · 포크</td>
+<td>✅ 허용</td>
+</tr>
+<tr>
+<td>재배포</td>
+<td>✅ 허용 (라이선스·저작권 고지 포함 의무)</td>
+</tr>
+<tr>
+<td><strong>상업적 사용</strong></td>
+<td>✅ 허용</td>
+</tr>
+<tr>
+<td>특허 사용</td>
+<td>✅ 허용</td>
+</tr>
+</tbody>
+</table>
+<h3 id="반드시-해야-하는-것-의무-사항">반드시 해야 하는 것 (의무
+사항)</h3>
+<table>
+<thead>
+<tr>
+<th>의무</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>라이선스 고지 보존</td>
+<td><code>LICENSE</code> 파일을 반드시 포함</td>
+</tr>
+<tr>
+<td>저작권 고지 보존</td>
+<td><code>© 2026 SoDam AI Studio</code> 고지 유지</td>
+</tr>
+<tr>
+<td>변경 사실 명시</td>
+<td>원본에서 수정한 부분이 있으면 명시</td>
+</tr>
+<tr>
+<td>NOTICE 파일 동봉</td>
+<td><code>NOTICE</code> 파일을 함께 배포</td>
+</tr>
+</tbody>
+</table>
+<h3 id="허용되지-않는-것-주의">허용되지 않는 것 (주의)</h3>
+<table>
+<thead>
+<tr>
+<th>행위</th>
+<th>설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>“SoDam” 상표 무단 사용</td>
+<td>허가 없이 상표로 사용 불가</td>
+</tr>
+<tr>
+<td>보증 요구</td>
+<td>“문제 없이 동작한다”는 보증 없음 (AS-IS 제공)</td>
+</tr>
+<tr>
+<td>손해배상 청구</td>
+<td>면책 조항 적용</td>
+</tr>
+</tbody>
+</table>
+<h3 id="타사-상표-고지">타사 상표 고지</h3>
+<ul>
+<li><strong>“Claude”</strong>, <strong>“Claude Code”</strong>,
+<strong>“Anthropic”</strong> — Anthropic 소유 상표</li>
+<li><strong>“IDA Pro”</strong> — Hex-Rays 소유 상표 (Phase 3 선택
+기능)</li>
+<li>위 상표들은 본 제품과 <strong>공식 제휴 또는 보증 관계
+없음</strong></li>
+</ul>
+<h3 id="상업적-사용-시-반드시-확인할-것">상업적 사용 시 반드시 확인할
+것</h3>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>항목</th>
+<th>확인 사항</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>이 도구 자체</td>
+<td>Apache-2.0으로 상업적 사용 가능</td>
+</tr>
+<tr>
+<td>분석 대상 소프트웨어</td>
+<td>해당 소프트웨어의 EULA · 라이선스 <strong>별도</strong> 확인</td>
+</tr>
+<tr>
+<td>Claude API 사용</td>
+<td>Anthropic 이용 약관 <strong>별도</strong> 적용</td>
+</tr>
+<tr>
+<td>IDA Pro (Phase 3, 선택)</td>
+<td>상용 라이선스 <strong>별도</strong> 구매 필요</td>
+</tr>
+</tbody>
+</table>
+<h3 id="반드시-알아야-할-법적-책임-한계-엄격-적용">⚠️ 반드시 알아야 할
+법적 책임 한계 (엄격 적용)</h3>
+<blockquote>
+<p>이 섹션은 <strong>법률 자문이 아닙니다.</strong> 실제 법적 판단이
+필요한 상황이라면 반드시 변호사와 상담하세요. 아래는 “이 도구가
+안전하다”는 것과 “내가 무엇을 분석하는가가 항상 합법이다”는 것이
+<strong>서로 다른 문제</strong>임을 알려드리기 위한 안내입니다.</p>
+</blockquote>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>상황</th>
+<th>반드시 알아야 할 것</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>타인·제3자의 코드·앱 분석</strong></td>
+<td>동의 게이트에서 “본인 소유”라고 답했더라도, 실제로 저작권자의 허락이
+없다면 그 자체로 <strong>저작권법·컴퓨터프로그램보호법 위반
+소지</strong>가 있습니다. 이 도구는 사용자의 답변이 사실인지 검증할
+방법이 없으며, 허위 답변에 대한 책임은 <strong>전적으로 사용자
+본인</strong>에게 있습니다.</td>
+</tr>
+<tr>
+<td><strong>회사·직장에서 작성한 코드</strong></td>
+<td>재직 중 업무로 작성한 코드는 통상 <strong>회사(고용주)
+소유</strong>인 경우가 많습니다(업무상저작물 법리). 본인이 직접
+타이핑했다고 해서 “본인 소유”가 아닐 수 있습니다 — 분석 전 회사
+정책·근로계약을 먼저 확인하세요.</td>
+</tr>
+<tr>
+<td><strong>분석 대상에 타인의 개인정보가 포함된 경우</strong></td>
+<td>코드나 설정 파일에 실제 사용자의 이름·이메일·전화번호 등이
+들어있다면, 이를 AI에 전송해 분석하는 행위 자체가
+<strong>개인정보보호법(국내)·GDPR(EU) 등 관련 법령의 적용을 받을 수
+있습니다.</strong> 가능하면 분석 전에 해당 개인정보를 제거하거나
+마스킹하세요.</td>
+</tr>
+<tr>
+<td><strong>국가·지역별 리버스 엔지니어링 법규 차이</strong></td>
+<td>리버스 엔지니어링(역공학)이 허용되는 범위는 국가·지역마다 다르며,
+상호운용성 확보 등 <strong>제한된 목적에서만 허용</strong>되는 경우가
+많습니다(예: EU 소프트웨어 지침, 미국 DMCA의 제한적 예외 조항 등). 본인
+소유 소프트웨어라도 거주 국가·지역의 법률을 별도로 확인하세요.</td>
+</tr>
+<tr>
+<td><strong>분석 대상 소프트웨어의 이용약관(EULA)</strong></td>
+<td>많은 상용 소프트웨어의 EULA는 리버스 엔지니어링 자체를 계약으로
+금지합니다. “내가 정식으로 구매했다”는 사실이 “역공학해도 된다”는 뜻은
+아닙니다 — 반드시 해당 소프트웨어의 EULA를 먼저 확인하세요.</td>
+</tr>
+<tr>
+<td><strong>분석 보고서의 상업적 재배포</strong></td>
+<td>이 도구가 생성한 분석 보고서를 상업적으로 재배포·판매하려는 경우,
+보고서 안에 원본 코드의 상당 부분이 그대로 인용돼 있다면 <strong>원본
+저작물의 저작권</strong>이 별도로 적용될 수 있습니다.</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>요약</strong>: 이 도구(SoDam-Reverse-Eng) 자체의
+라이선스(Apache-2.0)는 상업적 사용을 포함해 자유롭게 허용하지만,
+<strong>“무엇을 분석하는가”에 대한 법적 책임은 도구의 라이선스와 완전히
+별개</strong>입니다. 도구가 안전장치를 갖췄다고 해서 분석 행위 자체가
+항상 합법인 것은 아닙니다 — 확신이 서지 않으면 분석 전에 변호사와
+상담하세요.</p>
+</blockquote>
+<h3 id="면책-조항">면책 조항</h3>
+<ul>
+<li><strong>“있는 그대로(AS-IS)”</strong> 제공</li>
+<li>품질 · 성능 · 특정 목적 적합성에 대한 <strong>보증
+없음</strong></li>
+<li>사용 결과에 대한 책임은 <strong>사용자 본인</strong>에게 있음</li>
+<li>“100% 안전”은 어떤 보안 도구도 보장할 수 없습니다</li>
+</ul>
+<p><strong>라이선스 전문:</strong> <a href="./LICENSE">LICENSE</a> ·
+<strong>저작권 고지:</strong> <a href="./NOTICE">NOTICE</a></p>
+<hr />
+<h2 id="연락기여">14. 연락·기여</h2>
+<ul>
+<li><strong>버그 신고 · 기능 요청:</strong> <a
+href="https://github.com/sodam-ai/SoDam-Reverse-Eng/issues">GitHub
+Issues</a> (저장소 초대된 분만 접근 가능) 또는 이메일</li>
+<li><strong>이메일:</strong> startmxk@gmail.com</li>
+<li><strong>GitHub 저장소:</strong>
+https://github.com/sodam-ai/SoDam-Reverse-Eng (비공개 — 초대 필요)</li>
+<li><strong>기여 방법:</strong> 이메일로 먼저 연락 → 협의 후 진행
+(비공개 저장소)</li>
+</ul>
+<hr />
+<h2 id="업데이트-내용-요약">15. 업데이트 내용 요약</h2>
+<blockquote>
+<p>각 항목을 클릭하면 상세 내용이 펼쳐집니다. (개발 이력 기반 —
+GitHub·브라우저 모두 접기/펼치기 지원)</p>
+</blockquote>
+<details>
+<summary>
+<strong>v0.1.0 — 초기 릴리스 (Phase 1 MVP)</strong>
+</summary>
+<ul>
+<li>안전 3층(①AI 출력 거부 ②deny-hook ③SHA-256 무결성) 자체 탑재</li>
+<li>동의 게이트(본인 소유/허가 + 책임 고지) — 통과 못 하면 분석 0건</li>
+<li>표준 한국어 보고서(요약·함수별·근거 위치·불확실성·다음 확인)</li>
+<li>명령어
+<code>/re-start</code>·<code>/re-report</code>·<code>/re-selftest</code></li>
+<li>마켓 큐레이션 카탈로그 + 연습용 안전
+샘플(<code>samples/</code>)</li>
+<li>자동 마스킹(비밀번호·키·토큰 → <code>••••</code>)</li>
+</ul>
+</details>
+<details>
+<summary>
+<strong>Phase 1 정비 — 배포 준비(M5)</strong>
+</summary>
+<ul>
+<li><code>/re-ping</code> 신규: 설치 확인용 진단 명령(가장 먼저 눌러보는
+명령)</li>
+<li><code>/re-start</code> 보고서 형식을 표준
+양식(<code>report-template.md</code>)과 정합</li>
+<li>설치 문서 보강: 비공개 저장소 clone(A) / 폴더·압축 전달(B) 2가지
+방법</li>
+<li>세션 파일 <code>.gitignore</code> 등록(우발 커밋 방지)</li>
+</ul>
+</details>
+<details>
+<summary>
+<strong>Phase 2 착수 — 안드로이드 분석 골격 (당시 라이브 미검증 · 이후
+아래 항목에서 검증 완료됨)</strong>
+</summary>
+<ul>
+<li><strong>안전 우선</strong>: 안드로이드 위험 패턴으로 차단 코퍼스
+확장(착수 당시 기준)</li>
+<li><code>re-analyze-android</code> 스킬 + <code>/re-android</code> 명령
+<strong>골격</strong> 추가(동의 게이트 강화·읽기 전용)</li>
+<li>GUIDE에 JADX·Apktool·Java 17+ 설치 안내(2-6절) 추가</li>
+<li>이 시점엔 도구 설치 환경에서의 라이브 검증이 아직 안 된 골격
+단계였음 — <strong>2026-07-13에 아래 항목대로 실사용 검증
+완료</strong></li>
+</ul>
+</details>
+<details>
+<summary>
+<strong>Phase 1 + Phase 2(안드로이드) 실사용 라이브 E2E 검증 완료
+(2026-07-13)</strong>
+</summary>
+<ul>
+<li>플러그인을 <strong>처음부터 실제로
+설치</strong>(<code>/plugin marketplace add</code> →
+<code>/plugin install</code> → <code>/reload-plugins</code>)해 마켓 설치
+흐름 자체를 실측 검증</li>
+<li>Phase 1: <code>/re-start</code>로 실제 코드 파일 분석 → 동의 게이트
+2문항 통과 → 진짜 보고서 생성 → API 키·비밀번호
+마스킹(<code>••••</code>) 정상 확인 → 우회 요청 거부 확인</li>
+<li>Phase 2(안드로이드): Java 17·JADX·Apktool 실제 설치 →
+<code>/re-android</code>로 실제 APK(F-Droid 오픈소스 앱) 분석 → 동의
+게이트 3문항 통과 → 권한·네트워크통신·근거위치 포함 실제 보고서 생성 →
+라이선스 우회 요청 거부 확인</li>
+<li>deny-corpus를 <strong>키워드 60개 + 정규식 7개</strong>로 확장(4차
+레드팀 감사 반영)</li>
+<li>발견된 결함(개발 중 문서화, 사용자 영향 없음): deny-hook이 “크랙
+없음”류의 <strong>정상 서술</strong>을 과차단해 보고서 일부 내용이
+누락된 사례 1건 확인 — 문맥 인식 개선을 백로그로 등록(다음 릴리스에서
+개선 예정)</li>
+</ul>
+</details>
+<details>
+<summary>
+<strong>Phase 2 — AI 에이전트 구조 분석 모듈 (라이브 검증됨)</strong>
+</summary>
+<ul>
+<li><code>re-analyze-agent</code> 스킬 + <code>/re-agent</code> 명령
+추가 — 내 Claude 설정이나 다른 플러그인 구조를 소스레벨로 분석(외부 도구
+불필요)</li>
+<li>안드로이드와 달리 <strong>외부 도구가 필요 없어 라이브 검증까지
+완료</strong>: 자기분석 도그푸드 + 프롬프트 인젝션 레드팀
+2라운드(자체검증 → 독립 에이전트 블라인드 검증) 통과</li>
+<li><code>~/.claude</code> 전체 분석은 사용량 보호를 위해 확인 게이트를
+통과해야 진행</li>
+</ul>
+</details>
+<details>
+<summary>
+<strong>Phase 3 착수 — 바이너리 분석 골격 (⚠️ 라이브 미검증)</strong>
+</summary>
+<ul>
+<li><code>re-analyze-binary</code> 스킬 + <code>/re-binary</code> 명령
+<strong>골격</strong> 추가 — Ghidra(무료) 정적분석 wrap, IDA Pro는
+<code>SODAM_RE_IDA_PATH</code> 설정 시 옵션</li>
+<li>GUIDE에 Java·Ghidra 설치 안내(2-7절) 추가</li>
+<li>안드로이드와 동일한 프롬프트 인젝션 방어(§0-1)를 처음부터 반영</li>
+<li><strong>악성코드 방어 분석은 이번 범위에 없음</strong>(플랫폼 정책
+검토 대기, 사용자 확정) — 관련 도구는 계속 보류 상태</li>
+<li>⚠️ 실제 디스어셈블 동작은 도구 설치 환경에서 <strong>라이브 검증
+예정</strong>(현재 골격). 안전·동의·보고서 규칙은 Phase 1과 동일</li>
+</ul>
+</details>
+<details>
+<summary>
+<strong>전수 테스트·검증 세션 (2026-07-18)</strong>
+</summary>
+<ul>
+<li>안전 3층(선택기·경계값·실패 케이스 포함) 실행 기반 전수 재검증 —
+회귀 없음(8/0 유지)</li>
+<li>설치 스크립트 전체 사이클(설치→언인스톨→재설치) 바이트 단위 일치
+확인</li>
+<li>발견·수정 1건: <code>scripts/re-inject-harness.mjs</code>의 잘못된
+주석(“<code>/re-selftest</code>가 자동 호출”) 정정</li>
+<li>발견(문서 정정): 무결성 해시가 <strong>이미 등록된 상태에서
+불일치</strong>가 나면 <code>/re-selftest</code>가 새 해시를 출력하지
+않는다는 사실 확인 → 본 문서·GUIDE.md의 관련 안내에 직접 계산 명령
+보강</li>
+<li><code>references/trust-catalog.md</code> 최신화 필요 항목 3건
+발견(1개 보관 처리됨·2개 장기 미갱신) — 별도 정리 예정</li>
+</ul>
+</details>
+<details>
+<summary>
+<strong>GUIDE 문서 제거 — 핵심 내용을 README로 통합
+(2026-07-27)</strong>
+</summary>
+<ul>
+<li><code>GUIDE.md</code>·<code>GUIDE.en.md</code>(+html)를 제거하고,
+유일했던 설치 정보(Android/JADX/Apktool·바이너리/Ghidra 도구 설치
+절차)를 이 문서 §6-2로 이전했습니다. README 하나로
+설치·실행·문제해결까지 끝나도록 문서 구조를 단순화했습니다.</li>
+<li><strong>[추가 정리 · 2026-08-04]</strong> §6-2의 도구별 상세 설치
+내용(공식 배포처·확인 명령·실제 검증된 버전)이 점점 길어져, 별도 문서
+<strong><a href="./INSTALL.md"><code>INSTALL.md</code></a></strong>로
+다시 분리했습니다. README §6-2에는 요약 + 링크만 남아 있습니다. GUIDE를
+부활시킨 것이 아니라, README 안에서 비대해진 한 절만 떼어낸 것입니다 —
+“README 하나로 시작 가능”이라는 §10.4 원칙은 그대로 유지됩니다(핵심
+흐름은 README만으로 완결, INSTALL.md는 선택 기능 이용자만 필요).</li>
+<li>남은 상세 오류 해결은 <code>TROUBLESHOOTING.md</code>가 계속
+담당합니다.</li>
+</ul>
+</details>
+<details>
+<summary>
+<strong>동의 게이트 버튼형 전환 + 안전로그 자동 정리
+(2026-07-27)</strong>
+</summary>
+<ul>
+<li>동의 게이트
+4곳(<code>/re-start</code>·<code>/re-android</code>·<code>/re-binary</code>·<code>/re-agent</code>)을
+자연어 “예/아니오” 타이핑 방식에서 <strong>버튼(선택지) 선택
+방식</strong>으로 전환 — 오타·애매한 답변으로 인한 오동작 가능성을
+줄임.</li>
+<li><code>scripts/rotate-safety-log.mjs</code> 신규: 차단
+이력(<code>safety-log.jsonl</code>)이 무기한 쌓이지 않도록 30일(기본,
+조정 가능) 지난 항목을 자동 정리. 원문이 아닌 해시만 지우는 것이라 안전
+판정에는 영향 없음.</li>
+<li>기획 문서(PRD) 내부 기록 4건의 누락·오기 수정(사용자에게 보이는 기능
+변경은 없음).</li>
+</ul>
+</details>
+<details>
+<summary>
+<strong>안전장치 정밀도 개선 — 부정문 오탐 해소 + 우회 차단 강화
+(2026-08-04)</strong>
+</summary>
+<ul>
+<li>2층 deny-hook(<code>hooks/re-deny-guard.mjs</code>)이 “이 코드에는
+인증 우회 로직이 없습니다”처럼 <strong>위험이 없다고 말하는 정상적인
+문장까지 차단하던 문제</strong>를 고쳤습니다. 이제는
+“없습니다”·“아닙니다” 같은 부정 표현이 가까이 있으면 정상 통과시키되,
+“<sub>해줘”·”</sub>방법 알려줘”처럼 실제 요청으로 보이는 문구가 함께
+있으면 여전히 차단합니다(안전 우선 원칙 유지).</li>
+<li>눈에 보이지 않는 특수문자(제로폭 문자)나 로마자와 비슷하게 생긴 키릴
+문자로 위험 단어를 숨겨 우회하려는 시도를 감지해 차단하도록
+보강했습니다.</li>
+<li>이 변경 후 안전 셀프테스트(13개 항목)와 별도의 경계값 테스트(빈
+입력·손상된 데이터·대용량 입력·대소문자 변형 등 13종)를 직접 실행해 기존
+기능에 회귀가 없음을 확인했습니다.</li>
+<li>위 개선에 맞춰 <code>/re-start</code>를 포함한 4개 분석 명령이 분석
+시작 전 안전장치 자가검증을 자동으로 먼저 실행하도록 강화했고, 동의 통과
+기록(<code>consent-log.jsonl</code>)을 남기도록 개선했습니다.</li>
+</ul>
+</details>
+<blockquote>
+<p>개발 상세 이력은 <code>CHECKPOINT.md</code>(개발자용)를
+참고하세요.</p>
+</blockquote>
+<hr />
+<p><em>English version: <a href="./README.en.md">README.en.md</a></em>
+<em>오류 해결: <a
+href="./TROUBLESHOOTING.md">TROUBLESHOOTING.md</a></em></p>
+</body>
+</html>

@@ -31,6 +31,24 @@ const CTX_CANDIDATES = [
 ];
 const ctxPath = CTX_CANDIDATES.find(existsSync) ?? null;
 
+// ── Prompt: installed_plugins.json 등록 여부로 실제 설치 감지 ──────────
+// (버전 폴더가 붙는 plugins/cache/<marketplace>/<name>/<version>/ 경로는 업데이트마다
+//  바뀌므로 직접 존재확인하지 않고, Claude Code 자체가 쓰는 레지스트리 파일을 신뢰한다.)
+const INSTALLED_PLUGINS_CANDIDATES = [
+  join(H, '.claude', 'plugins', 'installed_plugins.json'),
+  join(H, 'AppData', 'Roaming', 'claude-code', 'plugins', 'installed_plugins.json'),
+];
+function findRegisteredPlugin(namePrefix) {
+  for (const p of INSTALLED_PLUGINS_CANDIDATES) {
+    const data = readJson(p);
+    const key = Object.keys(data?.plugins ?? {}).find((k) => k.startsWith(`${namePrefix}@`));
+    if (key) return { registryPath: p, key };
+  }
+  return null;
+}
+const promptReg       = findRegisteredPlugin('sodam-prompt');
+const promptInstalled = promptReg !== null;
+
 // ── 상태 수집 ──────────────────────────────────────────────────────────
 const harnessInstalled = existsSync(DIRS.harness);
 const harnessRules     = harnessInstalled ? readJson(HARNESS_RULES) : null;
@@ -68,7 +86,7 @@ if (ctxInstalled) {
   log(`            ${reScopeInjected ? ok('re-scope-guard 검진 항목 등록됨') : ng('re-scope-guard 없음 — re-inject-context.mjs 실행 권장')}`);
 }
 log(`● Agentic   ${agenticInstalled ? ok('설치됨  ' + DIRS.agentic) : ng('미발견  ~/.sodamagentic/')}`);
-log(`● Prompt    ${pnd('미설치 (Phase 2 — Prompt-Eng 코드 미구현)')}`);
+log(`● Prompt    ${promptInstalled ? ok(`설치됨  (${promptReg.key})`) : ng('미설치  (marketplace 미등록)')}`);
 log(`● Reverse   ${ok('현재 플러그인')}`);
 
 log('\n───────────────────────────────────────────');
@@ -80,18 +98,18 @@ const syn = [
   { label: '[Loop+Harness]    Loop Bash 이중확인 방지', ok: loopInstalled && harnessInstalled,  detail: '(Loop safety-gate.mjs 자동 양보 — 코드 변경 불필요)' },
   { label: '[Agentic+Harness] Agentic 이중 가드 방지', ok: agenticInstalled && harnessInstalled, detail: '(Agentic guard.mjs 자동 양보 — 코드 변경 불필요)' },
   { label: '[Context+Reverse] RE 스코프 건강검진     ', ok: ctxInstalled && reScopeInjected,  detail: ctxInstalled ? (reScopeInjected ? 're-scope-guard 활성' : 'node scripts/re-inject-context.mjs 실행 권장') : 'Context 미설치' },
-  { label: '[Prompt+Reverse]  자연어 요청 품질향상   ', ok: false, detail: 'Phase 2 (Prompt-Eng 코드 미구현)' },
+  { label: '[Prompt+Reverse]  자연어 요청 품질향상   ', ok: promptInstalled, detail: promptInstalled ? 're-router에 안내 문구로 연계(M4-D 완결 — 코드수준 공유config는 Prompt에 확장점 자체가 없어 구조적 불가, §5-21)' : 'Prompt 미설치' },
 ];
 
 for (const s of syn) {
-  log(`  ${s.ok ? '✅' : (s.label.includes('Prompt') ? '⏳' : '❌')} ${s.label}  ${s.detail}`);
+  log(`  ${s.ok ? '✅' : '❌'} ${s.label}  ${s.detail}`);
 }
 
 log('\n───────────────────────────────────────────');
 
 const allDone = harnessInstalled && reInjected && loopInstalled && agenticInstalled && ctxInstalled && reScopeInjected;
 if (allDone) {
-  log('🎉 모든 현재 시너지가 활성화됐습니다 (Prompt는 Phase 2).\n');
+  log('🎉 모든 현재 시너지가 활성화됐습니다 (Prompt 연동(M4-D)은 문서수준 안내로 완결 — Prompt에 코드수준 확장점 자체가 없음, §5-21).\n');
 } else {
   log('\n💡 권장 다음 단계:');
   if (!harnessInstalled)              log('   1. SoDam-Harness 설치 후 초기화');

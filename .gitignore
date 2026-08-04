@@ -16,11 +16,16 @@ Thumbs.db
 # 내부 기획 문서 (GitHub 푸시 금지)
 .PRD/
 
-# PDF 중간 생성 HTML 임시 파일
+# PDF 중간 생성 HTML 임시 파일 (아래 문서 HTML 2종은 영구 산출물이라 예외로 추적)
 /*.html
+!/README.html
+!/README.en.html
 
 # 로컬 전용 플러그인 설정 및 캐시
 .omc/
 .plugin-config/
 .todos-report.md/
 .complexity-log.md
+
+# AI 페어프로그래밍 세션 리포트 (자동 생성, 로컬 전용)
+.pair-programming-session.md

@@ -1,0 +1,1732 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>SoDam-Reverse-Eng · README (English)</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">SoDam-Reverse-Eng · README (English)</h1>
+</header>
+<h1
+id="sodam-reverse-eng-ai-code-analysis-plugin-for-claude-code">SoDam-Reverse-Eng
+— AI Code Analysis Plugin for Claude Code</h1>
+<blockquote>
+<p><strong>Completely new to computers or AI? That’s fine — follow this
+document step by step.</strong></p>
+<p>A Claude Code plugin that <strong>explains your own (or authorized)
+code in plain language</strong> using AI.</p>
+<p>⚠️ <strong>Honest Promise:</strong> Crack guides, DRM bypass,
+authentication bypass, license bypass, and credential extraction are
+<strong>refused no matter what</strong> — this tool is exclusively for
+defense, education, and analysis of code you own.</p>
+</blockquote>
+<hr />
+<h2 id="table-of-contents">Table of Contents</h2>
+<ol start="0" type="1">
+<li><a
+href="#0-completely-new-to-computers-or-ai-basic-terms">Completely New
+to Computers or AI? (Basic Terms)</a></li>
+<li><a href="#1-what-is-this">What Is This?</a></li>
+<li><a href="#2-what-does-it-do">What Does It Do?</a></li>
+<li><a href="#3-what-does-it-refuse-safety-boundary">What Does It
+Refuse?</a></li>
+<li><a href="#4-sodam-family-synergy">SoDam Family Synergy</a></li>
+<li><a href="#5-prerequisites-free-2-items">Prerequisites</a></li>
+<li><a href="#6-installation">Installation</a>
+<ul>
+<li>6-1. <a href="#6-1-quick-start-5-minute-summary">Quick Start
+(5-Minute Summary)</a></li>
+</ul></li>
+<li><a href="#7-commands">Commands</a></li>
+<li><a href="#8-analysis-workflow">Analysis Workflow</a></li>
+<li><a href="#9-security--data-flow">Security · Data Flow</a></li>
+<li><a href="#10-architecture--file-structure">Architecture · File
+Structure</a></li>
+<li><a href="#11-file--document-locations">File · Document
+Locations</a></li>
+<li><a href="#12-troubleshooting--faq">Troubleshooting · FAQ</a></li>
+<li><a href="#13-license--copyright--commercial-use">License · Copyright
+· Commercial Use</a></li>
+<li><a href="#14-contact--contributing">Contact · Contributing</a></li>
+<li><a href="#15-update-summary">Update Summary</a></li>
+</ol>
+<hr />
+<h2 id="completely-new-to-computers-or-ai-basic-terms">0. Completely New
+to Computers or AI? (Basic Terms)</h2>
+<blockquote>
+<p>If you’re already comfortable with computers and smartphones, skip
+ahead to <a href="#1-what-is-this">1. What Is This?</a> This document is
+written so you can follow it step by step to the end even without
+knowing these terms in advance — come back to this table any time you
+get stuck.</p>
+</blockquote>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Term</th>
+<th>Plain-language explanation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Folder</strong></td>
+<td>A “drawer” inside your computer that holds files — similar to an
+“album” or “group” on a smartphone.</td>
+</tr>
+<tr>
+<td><strong>Terminal / PowerShell</strong></td>
+<td>A black (or blue) window where you type text to give the computer
+commands, instead of clicking with a mouse. Whenever this document says
+“PowerShell window,” this is what it means.</td>
+</tr>
+<tr>
+<td><strong>Download</strong></td>
+<td>Bringing a file from the internet onto your own computer, usually by
+clicking a “Download” button on a website.</td>
+</tr>
+<tr>
+<td><strong>Install</strong></td>
+<td>Turning a downloaded program into something you can actually use on
+your computer — the same idea as “installing” an app on a
+smartphone.</td>
+</tr>
+<tr>
+<td><strong>Double-click</strong></td>
+<td>Pressing the left mouse button twice, quickly. Used to open files or
+programs.</td>
+</tr>
+<tr>
+<td><strong>Copy (Ctrl+C) / Paste (Ctrl+V)</strong></td>
+<td>Moving text or files from one place to another. Hold the Ctrl key
+and press C to copy, or V to paste.</td>
+</tr>
+<tr>
+<td><strong>AI (Artificial Intelligence)</strong></td>
+<td>A computer program that can read and understand text like a person
+and give you an answer. In this document, “AI” refers to
+<strong>Claude</strong>.</td>
+</tr>
+<tr>
+<td><strong>Claude Code</strong></td>
+<td>A program made by Anthropic that lets you talk to an AI to get
+computer work done (like analyzing code). This entire document explains
+how to use things <strong>inside</strong> this program.</td>
+</tr>
+<tr>
+<td><strong>Plugin</strong></td>
+<td>A small add-on that “plugs into” an existing program to give it new
+features. <strong>SoDam-Reverse-Eng itself — the thing this document
+describes — is one such plugin.</strong></td>
+</tr>
+<tr>
+<td><strong>Command</strong></td>
+<td>A special line of text you type into the Claude Code chat window
+starting with <code>/</code> (a slash), e.g. <code>/re-ping</code>.
+Typing it and pressing Enter runs a specific action.</td>
+</tr>
+<tr>
+<td><strong>How is this different from a messenger app (e.g. WhatsApp,
+KakaoTalk)?</strong></td>
+<td>A messenger lets you chat with <strong>people</strong>; Claude Code
+lets you chat with an <strong>AI</strong> to get computer tasks done.
+Both work by typing text into a chat window, so if you’re comfortable
+with messaging apps, you’re already halfway there.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="what-is-this">1. What Is This?</h2>
+<p>A <strong>plugin</strong> is a small add-on that gives an existing
+program new capabilities — similar to installing an app on your
+smartphone.</p>
+<p><strong>SoDam-Reverse-Eng</strong> is a plugin that adds “code
+analysis” capability to <strong>Claude Code</strong> (an AI tool).</p>
+<h3 id="in-simple-terms">In Simple Terms</h3>
+<ul>
+<li>You ask the AI: “What does this code do?”</li>
+<li>The AI reads the code and <strong>explains it in plain
+language</strong></li>
+<li>The result is organized into a <strong>standard report</strong></li>
+<li>Dangerous requests (cracking, bypass, etc.) are
+<strong>automatically refused</strong></li>
+</ul>
+<h3 id="who-is-it-for">Who Is It For?</h3>
+<ul>
+<li>When you cannot remember how your old code worked</li>
+<li>When you need to understand someone else’s code (with
+permission)</li>
+<li>When you are wondering “Why does this function behave this
+way?”</li>
+<li>When you want to find security vulnerabilities in your own code</li>
+</ul>
+<hr />
+<h2 id="what-does-it-do">2. What Does It Do?</h2>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🔍 Code Explanation</td>
+<td>“What does this function do?” → explained in plain language</td>
+</tr>
+<tr>
+<td>📋 Standard Report</td>
+<td>Summary · per-function explanation · source location · uncertainties
+· next steps</td>
+</tr>
+<tr>
+<td>🛡️ 3-Layer Safety</td>
+<td>AI refusal (Layer 1) + real-time block (Layer 2) + integrity check
+(Layer 3)</td>
+</tr>
+<tr>
+<td>🔒 Auto-Masking</td>
+<td>Passwords, API keys, tokens shown as <code>••••</code> in
+reports</td>
+</tr>
+<tr>
+<td>🗣️ Full Korean UI</td>
+<td>All messages and errors displayed in Korean</td>
+</tr>
+<tr>
+<td>📁 Local Storage Only</td>
+<td>Results saved only to your computer (no external upload)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="what-does-it-refuse-safety-boundary">3. What Does It Refuse?
+(Safety Boundary)</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Request</th>
+<th>Result</th>
+<th>Reason</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>“Explain how this code works”</td>
+<td>✅ Proceed (after consent)</td>
+<td>Allowed</td>
+</tr>
+<tr>
+<td>“Find bugs for me”</td>
+<td>✅ Proceed (after consent)</td>
+<td>Allowed</td>
+</tr>
+<tr>
+<td>“Where are the security vulnerabilities?”</td>
+<td>✅ Proceed (after consent)</td>
+<td>Allowed</td>
+</tr>
+<tr>
+<td>“Tell me how to crack this”</td>
+<td>🛑 Refused</td>
+<td>Absolutely prohibited</td>
+</tr>
+<tr>
+<td>“Write authentication bypass code”</td>
+<td>🛑 Refused</td>
+<td>Absolutely prohibited</td>
+</tr>
+<tr>
+<td>“Extract tokens/passwords”</td>
+<td>🛑 Refused</td>
+<td>Absolutely prohibited</td>
+</tr>
+<tr>
+<td>“How do I remove DRM?”</td>
+<td>🛑 Refused</td>
+<td>Absolutely prohibited</td>
+</tr>
+<tr>
+<td>“Bypass the license”</td>
+<td>🛑 Refused</td>
+<td>Absolutely prohibited</td>
+</tr>
+<tr>
+<td>API key found during analysis</td>
+<td>🔒 <code>••••(masked)</code></td>
+<td>Privacy protection</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="sodam-family-synergy">4. SoDam Family Synergy</h2>
+<p>SoDam-Reverse is the <strong>youngest</strong> of 6 sibling plugins.
+Installing siblings makes it more powerful.</p>
+<p><strong>Recommended installation order:</strong> Harness → Loop →
+Context → Agentic → Prompt → <strong>Reverse (this one)</strong></p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Sibling Plugin</th>
+<th>Role</th>
+<th>With Reverse</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>SoDam-Harness</strong></td>
+<td>Safety belt · backup</td>
+<td>RE patterns are actually merged into Harness’s shared rules
+(Reverse’s own hook still runs separately — see “Known limitation”
+below)</td>
+</tr>
+<tr>
+<td><strong>SoDam-Loop</strong></td>
+<td>Safe repetition control</td>
+<td>Keeps repeated analysis loops safe</td>
+</tr>
+<tr>
+<td><strong>SoDam-Context</strong></td>
+<td>CLAUDE.md health check</td>
+<td>Auto-detects scope violations</td>
+</tr>
+<tr>
+<td><strong>SoDam-Agentic</strong></td>
+<td>Planning · easy review</td>
+<td>Re-reads reports for non-developer readability</td>
+</tr>
+<tr>
+<td><strong>SoDam-Prompt</strong></td>
+<td>Improves natural language requests</td>
+<td>Better “analyze this” quality</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>⚠️ <strong>Important:</strong> Starting Claude Code from
+<code>C:\Users\name</code> (home folder) causes Harness and Loop guards
+to block even safe operations. Always start from a <strong>project
+folder</strong> (<code>D:\my-project\</code> etc.).</p>
+</blockquote>
+<p><strong>If Harness is installed — run once:</strong></p>
+<pre><code>node scripts/re-inject-harness.mjs</code></pre>
+<p>→ RE danger patterns are actually added to Harness’s shared safety
+rules. &gt; ⚠️ <strong>Known limitation:</strong> the rules are shared,
+but Reverse still registers its own separate hook (a feature to skip
+Reverse’s own check when Harness is present was attempted on 2026-07-12,
+but was reverted after an isolated test found it let a dangerous request
+through unchecked). A single dangerous request may therefore trigger 2
+block messages — redundant, but not a safety issue, since the same
+danger is simply caught twice.</p>
+<hr />
+<h2 id="prerequisites-free-2-items">5. Prerequisites (Free, 2
+Items)</h2>
+<h3 id="item-1-node.js-version-18-or-higher">Item 1: Node.js (Version 18
+or higher)</h3>
+<p><strong>Node.js</strong> is the “runtime engine” needed for the
+safety guards to work.</p>
+<p><strong>Check if you already have it:</strong> 1. Press <strong>⊞
+Windows key</strong> 2. Type <code>powershell</code> → click
+<strong>Windows PowerShell</strong> 3. In the black window, type and
+press <strong>Enter</strong>: <code>node --version</code> 4. If you see
+a number like <code>v18.</code> or higher → <strong>OK</strong> (e.g.,
+<code>v20.19.0</code>, <code>v22.14.0</code>)</p>
+<p><strong>If not installed (or lower than v18):</strong> 1. Open a web
+browser (Chrome, Edge, etc.) → go to <strong>nodejs.org</strong> 2.
+Click the green <strong>“LTS”</strong> button → download the
+<code>.msi</code> file 3. Double-click the downloaded file → keep
+clicking “<strong>Next</strong>” → install 4. <strong>Close PowerShell
+completely</strong> → reopen it 5. Run <code>node --version</code> again
+to confirm</p>
+<blockquote>
+<p>💡 You may need to reboot your computer for it to take effect.</p>
+</blockquote>
+<h3 id="item-2-claude-code">Item 2: Claude Code</h3>
+<p>If you are reading this inside Claude Code, <strong>you already have
+it</strong>. If not, install Claude Code from the Anthropic official
+website.</p>
+<hr />
+<h2 id="installation">6. Installation</h2>
+<hr />
+<h3 id="read-before-installing-most-common-failure-cause">⚠️ Read Before
+Installing — Most Common Failure Cause</h3>
+<blockquote>
+<p><strong>#1 reason commands do not appear: Claude Code was started in
+the wrong folder</strong></p>
+<p>Claude Code reads commands <strong>based on the folder it was started
+in</strong>. Typing <code>cd other-folder</code> inside the chat does
+NOT reload commands.</p>
+<p><strong>Correct sequence:</strong> 1. Open PowerShell (black window)
+2. Type <code>cd D:\my-project-folder</code> (navigate to your project
+folder) 3. Type <code>claude</code> to launch Claude Code</p>
+<p>❌ Starting from the home folder (<code>C:\Users\name</code>) means
+<code>/re-start</code> will not appear.</p>
+</blockquote>
+<hr />
+<h3 id="step-1-register-the-marketplace">Step 1: Register the
+Marketplace</h3>
+<p>Type one of the following in the Claude Code chat:</p>
+<blockquote>
+<p>📦 <strong>This is a private repository.</strong> Choose the method
+below that matches how you received the plugin.</p>
+</blockquote>
+<hr />
+<p><strong>Option A — Clone from GitHub (for invited repository
+members)</strong></p>
+<blockquote>
+<p>⚠️ You need a GitHub account and access permission (invitation) to
+the repository. Request an invitation: startmxk@gmail.com</p>
+</blockquote>
+<ol type="1">
+<li><p>Open PowerShell (black window) and run the clone command:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>git clone https<span class="op">://</span>github<span class="op">.</span><span class="fu">com</span><span class="op">/</span>sodam-ai<span class="op">/</span>SoDam-Reverse-Eng<span class="op">.</span><span class="fu">git</span></span></code></pre></div>
+<p>→ A folder named <code>SoDam-Reverse-Eng</code> will be created in
+your current directory.</p></li>
+<li><p>Note the path to the cloned folder (e.g.,
+<code>C:\Users\YourName\SoDam-Reverse-Eng</code>)</p></li>
+<li><p>In the Claude Code chat, type:</p>
+<pre><code>/plugin marketplace add C:\Users\YourName\SoDam-Reverse-Eng</code></pre>
+<blockquote>
+<p>💡 Replace <code>YourName</code> with your actual Windows
+username.</p>
+</blockquote></li>
+</ol>
+<hr />
+<p><strong>Option B — Received as a folder or zip file (no git
+required)</strong></p>
+<ol type="1">
+<li><p>Unzip the received file or place the folder in a convenient
+location (e.g.,
+<code>C:\Users\YourName\SoDam-Reverse-Eng</code>)</p></li>
+<li><p>In the Claude Code chat, type the actual path:</p>
+<pre><code>/plugin marketplace add C:\Users\YourName\SoDam-Reverse-Eng</code></pre>
+<blockquote>
+<p>💡 If the path contains spaces, wrap it in double quotes:
+<code>/plugin marketplace add "C:\My Folder\SoDam-Reverse-Eng"</code></p>
+</blockquote></li>
+</ol>
+<h3 id="step-2-install-the-plugin">Step 2: Install the Plugin</h3>
+<p>After registering the marketplace, type:</p>
+<pre><code>/plugin install sodam-reverse@sodamreverse-marketplace</code></pre>
+<p>Or type <code>/plugin</code> → menu → <strong>Browse marketplaces →
+sodam-reverse → Install</strong>.</p>
+<h3 id="step-3-full-restart-required">Step 3: Full Restart
+(Required!)</h3>
+<p>Plugins are <strong>only loaded when Claude Code starts</strong>. You
+must fully exit and restart.</p>
+<ol type="1">
+<li><p>Type <code>/exit</code> in the chat → Enter</p></li>
+<li><p><strong>Completely close</strong> the terminal window</p></li>
+<li><p>Open a new PowerShell window</p></li>
+<li><p><strong>Start from your project folder:</strong></p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cd</span> D<span class="op">:</span>\my-project-folder</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>claude</span></code></pre></div></li>
+</ol>
+<h3 id="step-4-verify-installation">Step 4: Verify Installation</h3>
+<p>Once Claude Code opens, type <code>/re-p</code> — autocomplete should
+show:</p>
+<pre><code>/re-ping    (sodam-reverse)  ← diagnostic
+/re-start   (sodam-reverse)  ← start analysis</code></pre>
+<p>The <code>(sodam-reverse)</code> tag confirms the plugin loaded
+correctly.</p>
+<p><strong>Run the diagnostic command:</strong></p>
+<pre><code>/re-ping</code></pre>
+<p>→ If you get <code>"Pong! /re-ping is working."</code> — installation
+is complete.</p>
+<h3 id="step-5-verify-the-3-layer-safety-required">Step 5: Verify the
+3-Layer Safety (Required!)</h3>
+<pre><code>/re-selftest</code></pre>
+<p><strong>Expected result:</strong> ✅✅✅ All three green</p>
+<p>If any are not green → See <a
+href="./TROUBLESHOOTING.md">TROUBLESHOOTING.md</a></p>
+<h3 id="step-6-register-integrity-hash-activate-layer-3">Step 6:
+Register Integrity Hash (Activate Layer 3)</h3>
+<p>Copy the <strong>hash of the core safety file
+(<code>hooks/re-deny-guard.mjs</code>)</strong> from the selftest output
+and save it to <code>references/integrity.json</code> (keep any existing
+entries):</p>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode json"><code class="sourceCode json"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;hooks/re-deny-guard.mjs&quot;</span><span class="fu">:</span> <span class="st">&quot;&lt;hash from selftest&gt;&quot;</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<p>→ Run <code>/re-selftest</code> again → confirm the Layer-3
+guard-hash line shows ✅</p>
+<blockquote>
+<p>💡 <code>references/integrity.json</code> may already contain other
+file entries (values staged ahead of a future coverage expansion). Right
+now, only <code>hooks/re-deny-guard.mjs</code> is actually checked — see
+<code>CHECKPOINT.md</code> for the developer-facing roadmap.</p>
+</blockquote>
+<hr />
+<h3 id="quick-start-5-minute-summary">6-1. Quick Start (5-Minute
+Summary)</h3>
+<blockquote>
+<p>Already did the 6 steps above? Here’s the <strong>5-line path to your
+first analysis.</strong></p>
+</blockquote>
+<ol type="1">
+<li>Fully restart Claude Code (required right after install), then type
+<code>/re-ping</code> → “Pong!” means installed successfully.</li>
+<li>Type <code>/re-selftest</code> → confirm all 6 safety checks show ✅
+(if any show ❌, see §12 Troubleshooting first).</li>
+<li>Type <code>/re-start samples/safe-login.js</code> → answer
+<strong>“yes”</strong> to the ownership/consent questions.</li>
+<li>Wait a moment — a Korean-language analysis report appears on screen
+(summary, function descriptions, evidence locations).</li>
+<li>Now try your own code: <code>/re-start [your-file-path]</code> —
+that’s it.</li>
+</ol>
+<blockquote>
+<p>Stuck? See §12 (Troubleshooting · FAQ). For the reasoning behind each
+step, see §6 (Installation).</p>
+</blockquote>
+<hr />
+<h3 id="phase-23-additional-tool-installation-optional">6-2. (Phase 2·3)
+Additional Tool Installation — Optional</h3>
+<blockquote>
+<p>If you only use <code>/re-start</code> (source code analysis), you
+can skip this section. <code>/re-android</code> (APK analysis) or
+<code>/re-binary</code> (executable analysis) need extra programs like
+Java·JADX·Apktool (Android) or Java·Ghidra (binary).</p>
+<p>📄 <strong>A more detailed reference with the exact download links,
+verify-commands, and the specific versions confirmed on the dev machine
+also exists as <a href="./INSTALL.md"><code>INSTALL.md</code></a> — note
+that file is Korean-only for now.</strong> The English summary below
+covers the same tools and is enough to get started.</p>
+</blockquote>
+<details>
+<summary>
+<strong>Android Analysis Tools — Java 17 · JADX · Apktool (✅
+Live-verified 2026-07-13)</strong>
+</summary>
+<p>3 free tools are needed. Install <strong>Java first</strong> (JADX
+and Apktool run on top of Java).</p>
+<p><strong>1) Java 17 or higher</strong> - Official: <a
+href="https://adoptium.net">adoptium.net</a> → “Temurin 17 (LTS)” →
+install the Windows <code>.msi</code> - Verify:
+<code>java -version</code> → <code>17</code> or higher means OK
+(confirmed working version on the dev machine:
+<code>Temurin-17.0.19</code>)</p>
+<p><strong>2) JADX (APK → Java code)</strong> - Official: <a
+href="https://github.com/skylot/jadx/releases">github.com/skylot/jadx/releases</a>
+→ download <code>jadx-x.x.x.zip</code> (the CLI+GUI bundle; skip
+<code>jadx-gui-*</code>, which is GUI-only) → unzip to a location of
+your choice (e.g. <code>C:\jadx</code>) - <strong>Register PATH
+(required)</strong>: Windows search → “environment variables” → “Edit
+the system environment variables” → “Environment Variables…” → edit the
+<code>Path</code> user variable → “New” → add <code>C:\jadx\bin</code> →
+OK → <strong>fully restart Claude Code</strong> - Verify:
+<code>jadx --version</code> (confirmed working version:
+<code>1.5.6</code>)</p>
+<p><strong>3) Apktool (resources and manifest)</strong> - Official:
+follow the Windows steps at <a
+href="https://apktool.org/docs/install">apktool.org/docs/install</a> —
+download <code>apktool.bat</code> and the latest jar (rename it to
+exactly <code>apktool.jar</code>), place both in the same folder
+(e.g. <code>C:\apktool</code>) - Register PATH the same way as JADX,
+adding <code>C:\apktool</code> → <strong>fully restart Claude
+Code</strong> - Verify: <code>apktool --version</code> (confirmed
+installed and working at <code>C:\apktool\apktool.bat</code>)</p>
+<blockquote>
+<p>💡 Still not recognized after registering PATH? A new terminal alone
+may not be enough — <strong>fully quit and relaunch Claude Code
+itself</strong>.</p>
+</blockquote>
+<p>Once all 3 respond to <code>--version</code>, start analyzing with
+<code>/re-android [APK-path]</code>.</p>
+</details>
+<details>
+<summary>
+<strong>Binary Analysis Tools — Java · Ghidra (⚠️ Scaffolding complete,
+still not live-verified — Ghidra itself remains uninstalled on the dev
+machine)</strong>
+</summary>
+<p>2 free tools are needed. Install <strong>Java first</strong> (Ghidra
+runs on top of Java).</p>
+<p><strong>1) Java 17 or higher</strong> — Official: <a
+href="https://adoptium.net">adoptium.net</a> · Verify:
+<code>java --version</code></p>
+<p><strong>2) Ghidra (free, built by the NSA)</strong> - Official: <a
+href="https://ghidra-sre.org/">ghidra-sre.org</a> - After extracting,
+verify <code>ghidraRun.bat</code> (Windows) launches - If
+<code>ghidraRun</code> won’t launch, it’s usually a missing
+<code>JAVA_HOME</code> — point it at your Java install path and retry
+from a new terminal</p>
+<p><strong>(Alternative) Installation feels heavy?</strong>:
+<code>pip install lief</code> gives lightweight structure analysis only
+(headers, sections, imports — no disassembly). This alternative path
+<strong>has been installed and smoke-tested</strong> on the dev machine:
+<code>Python 3.13.7</code> + <code>LIEF 1.0.0</code>, verified with
+<code>python -c "import lief; print(lief.__version__)"</code> (use
+<code>py</code> instead of <code>python</code> if Windows doesn’t
+recognize the latter).</p>
+<p><strong>(Optional) IDA Pro integration</strong>: if you own a
+commercial license, run the following then reopen your terminal:</p>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>setx SODAM_RE_IDA_PATH <span class="st">&quot;C:\Program Files\IDA Pro 8.x\ida64.exe&quot;</span></span></code></pre></div>
+<p>Once Java and Ghidra are ready, start analyzing with
+<code>/re-binary [executable-path]</code>.</p>
+</details>
+<hr />
+<h2 id="commands">7. Commands</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Command</th>
+<th>When to Use</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/re-ping</code></td>
+<td>Verify installation · diagnostics (test this first)</td>
+<td><code>/re-ping</code></td>
+</tr>
+<tr>
+<td><code>/re-start [file-path]</code></td>
+<td>Start a new analysis</td>
+<td><code>/re-start src/login.js</code></td>
+</tr>
+<tr>
+<td><code>/re-report</code></td>
+<td>View the last analysis report again</td>
+<td><code>/re-report</code></td>
+</tr>
+<tr>
+<td><code>/re-selftest</code></td>
+<td>Check the 3-layer safety system</td>
+<td><code>/re-selftest</code></td>
+</tr>
+<tr>
+<td><code>/re-agent [config-folder/repo path]</code></td>
+<td>Understand your own Claude config or another plugin’s structure</td>
+<td><code>/re-agent ~/.claude</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Phase 2·3 commands:</strong></p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Command</th>
+<th>Status</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/re-android [APK-path]</code></td>
+<td>✅ Live-verified (2026-07-13)</td>
+<td>Android app analysis</td>
+</tr>
+<tr>
+<td><code>/re-binary [file-path]</code></td>
+<td>🚧 Scaffolding complete (not yet live-verified)</td>
+<td>Binary/executable analysis</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="analysis-workflow">8. Analysis Workflow</h2>
+<pre><code>User: /re-start my-code/login.js
+          ↓
+[Step 0] Safety Self-Check (automatic, runs before the consent gate since 2026-08-02)
+  Runs `node hooks/_selftest.mjs` to re-confirm all 3 safety layers (below) are intact.
+  If even one check shows ❌, the flow stops right here — it never reaches the consent
+  gate (fail-closed).
+          ↓
+[Step 1] Consent Gate (3 button-choice questions, since 2026-07-27)
+  The AI shows 3 questions at once — covering ownership, purpose, and responsibility.
+  Answer with buttons, not free typing. All three need a &quot;Yes&quot;-type answer to proceed;
+  any &quot;No&quot; stops immediately. (See §12 Q5 for the exact question wording)
+  Passing it appends one line to `.sodam-re/consent-log.jsonl` (path + timestamp,
+  since 2026-08-02).
+          ↓
+(Step 0&#39;s 3-layer detail — for reference, execution order is [Step 0] above)
+  Layer 1: AI self-judges whether content involves cracking/bypass
+  Layer 2: deny-hook blocks dangerous patterns in real time
+  Layer 3: SHA-256 integrity check on safety files
+          ↓
+[Step 2] Analysis Begins (read-only)
+  - File reading ONLY (never executed)
+  - Path manipulation (../, symlinks) blocking is attempted — **AI-judgment based (layer 1)**, not 100% code-enforced (confirmed in the 2026-07-13 security review)
+  - Passwords and keys auto-masked
+          ↓
+[Step 3] Standard Report Output
+  ┌─────────────────────────────────────────────┐
+  │ ■ One-line summary (what this code does)    │
+  │ ■ Per-function explanation (file:line refs) │
+  │ ■ Uncertainties (what AI is not sure about) │
+  │ ■ Next steps (suggestions for follow-up)    │
+  └─────────────────────────────────────────────┘
+          ↓
+[Step 4] Local Storage
+  Saved to .sodam-re/ folder (.gitignore registered)
+  No upload to external servers</code></pre>
+<hr />
+<h2 id="security-data-flow">9. Security · Data Flow</h2>
+<h3 id="where-does-my-code-data-go">Where Does My Code Data Go?</h3>
+<pre><code>Code on my computer
+    ↓ (sent to AI for analysis)
+Claude AI (Anthropic servers)
+    ↓ (only analysis results returned)
+Saved to .sodam-re/ on my computer</code></pre>
+<ul>
+<li><strong>Sent to AI:</strong> Code content (required for analysis —
+Anthropic API Terms apply)</li>
+<li><strong>NOT sent externally:</strong> Analysis results, consent
+records, block logs</li>
+<li><strong>Masked before saving:</strong> Passwords, keys, tokens found
+in code</li>
+</ul>
+<h3 id="layer-safety-architecture">3-Layer Safety Architecture</h3>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Name</th>
+<th>Role</th>
+<th>File</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Layer 1</strong></td>
+<td>AI Refusal Rules</td>
+<td>AI itself refuses to output crack/bypass content</td>
+<td><code>skills/re-router/SKILL.md</code></td>
+</tr>
+<tr>
+<td><strong>Layer 2</strong></td>
+<td>deny-hook</td>
+<td>Real-time blocking of dangerous keyword patterns</td>
+<td><code>hooks/re-deny-guard.mjs</code></td>
+</tr>
+<tr>
+<td><strong>Layer 3</strong></td>
+<td>Integrity Check</td>
+<td>Detects tampering via SHA-256 hashing</td>
+<td><code>hooks/_selftest.mjs</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>fail-closed principle:</strong> If a hook encounters an
+error, analysis is <strong>immediately halted</strong> — not passed
+through.</p>
+<h3 id="analysis-result-storage">Analysis Result Storage</h3>
+<pre><code>[plugin-folder]/
+└── .sodam-re/                     ← Results folder (auto-created)
+    ├── consent-log.jsonl          ← Consent records (one line appended per pass, never overwritten)
+    └── safety-log.jsonl           ← Block event log (SHA-256 hash only, never raw text)</code></pre>
+<blockquote>
+<p>⚠️ <strong>Accuracy note</strong>: only “reports stay inside
+<code>.sodam-re/</code> and are never sent externally” is a confirmed
+rule — the exact file-naming convention for report output itself is not
+yet fixed in the code. The two files above
+(<code>consent-log.jsonl</code>, <code>safety-log.jsonl</code>) are the
+only ones actually confirmed in the source; no unconfirmed folder
+structure is listed here.</p>
+</blockquote>
+<p>The <code>.sodam-re/</code> folder is registered in
+<code>.gitignore</code> — <strong>never uploaded to Git</strong>.</p>
+<hr />
+<h2 id="architecture-file-structure">10. Architecture · File
+Structure</h2>
+<pre><code>SoDam-Reverse-Eng/
+│
+├── .claude-plugin/              ← Claude Code plugin declaration
+│   ├── plugin.json
+│   └── marketplace.json
+│
+├── commands/                    ← Command definitions
+│   ├── re-ping.md               ← /re-ping (diagnostic)
+│   ├── re-start.md              ← /re-start (analysis start)
+│   ├── re-report.md             ← /re-report
+│   ├── re-selftest.md           ← /re-selftest
+│   ├── re-agent.md              ← /re-agent (AI agent structure analysis)
+│   ├── re-android.md            ← live-verified
+│   └── re-binary.md             ← scaffolding complete (not yet live-verified)
+│
+├── skills/                      ← AI analysis logic
+│   ├── re-router/               ← Layer 1 safety rules + request routing
+│   ├── re-analyze-mycode/       ← Source code analysis
+│   ├── re-report/               ← Report generation
+│   ├── re-analyze-agent/        ← live-verified
+│   ├── re-analyze-android/      ← live-verified
+│   └── re-analyze-binary/       ← scaffolding complete (not yet live-verified)
+│
+├── hooks/                       ← Safety layers 2 and 3
+│   ├── re-deny-guard.mjs        ← Layer 2: real-time danger blocking
+│   ├── _selftest.mjs            ← Layer 3: SHA-256 integrity check
+│   └── hooks.json               ← Hook configuration
+│
+├── references/                  ← Data and rule files
+│   ├── deny-corpus.json         ← 60 keywords + 7 regex
+│   ├── mask-patterns.json       ← 15 masking rules
+│   ├── trust-catalog.md         ← 15 trusted tool entries
+│   ├── report-template.md       ← Standard report template
+│   └── integrity.json           ← SHA-256 hash store
+│
+├── scripts/                     ← Utility scripts
+│   ├── re-inject-harness.mjs    ← Harness synergy setup
+│   ├── re-inject-context.mjs    ← Context synergy setup
+│   ├── check-family.mjs         ← 6-sibling status check
+│   ├── check-trust-freshness.mjs
+│   └── rotate-safety-log.mjs    ← Safety-log retention cleanup (auto-expiry)
+│
+├── mcp/
+│   └── catalog.json             ← Phase 2·3 external tool curation (trust tier, license)
+│
+├── samples/                     ← Example files for testing
+│   ├── safe-login.js
+│   ├── deny-demo.txt
+│   ├── agent-injection-demo.md  ← Prompt-injection defense test
+│   └── agent-injection-demo-2.md← Combined-attack (red-team) defense test
+│
+├── .sodam-re/                   ← Analysis results (auto-created, .gitignore)
+│
+├── README.md                    ← Korean overview
+├── README.en.md                 ← This file (English overview)
+├── INSTALL.md                   ← Additional tool (Android · binary) install detail (Korean only)
+├── TROUBLESHOOTING.md           ← Error resolution guide
+├── CHECKPOINT.md                ← Development progress (for developers)
+├── SETUP_BLOCKED_FILES.md       ← Full source of the manually-created safety files
+├── LICENSE                      ← Apache-2.0 full text
+└── NOTICE                       ← Copyright notice</code></pre>
+<hr />
+<h2 id="file-document-locations">11. File · Document Locations</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>File / Document</th>
+<th>Location</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Korean README</td>
+<td><a href="./README.md"><code>README.md</code></a></td>
+<td>Korean overview</td>
+</tr>
+<tr>
+<td>English README</td>
+<td><a href="./README.en.md"><code>README.en.md</code></a></td>
+<td>This file</td>
+</tr>
+<tr>
+<td>Additional Tool Install Guide</td>
+<td><a href="./INSTALL.md"><code>INSTALL.md</code></a></td>
+<td>Detailed install steps for Android (JADX·Apktool) and binary
+(Ghidra) tools — <strong>Korean only</strong>, but §6-2 above already
+covers the same tools in English</td>
+</tr>
+<tr>
+<td>Error Resolution</td>
+<td><a
+href="./TROUBLESHOOTING.md"><code>TROUBLESHOOTING.md</code></a></td>
+<td>Full troubleshooting reference</td>
+</tr>
+<tr>
+<td>Safety File Code</td>
+<td><a
+href="./SETUP_BLOCKED_FILES.md"><code>SETUP_BLOCKED_FILES.md</code></a></td>
+<td>Manual setup file contents</td>
+</tr>
+<tr>
+<td>License Full Text</td>
+<td><a href="./LICENSE"><code>LICENSE</code></a></td>
+<td>Apache-2.0 full text</td>
+</tr>
+<tr>
+<td>Copyright Notice</td>
+<td><a href="./NOTICE"><code>NOTICE</code></a></td>
+<td>Third-party notices</td>
+</tr>
+<tr>
+<td>Dev Progress</td>
+<td><code>CHECKPOINT.md</code></td>
+<td>Developer milestones (local file only — not pushed to GitHub, so no
+link)</td>
+</tr>
+<tr>
+<td>Danger Pattern DB</td>
+<td><a
+href="./references/deny-corpus.json"><code>references/deny-corpus.json</code></a></td>
+<td>60 keyword + 7 regex patterns</td>
+</tr>
+<tr>
+<td>Masking Patterns</td>
+<td><a
+href="./references/mask-patterns.json"><code>references/mask-patterns.json</code></a></td>
+<td>15 masking rules</td>
+</tr>
+<tr>
+<td>Trusted Tool List</td>
+<td><a
+href="./references/trust-catalog.md"><code>references/trust-catalog.md</code></a></td>
+<td>15 tools with trust ratings</td>
+</tr>
+<tr>
+<td>Report Template</td>
+<td><a
+href="./references/report-template.md"><code>references/report-template.md</code></a></td>
+<td>Report format definition</td>
+</tr>
+<tr>
+<td>Integrity Hashes</td>
+<td><a
+href="./references/integrity.json"><code>references/integrity.json</code></a></td>
+<td>SHA-256 hash store</td>
+</tr>
+<tr>
+<td>External Tool Curation</td>
+<td><a href="./mcp/catalog.json"><code>mcp/catalog.json</code></a></td>
+<td>Phase 2·3 per-tool trust tier, license, status</td>
+</tr>
+<tr>
+<td>Family Status</td>
+<td><a
+href="./scripts/check-family.mjs"><code>scripts/check-family.mjs</code></a></td>
+<td>6-sibling diagnostic script</td>
+</tr>
+<tr>
+<td>Trust Freshness</td>
+<td><a
+href="./scripts/check-trust-freshness.mjs"><code>scripts/check-trust-freshness.mjs</code></a></td>
+<td>Checks trusted-tool catalog for staleness</td>
+</tr>
+<tr>
+<td>Safety-Log Retention</td>
+<td><code>scripts/rotate-safety-log.mjs</code></td>
+<td>Deletes safety-log entries older than 30 days (default) —
+self-incrimination risk reduction</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="troubleshooting-faq">12. Troubleshooting · FAQ</h2>
+<h3
+id="q1.-re-start-does-not-appear-or-shows-unknown-command-most-common">Q1.
+<code>/re-start</code> does not appear or shows “Unknown command” (most
+common)</h3>
+<p><strong>Cause:</strong> Claude Code was launched from the home folder
+(<code>C:\Users\name</code>) or you used <code>cd</code> inside the chat
+(commands do not reload on <code>cd</code>).</p>
+<p><strong>Fix:</strong> 1. Fully close Claude Code 2. Open a new
+PowerShell window 3. <strong>Navigate to your project folder, then
+launch:</strong>
+<code>powershell    cd D:\my-project-folder    claude</code> 4. Type
+<code>/re-ping</code> → confirm <code>"Pong!"</code> response</p>
+<hr />
+<h3 id="q2.-what-is-re-ping">Q2. What is <code>/re-ping</code>?</h3>
+<p>A diagnostic command to verify the plugin loaded. If you get
+<code>"Pong! /re-ping is working."</code>, the plugin is loaded
+correctly. If <code>/re-ping</code> fails, <code>/re-start</code> will
+also fail.</p>
+<hr />
+<h3 id="q3.-node.js-not-found-error">Q3. “Node.js not found” error</h3>
+<p>nodejs.org → install <strong>LTS</strong> → reboot → reopen terminal
+→ <code>node --version</code></p>
+<hr />
+<h3 id="q4.-normal-operations-keep-getting-blocked">Q4. Normal
+operations keep getting blocked</h3>
+<p>You are likely running Claude Code from <code>C:\Users\name</code>
+(home folder).</p>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cd</span> D<span class="op">:</span>\my-project-folder</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>claude</span></code></pre></div>
+<p>Restart Claude Code from a <strong>project folder</strong>.</p>
+<hr />
+<h3 id="q5.-the-consent-question-keeps-prompting">Q5. The consent
+question keeps prompting</h3>
+<p>When the 3 questions appear, don’t type free text — <strong>click the
+button (choice)</strong> or <strong>select a number</strong>. Choose a
+“Yes”-type option to register consent. Choosing “No” or declining to
+answer immediately halts the analysis.</p>
+<hr />
+<h3 id="q6.-crackbypass-request-was-refused">Q6. Crack/bypass request
+was refused</h3>
+<p><strong>This is correct behavior.</strong> This tool is exclusively
+for defense, education, and analysis of code you own.</p>
+<hr />
+<h3 id="q7.-re-selftest-shows-some-items-as">Q7.
+<code>/re-selftest</code> shows some items as ❌</h3>
+<p>Check that all 5 files from <a
+href="./SETUP_BLOCKED_FILES.md"><code>SETUP_BLOCKED_FILES.md</code></a>
+exist → Recreate any missing files → Fully restart Claude Code → Run
+<code>/re-selftest</code> again</p>
+<p>SHA-256 mismatch:</p>
+<pre><code>node hooks/_selftest.mjs</code></pre>
+<p>Copy output hash → save to <code>references/integrity.json</code> →
+rerun</p>
+<blockquote>
+<p>⚠️ <strong>Note:</strong> If <code>references/integrity.json</code>
+<strong>already has a value</strong> and the hash differs (❌), the
+command above only reports “mismatch” and does <strong>not</strong>
+print the new hash (the hash is only printed when the entry is empty).
+In that case, take the path of whichever file shows ❌ (one of
+<code>hooks/hooks.json</code>, <code>hooks/re-deny-guard.mjs</code>,
+<code>hooks/_selftest.mjs</code>,
+<code>references/deny-corpus.json</code>,
+<code>references/mask-patterns.json</code>) and compute it directly:</p>
+<div class="sourceCode" id="cb18"><pre
+class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>node <span class="op">-</span>e <span class="st">&quot;console.log(require(&#39;crypto&#39;).createHash(&#39;sha256&#39;).update(require(&#39;fs&#39;).readFileSync(&#39;&lt;file-path&gt;&#39;)).digest(&#39;hex&#39;))&quot;</span></span></code></pre></div>
+</blockquote>
+<hr />
+<h3 id="q8.-passwords-appear-in-plain-text-in-the-report">Q8. Passwords
+appear in plain text in the report</h3>
+<p><strong>This is a bug.</strong> The pattern is not in
+<code>references/mask-patterns.json</code>. Do not share that report.
+File a GitHub Issue.</p>
+<hr />
+<h3 id="q9.-analysis-is-taking-too-long">Q9. Analysis is taking too
+long</h3>
+<p>Analyze one file at a time:</p>
+<pre><code>/re-start src/auth.js</code></pre>
+<p>File-by-file analysis is much faster than folder-wide.</p>
+<hr />
+<h3 id="q10.-harness-synergy-is-not-connecting">Q10. Harness synergy is
+not connecting</h3>
+<pre><code>node scripts/re-inject-harness.mjs</code></pre>
+<p>“N RE rules injected” message means success.</p>
+<hr />
+<h3 id="q11.-more-detailed-error-resolution">Q11. More detailed error
+resolution</h3>
+<p>→ <strong><a
+href="./TROUBLESHOOTING.md">TROUBLESHOOTING.md</a></strong> — Full error
+pattern reference</p>
+<hr />
+<h2 id="license-copyright-commercial-use">13. License · Copyright ·
+Commercial Use</h2>
+<h3 id="applied-license">Applied License</h3>
+<p><strong>Apache License 2.0 · © 2026 SoDam AI Studio</strong></p>
+<h3 id="explicitly-permitted">Explicitly Permitted</h3>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Action</th>
+<th>Permitted?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Personal use</td>
+<td>✅ Permitted</td>
+</tr>
+<tr>
+<td>Modification</td>
+<td>✅ Permitted (must document changes)</td>
+</tr>
+<tr>
+<td>Copying and forking</td>
+<td>✅ Permitted</td>
+</tr>
+<tr>
+<td>Redistribution</td>
+<td>✅ Permitted (must include license and copyright notice)</td>
+</tr>
+<tr>
+<td><strong>Commercial use</strong></td>
+<td>✅ Permitted</td>
+</tr>
+<tr>
+<td>Patent use</td>
+<td>✅ Permitted</td>
+</tr>
+</tbody>
+</table>
+<h3 id="required-actions-obligations">Required Actions
+(Obligations)</h3>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Obligation</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Preserve license notice</td>
+<td>Must include the <code>LICENSE</code> file</td>
+</tr>
+<tr>
+<td>Preserve copyright notice</td>
+<td>Keep <code>© 2026 SoDam AI Studio</code></td>
+</tr>
+<tr>
+<td>Document changes</td>
+<td>Must state what was modified if you change the code</td>
+</tr>
+<tr>
+<td>Include NOTICE file</td>
+<td>Must distribute <code>NOTICE</code> file alongside</td>
+</tr>
+</tbody>
+</table>
+<h3 id="not-permitted">Not Permitted</h3>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Action</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Unauthorized use of “SoDam” trademark</td>
+<td>Cannot use as your own product/service trademark without
+permission</td>
+</tr>
+<tr>
+<td>Warranty claims</td>
+<td>Provided AS-IS — no warranty of quality or fitness</td>
+</tr>
+<tr>
+<td>Liability claims</td>
+<td>Disclaimer applies</td>
+</tr>
+</tbody>
+</table>
+<h3 id="third-party-trademark-notice">Third-Party Trademark Notice</h3>
+<ul>
+<li><strong>“Claude”</strong>, <strong>“Claude Code”</strong>,
+<strong>“Anthropic”</strong> — Trademarks of Anthropic PBC</li>
+<li><strong>“IDA Pro”</strong> — Trademark of Hex-Rays SA (Phase 3
+optional feature)</li>
+<li>The above are <strong>not affiliated with or endorsed by</strong>
+this product</li>
+</ul>
+<h3 id="commercial-use-checklist">Commercial Use Checklist</h3>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Item</th>
+<th>What to Check</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>This tool itself</td>
+<td>Apache-2.0 allows commercial use</td>
+</tr>
+<tr>
+<td>Analyzed software</td>
+<td>Check that software’s EULA and license
+<strong>separately</strong></td>
+</tr>
+<tr>
+<td>Claude API usage</td>
+<td>Anthropic Terms of Service apply <strong>separately</strong></td>
+</tr>
+<tr>
+<td>IDA Pro (Phase 3, optional)</td>
+<td>Requires <strong>separate</strong> commercial license purchase</td>
+</tr>
+</tbody>
+</table>
+<h3 id="legal-responsibility-limits-you-must-understand-strict">⚠️ Legal
+Responsibility Limits You Must Understand (Strict)</h3>
+<blockquote>
+<p>This section is <strong>not legal advice.</strong> If your situation
+actually requires a legal judgment, consult a lawyer. The point here is
+that “this tool is safe” and “what I’m analyzing is always legal” are
+<strong>two separate questions.</strong></p>
+</blockquote>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Situation</th>
+<th>What you must understand</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Analyzing someone else’s code or app</strong></td>
+<td>Even if you answered “I own this” at the consent gate, doing so
+without the actual copyright holder’s permission can itself constitute
+<strong>copyright infringement</strong>. This tool has no way to verify
+whether your answer is true — responsibility for a false answer rests
+<strong>entirely with you</strong>.</td>
+</tr>
+<tr>
+<td><strong>Code written at your job</strong></td>
+<td>Code written during employment is often <strong>owned by your
+employer</strong>, not you personally, under work-for-hire principles in
+many jurisdictions. Having typed it yourself does not automatically mean
+you “own” it — check your employment contract and company policy
+first.</td>
+</tr>
+<tr>
+<td><strong>Analysis targets containing someone else’s personal
+data</strong></td>
+<td>If the code or config files contain real names, emails, phone
+numbers, etc. belonging to other people, sending that content to an AI
+for analysis can itself be subject to <strong>data protection law
+(e.g. GDPR in the EU, or your local equivalent)</strong>. Remove or mask
+personal data before analysis when possible.</td>
+</tr>
+<tr>
+<td><strong>Reverse engineering law varies by jurisdiction</strong></td>
+<td>The extent to which reverse engineering is legally permitted differs
+by country/region, and is often <strong>allowed only for limited
+purposes</strong> such as achieving interoperability (e.g. the EU
+Software Directive, the DMCA’s narrow exemptions in the US). Even for
+software you own, check the law where you live separately.</td>
+</tr>
+<tr>
+<td><strong>The target software’s own EULA</strong></td>
+<td>Many commercial software EULAs contractually prohibit reverse
+engineering outright. Having purchased a legitimate license does not
+mean reverse engineering it is permitted — check that software’s EULA
+first.</td>
+</tr>
+<tr>
+<td><strong>Commercial redistribution of analysis reports</strong></td>
+<td>If you plan to commercially redistribute or sell a report this tool
+generates, and that report quotes a substantial portion of the original
+code, <strong>the original work’s copyright</strong> may apply
+separately.</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Summary</strong>: this tool’s own license (Apache-2.0) freely
+permits commercial use, but <strong>legal responsibility for what you
+choose to analyze is entirely separate from the tool’s license</strong>.
+A tool having safety guardrails does not make every use of it
+automatically lawful — when in doubt, consult a lawyer before you
+analyze.</p>
+</blockquote>
+<h3 id="disclaimer">Disclaimer</h3>
+<ul>
+<li>Provided <strong>“AS-IS”</strong></li>
+<li><strong>No warranty</strong> of quality, performance, or fitness for
+a particular purpose</li>
+<li><strong>User bears responsibility</strong> for the results of
+use</li>
+<li>No security tool can guarantee 100% safety</li>
+</ul>
+<p><strong>Full license text:</strong> <a href="./LICENSE">LICENSE</a> ·
+<strong>Copyright notice:</strong> <a href="./NOTICE">NOTICE</a></p>
+<hr />
+<h2 id="contact-contributing">14. Contact · Contributing</h2>
+<ul>
+<li><strong>Bug reports and feature requests:</strong> <a
+href="https://github.com/sodam-ai/SoDam-Reverse-Eng/issues">GitHub
+Issues</a> (accessible to invited members only) or by email</li>
+<li><strong>Email:</strong> startmxk@gmail.com</li>
+<li><strong>GitHub repository:</strong>
+https://github.com/sodam-ai/SoDam-Reverse-Eng (private — invitation
+required)</li>
+<li><strong>How to contribute:</strong> Contact by email first → discuss
+and proceed (private repository)</li>
+</ul>
+<hr />
+<h2 id="update-summary">15. Update Summary</h2>
+<blockquote>
+<p>Click each item to expand the details. (Based on development history
+— collapsible on both GitHub and browsers.)</p>
+</blockquote>
+<details>
+<summary>
+<strong>v0.1.0 — Initial Release (Phase 1 MVP)</strong>
+</summary>
+<ul>
+<li>Built-in 3-layer safety (1: AI output refusal, 2: deny-hook, 3:
+SHA-256 integrity)</li>
+<li>Consent gate (ownership/authorization + responsibility notice) — no
+analysis without passing</li>
+<li>Standard Korean report (summary, per-function, source location,
+uncertainties, next steps)</li>
+<li>Commands <code>/re-start</code>, <code>/re-report</code>,
+<code>/re-selftest</code></li>
+<li>Market curation catalog + safe practice sample
+(<code>samples/</code>)</li>
+<li>Auto-masking (passwords, keys, tokens → <code>••••</code>)</li>
+</ul>
+</details>
+<details>
+<summary>
+<strong>Phase 1 Hardening — Release Prep (M5)</strong>
+</summary>
+<ul>
+<li>New <code>/re-ping</code>: install-verification diagnostic (the
+first command to try)</li>
+<li>Aligned <code>/re-start</code> report format with the standard
+template (<code>report-template.md</code>)</li>
+<li>Improved install docs: private-repo clone (A) / folder-or-zip
+delivery (B)</li>
+<li>Registered session file in <code>.gitignore</code> (prevents
+accidental commits)</li>
+</ul>
+</details>
+<details>
+<summary>
+<strong>Phase 2 Start — Android Analysis Scaffolding (not live-verified
+at the time · verified later, see below)</strong>
+</summary>
+<ul>
+<li><strong>Safety first</strong>: expanded the block corpus with
+Android danger patterns (as of this point in time)</li>
+<li>Added <code>re-analyze-android</code> skill +
+<code>/re-android</code> command scaffolding (stronger consent gate,
+read-only)</li>
+<li>Added JADX/Apktool/Java 17+ install guide (section 2-6) to
+GUIDE</li>
+<li>At this stage, live verification with the actual tools installed
+hadn’t happened yet — <strong>completed on 2026-07-13, see the entry
+below</strong></li>
+</ul>
+</details>
+<details>
+<summary>
+<strong>Phase 1 + Phase 2 (Android) Live E2E Verification Complete
+(2026-07-13)</strong>
+</summary>
+<ul>
+<li>Installed the plugin <strong>from scratch, the real way</strong>
+(<code>/plugin marketplace add</code> → <code>/plugin install</code> →
+<code>/reload-plugins</code>), live-verifying the marketplace install
+flow itself</li>
+<li>Phase 1: ran <code>/re-start</code> on a real code file → passed the
+2-question consent gate → got a genuine report → confirmed API
+keys/passwords were masked (<code>••••</code>) → confirmed a bypass
+request was refused</li>
+<li>Phase 2 (Android): installed Java 17, JADX, and Apktool for real →
+ran <code>/re-android</code> on a real APK (an open-source app from
+F-Droid) → passed the 3-question consent gate → got a genuine report
+covering permissions, network activity, and evidence locations →
+confirmed a license-bypass request was refused</li>
+<li>Expanded the deny-corpus to <strong>60 keywords + 7 regex
+patterns</strong> (from the 4th-round red-team audit)</li>
+<li>One defect found during development (documented for transparency, no
+user-facing impact confirmed): the deny-hook over-blocked a legitimate
+sentence describing the <em>absence</em> of cracking code, causing that
+observation to be dropped from one report — logged as a backlog item for
+context-aware matching in a future release</li>
+</ul>
+</details>
+<details>
+<summary>
+<strong>Phase 2 — AI Coding Agent Structure Analysis Module
+(Live-Verified)</strong>
+</summary>
+<ul>
+<li>Added <code>re-analyze-agent</code> skill + <code>/re-agent</code>
+command — source-level analysis of your own Claude config or another
+plugin’s structure (no external tools needed)</li>
+<li>Unlike Android, this needed no external tooling, so it’s
+<strong>fully live-verified</strong>: self-analysis dogfood + 2 rounds
+of prompt-injection red-teaming (self-check, then an independent
+blind-test agent)</li>
+<li>Analyzing the entire <code>~/.claude</code> root requires passing a
+confirmation gate first, to protect against runaway token usage</li>
+</ul>
+</details>
+<details>
+<summary>
+<strong>Phase 3 Start — Binary Analysis Scaffolding (⚠️ Not
+Live-Verified)</strong>
+</summary>
+<ul>
+<li>Added <code>re-analyze-binary</code> skill + <code>/re-binary</code>
+command <strong>scaffolding</strong> — static analysis wrap around
+Ghidra (free), with optional IDA Pro support via
+<code>SODAM_RE_IDA_PATH</code></li>
+<li>Added Java/Ghidra install guide (section 2-7) to GUIDE</li>
+<li>Applied the same prompt-injection defense (§0-1) as the Android
+module, from the start this time</li>
+<li><strong>Malware defense analysis is out of scope for now</strong>
+(pending platform policy review, confirmed with the user) — the related
+tool entry stays on hold</li>
+<li>⚠️ Actual disassembly is <strong>pending live verification</strong>
+on a machine with the tools (currently scaffolding). Safety, consent,
+and report rules operate the same as Phase 1.</li>
+</ul>
+</details>
+<details>
+<summary>
+<strong>Full Test &amp; Verification Pass (2026-07-18)</strong>
+</summary>
+<ul>
+<li>Re-ran the full 3-layer safety test suite (normal, exception,
+malformed-input, boundary, and failure cases) end-to-end — no
+regressions (8/0 maintained)</li>
+<li>Verified the full install cycle (install → uninstall → reinstall)
+byte-for-byte</li>
+<li>Found and fixed 1 issue: an incorrect comment in
+<code>scripts/re-inject-harness.mjs</code></li>
+<li><strong>Documentation accuracy fix</strong>: discovered that
+<code>/re-selftest</code> does not print a new hash when
+<code>references/integrity.json</code> already has a mismatched value →
+added a direct hash-computation fallback to this document and
+GUIDE.en.md, filled in the missing <code>/re-agent</code> command entry,
+added JADX/Apktool/Ghidra/LIEF to the third-party license table, and
+corrected the mask-pattern count (10 → 15)</li>
+<li>Found 3 stale entries in <code>references/trust-catalog.md</code>
+(no safety impact, cleanup pending)</li>
+</ul>
+</details>
+<details>
+<summary>
+<strong>GUIDE Removed — Essential Content Merged into README
+(2026-07-27)</strong>
+</summary>
+<ul>
+<li>Removed <code>GUIDE.md</code>/<code>GUIDE.en.md</code> (+html). The
+install steps that lived only there (Android/JADX/Apktool, and
+binary/Ghidra tool setup) were moved into this document’s §6-2. One
+README now covers install, run, and troubleshoot end-to-end.</li>
+<li>Detailed error resolution continues to live in
+<code>TROUBLESHOOTING.md</code>.</li>
+</ul>
+</details>
+<details>
+<summary>
+<strong>Consent Gate Switched to Buttons + Automatic Safety-Log Cleanup
+(2026-07-27)</strong>
+</summary>
+<ul>
+<li>Converted all 4 consent gates (<code>/re-start</code>,
+<code>/re-android</code>, <code>/re-binary</code>,
+<code>/re-agent</code>) from free-text “yes/no” typing to <strong>button
+(choice) selection</strong> — reduces misfires from typos or ambiguous
+answers.</li>
+<li>New <code>scripts/rotate-safety-log.mjs</code>: automatically prunes
+block-history entries (<code>safety-log.jsonl</code>) older than 30 days
+(default, adjustable) so the log doesn’t grow forever. Only hashes are
+removed, never raw text, so this has no effect on safety-layer
+decisions.</li>
+<li>Fixed 4 internal recording gaps/typos in the planning docs (PRD) —
+no user-facing behavior changed.</li>
+</ul>
+</details>
+<details>
+<summary>
+<strong>Safety Precision Improvements — Fixed a Negation False-Positive
++ Hardened Bypass-Attempt Detection (2026-08-04)</strong>
+</summary>
+<ul>
+<li>Fixed a false-positive bug in the Layer-2 deny-hook
+(<code>hooks/re-deny-guard.mjs</code>): a sentence that merely
+<em>observes</em> a risky pattern is <strong>not present</strong> in the
+code was getting blocked as if it were a dangerous request. It now
+recognizes negation wording (e.g. “does not,” “none found,” “not
+present”) and lets such safe observations through — while the same
+wording paired with a request phrase (e.g. “please tell me how to…”) is
+still blocked, so real danger detection is never weakened.</li>
+<li>Hardened detection of attempts that hide risky keywords using
+invisible zero-width characters or Cyrillic look-alike letters that
+visually mimic the Latin alphabet.</li>
+<li>After this change, the full safety self-test (13 checks) and a
+separate boundary-case battery (empty input, malformed data, oversized
+input, case variants, and 9 more — 13 cases total) were run directly,
+confirming no regression.</li>
+<li>Alongside this, all 4 analysis commands were hardened to
+automatically run the safety self-check <em>before</em> the consent
+gate, and consent passes are now recorded to
+<code>consent-log.jsonl</code>.</li>
+</ul>
+</details>
+<blockquote>
+<p>For detailed development history, see <code>CHECKPOINT.md</code> (for
+developers).</p>
+</blockquote>
+<hr />
+<p><em>Korean version: <a href="./README.md">README.md</a></em>
+<em>Error resolution: <a
+href="./TROUBLESHOOTING.md">TROUBLESHOOTING.md</a></em></p>
+</body>
+</html>

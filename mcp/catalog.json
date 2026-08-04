@@ -13,7 +13,7 @@
       "stars": 6200,
       "capabilities": ["APK 분석", "API 추출", "Kotlin 복원", "JADX/Apktool 기반"],
       "requires": ["JADX", "Apktool", "Java"],
-      "status": "pending-wrap",
+      "status": "active",
       "skill_target": "skills/re-analyze-android/SKILL.md"
     },
     {
@@ -26,7 +26,7 @@
       "tools_count": 251,
       "capabilities": ["바이너리 역공학", "함수 분석", "어셈블리 분석", "251 tools"],
       "requires": ["Ghidra (무료)", "Java 17+"],
-      "status": "pending-wrap",
+      "status": "active",
       "skill_target": "skills/re-analyze-binary/SKILL.md"
     },
     {
@@ -41,6 +41,19 @@
       "requires": ["IDA Pro (상용 라이선스 필요 — 본인 구매)"],
       "status": "optional",
       "note": "IDA Pro 상용 라이선스 보유 사용자만"
+    },
+    {
+      "id": "lief-lightweight",
+      "name": "LIEF (lief-project/LIEF)",
+      "phase": "P3",
+      "source": "lief-project/LIEF",
+      "trust_tier": "conditional",
+      "license": "Apache-2.0(공식 문서 기준 — 이 세션에서 실시간 재확인은 안 됨, 도입 전 사람이 재확인 권장)",
+      "capabilities": ["PE/ELF/Mach-O 헤더·섹션·임포트/익스포트 정적 분석", "Ghidra 대비 설치 마찰 적음", "디스어셈블/디컴파일 불가"],
+      "requires": ["Python 3", "pip install lief"],
+      "status": "active",
+      "skill_target": "skills/re-analyze-binary/SKILL.md",
+      "note": "PRD 00_PRD_DIRECTION G3 백로그 반영(2026-07-16). PRD가 예로 든 Ap3x/BinaryAnalysis-MCP는 라이선스 미확인이라 wrap하지 않고, 그 기반 라이브러리인 LIEF 자체를 직접 감쌈. 라이브 미검증(이 PC에 Python 미설치 확인됨)"
     },
     {
       "id": "malware-analysis",

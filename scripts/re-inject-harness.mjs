@@ -6,7 +6,7 @@
  *       RE 전용 위험 패턴을 주입한다. 주입 후 Harness hook 1개가 RE 규칙까지 담당하므로
  *       경쟁 hook 중복 없이 안전 3층 중 2층을 공유한다.
  *
- * 실행: node scripts/re-inject-harness.mjs  (또는 /re-selftest가 자동 호출)
+ * 실행: node scripts/re-inject-harness.mjs  (수동 실행 — /re-selftest는 이 스크립트를 호출하지 않음)
  * 필요: SoDam-Harness-Eng 먼저 설치·초기화 (Harness가 없으면 자체 re-deny-guard.mjs로 폴백).
  */
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';

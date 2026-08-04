@@ -11,12 +11,14 @@
 
 ## 목차
 
+0. [컴퓨터·AI가 정말 처음이신가요? (기본 용어)](#0-컴퓨터ai가-정말-처음이신가요-기본-용어)
 1. [이게 뭔가요?](#1-이게-뭔가요)
 2. [무엇을 해 주나요?](#2-무엇을-해-주나요)
 3. [무엇을 거부하나요?](#3-무엇을-거부하나요-안전-경계)
 4. [SoDam 6형제 시너지](#4-sodam-6형제-시너지)
 5. [사전 준비물](#5-사전-준비물-무료-2가지)
 6. [설치 방법](#6-설치-방법)
+    - 6-1. [빠른 시작 (5분 요약)](#6-1-빠른-시작-5분-요약)
 7. [명령어](#7-명령어)
 8. [분석 흐름 (워크플로우)](#8-분석-흐름-워크플로우)
 9. [보안·데이터 흐름](#9-보안데이터-흐름)
@@ -25,6 +27,28 @@
 12. [문제 해결·FAQ](#12-문제-해결faq)
 13. [라이선스·저작권·상업적 용도](#13-라이선스저작권상업적-용도)
 14. [연락·기여](#14-연락기여)
+15. [업데이트 내용 요약](#15-업데이트-내용-요약)
+
+---
+
+## 0. 컴퓨터·AI가 정말 처음이신가요? (기본 용어)
+
+> 이미 컴퓨터·스마트폰 사용이 익숙하시면 이 부분은 건너뛰고 바로 [1. 이게 뭔가요?](#1-이게-뭔가요)로 이동하세요.
+> 이 문서는 아래 용어를 몰라도 처음부터 순서대로 따라오면 끝까지 실행할 수 있도록 만들어졌습니다 — 막히면 이 표로 돌아와 다시 확인하세요.
+
+| 용어 | 쉬운 설명 |
+|---|---|
+| **폴더(Folder)** | 컴퓨터 안에서 파일을 담아두는 "서랍" 같은 것. 스마트폰의 "앨범"이나 "그룹"과 비슷한 개념입니다. |
+| **터미널 / PowerShell** | 마우스 클릭 대신 **글자를 입력해서** 컴퓨터에게 명령을 내리는 검은(또는 파란) 화면. 이 문서에서 "PowerShell 창"이라고 부르는 것이 바로 이것입니다. |
+| **다운로드(Download)** | 인터넷에 있는 파일을 내 컴퓨터로 가져와 저장하는 것. 보통 웹사이트의 "Download" 버튼을 누르면 시작됩니다. |
+| **설치(Install)** | 다운로드한 프로그램을 내 컴퓨터에서 실제로 쓸 수 있게 만드는 과정. 스마트폰에서 앱을 "설치"하는 것과 똑같은 개념입니다. |
+| **더블클릭** | 마우스 왼쪽 버튼을 빠르게 두 번 누르는 동작. 파일이나 프로그램을 열 때 사용합니다. |
+| **복사(Ctrl+C) / 붙여넣기(Ctrl+V)** | 글자나 파일을 그대로 다른 곳으로 옮기는 기능. 키보드의 Ctrl 키를 누른 채 C(복사) 또는 V(붙여넣기)를 누릅니다. |
+| **AI(인공지능)** | 사람처럼 글을 읽고 이해해서 답을 해 주는 컴퓨터 프로그램. 이 문서에서 "AI"는 **Claude**라는 이름의 AI를 가리킵니다. |
+| **Claude Code** | Anthropic이라는 회사가 만든, AI와 대화하면서 컴퓨터 작업(코드 분석 등)을 시키는 프로그램. 이 문서 전체는 이 프로그램 **안에서** 사용하는 방법을 설명합니다. |
+| **플러그인(Plugin)** | 이미 있는 프로그램에 새 기능을 "끼워 넣는" 작은 추가 도구. 지금 보고 계신 **SoDam-Reverse-Eng 자체가 하나의 플러그인**입니다. |
+| **명령어(Command)** | Claude Code 채팅창에 `/`(슬래시)로 시작해서 입력하는 특별한 글자. 예: `/re-ping`. 입력하고 Enter를 누르면 정해진 동작이 실행됩니다. |
+| **메신저(예: 카카오톡)와 무엇이 다른가요?** | 메신저는 **사람과** 대화하는 도구고, Claude Code는 **AI와** 대화하며 컴퓨터 작업을 시키는 도구입니다. 채팅창에 글자를 입력한다는 조작 방법은 메신저와 비슷하니, 타이핑이 익숙하다면 이미 절반은 익숙한 것입니다. |
 
 ---
 
@@ -88,7 +112,7 @@ SoDam-Reverse는 6형제 플러그인 중 **막내**입니다. 형제들과 함�
 
 | 형제 플러그인 | 역할 | Reverse와 함께 쓰면 |
 |---|---|---|
-| **SoDam-Harness** | 안전벨트 · 백업 | RE 위험 패턴 공유 → hook 1개가 모두 담당 (중복 없음) |
+| **SoDam-Harness** | 안전벨트 · 백업 | RE 위험 패턴을 Harness 공유규칙에 실제 추가(단, hook 자체는 별도 등록 유지 — 아래 "알려진 한계" 참고) |
 | **SoDam-Loop** | 반복 작업 안전 제어 | 반복 분석 루프도 안전하게 |
 | **SoDam-Context** | CLAUDE.md 건강검진 | 분석 범위 이탈 자동 감지 |
 | **SoDam-Agentic** | 계획 · 쉬운 검토 | 보고서를 비개발자 눈높이로 재검수 |
@@ -102,7 +126,8 @@ SoDam-Reverse는 6형제 플러그인 중 **막내**입니다. 형제들과 함�
 ```
 node scripts/re-inject-harness.mjs
 ```
-→ RE 위험 패턴이 Harness 안전규칙에 추가되어 hook을 공유합니다 (중복 없음).
+→ RE 위험 패턴이 Harness 안전규칙에 실제로 추가됩니다.
+> ⚠️ **알려진 한계**: 규칙은 공유되지만 hook 자체는 Reverse가 별도로 계속 등록합니다(Harness 존재 시 자체검사를 생략하는 기능을 2026-07-12에 시도했으나 위험 요청이 무검증 통과하는 실제 회귀가 발견돼 되돌림). 그래서 위험한 요청 1건에 차단 메시지가 2번 뜰 수 있으나, 같은 위험을 두 번 잡는 것뿐이라 안전에는 영향 없습니다.
 
 ---
 
@@ -245,13 +270,43 @@ Claude Code가 열리면 `/re-p` 입력 → 자동완성에 아래가 떠야 정
 
 **기대 결과:** ✅✅✅ 3개 모두 초록색
 
-초록색 3개가 나오지 않으면 → 아래 12번 "문제 해결·FAQ"의 Q7 참고
+초록색 3개가 나오지 않으면 → [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) 참고
 
 ### 단계 6: 무결성 해시 등록 (3층 활성화)
 
-selftest 출력에서 SHA-256 해시를 복사 →
-`references/integrity.json` 파일의 `hooks/re-deny-guard.mjs` 값에 붙여넣기 → 저장
-→ 다시 `/re-selftest` 실행 → 3층 ✅ 확인
+selftest 출력에서 **핵심 안전파일(`hooks/re-deny-guard.mjs`)의 해시**를 `references/integrity.json`에 저장하세요(이미 있는 항목은 유지):
+```json
+{
+  "hooks/re-deny-guard.mjs": "<셀프테스트가 출력한 해시>"
+}
+```
+→ 다시 `/re-selftest` 실행 → `"3층 무결성: guard 해시 일치"` ✅ 확인
+
+> 💡 `references/integrity.json`에는 다른 안전파일 항목이 미리 채워져 있을 수 있습니다(향후 검사 범위 확장을 대비한 준비값). 지금 이 단계에서 실제로 검사에 쓰이는 항목은 `hooks/re-deny-guard.mjs` 하나뿐입니다 — 개발자용 상세는 `CHECKPOINT.md`를 참고하세요.
+
+---
+
+### 6-1. 빠른 시작 (5분 요약)
+
+> 위 6단계를 이미 하셨다면, 설치 후 **첫 분석까지 이 5줄만 따라 하면 됩니다.**
+
+1. Claude Code 완전 재시작(설치 직후 필수) 후 `/re-ping` 입력 → "Pong!" 뜨면 설치 성공.
+2. `/re-selftest` 입력 → 안전장치 6개 항목 전부 ✅ 인지 확인(1개라도 ❌면 §12 문제해결 먼저 참고).
+3. `/re-start samples/safe-login.js` 입력 → "본인 소유/허가 대상인가요?" 등 질문에 **"예"**로 답하기.
+4. 잠시 기다리면 한국어 분석 보고서가 화면에 출력됩니다(요약·함수설명·근거위치 포함).
+5. 이후 내 코드로 실습: `/re-start [내 파일 경로]` — 이게 전부입니다.
+
+> 막히면 §12(문제 해결·FAQ)를, 각 단계의 자세한 이유는 §6(설치 방법)을 참고하세요.
+
+---
+
+### 6-2. (Phase 2·3) 추가 도구 설치 — 선택 사항
+
+> `/re-start`(소스 코드 분석)만 쓴다면 이 항목은 건너뛰어도 됩니다.
+> `/re-android`(APK 분석) 또는 `/re-binary`(실행파일 분석)를 쓰려면 Java·JADX·Apktool(안드로이드) 또는 Java·Ghidra(바이너리) 같은 추가 프로그램이 필요합니다.
+>
+> **상세 설치 방법(공식 배포처 링크·확인 명령·실제 검증된 버전)은 별도 문서로 정리했습니다:**
+> **📄 [INSTALL.md — 필요 프로그램 설치 안내](./INSTALL.md)**
 
 ---
 
@@ -263,13 +318,14 @@ selftest 출력에서 SHA-256 해시를 복사 →
 | `/re-start [파일경로]` | 새로운 분석을 시작할 때 | `/re-start src/login.js` |
 | `/re-report` | 마지막 분석 보고서를 다시 볼 때 | `/re-report` |
 | `/re-selftest` | 안전장치 3층 점검할 때 | `/re-selftest` |
+| `/re-agent [설정폴더/repo 경로]` | 내 Claude 설정이나 다른 플러그인 구조를 이해하고 싶을 때 | `/re-agent ~/.claude` |
 
-**앞으로 추가될 명령어 (Phase 2·3 구현 후):**
+**Phase 2·3 명령어:**
 
 | 명령어 | 상태 | 설명 |
 |---|---|---|
-| `/re-android [APK경로]` | ⏳ Phase 2 예정 | Android 앱 분석 |
-| `/re-binary [파일경로]` | ⏳ Phase 3 예정 | 바이너리/실행파일 분석 |
+| `/re-android [APK경로]` | ✅ 실사용 라이브 검증 완료(2026-07-13) | Android 앱 분석 |
+| `/re-binary [파일경로]` | 🚧 골격 완료(라이브 미검증) | 바이너리/실행파일 분석 |
 
 ---
 
@@ -278,22 +334,27 @@ selftest 출력에서 SHA-256 해시를 복사 →
 ```
 사용자: /re-start 내코드/login.js
           ↓
-[1단계] 동의 게이트
-  AI: "이 코드가 본인 소유이거나 허가받은 것입니까?" → 예/아니오
-  AI: "방어·교육 목적에 동의합니까? 책임은 본인에게 있습니다." → 예/아니오
-  둘 다 "예"여야 다음 단계로 진행
+[0단계] 안전장치 자가검증 (자동, 2026-08-02부터 동의 게이트 앞에 선행)
+  `node hooks/_selftest.mjs`로 안전 3층(아래 참고)이 전부 정상인지 자동 재확인합니다.
+  ❌가 하나라도 있으면 동의 게이트로 넘어가지 않고 여기서 즉시 중단합니다(fail-closed).
           ↓
-[2단계] 안전 3층 점검 (자동)
+[1단계] 동의 게이트 (버튼 선택형 질문 3개, 2026-07-27부터)
+  AI가 소유권·분석 목적·이용 동의 질문 3개를 한 번에 띄웁니다 — 타이핑 대신 버튼(선택지)을 눌러 답합니다.
+  세 질문 모두 "예" 계열 선택 → 다음 단계로. 하나라도 "아니오" → 즉시 중단
+  (정확한 질문 문구는 §12 Q5 참고)
+  통과하면 `.sodam-re/consent-log.jsonl`에 동의 기록 1줄이 추가됩니다(경로·시각, 2026-08-02부터).
+          ↓
+(0단계 안전 3층 상세 — 참고용, 실행 순서는 위 [0단계] 참고)
   1층: AI가 크랙·우회 내용인지 자체 판단
   2층: deny-hook이 위험 패턴 실시간 차단
   3층: 안전파일 변조 여부 SHA-256으로 확인
           ↓
-[3단계] 분석 시작 (읽기 전용)
+[2단계] 분석 시작 (읽기 전용)
   - 파일 읽기만 (절대 실행 안 함)
-  - 경로 조작 (../, 심볼릭 링크) 자동 차단
+  - 경로 조작 (../, 심볼릭 링크) 차단 시도 — **AI(1층) 판단 기반**(코드로 100% 강제되는 것은 아님, 2026-07-13 보안점검에서 확인)
   - 비밀번호 · 키 발견 시 자동 마스킹
           ↓
-[4단계] 표준 보고서 출력
+[3단계] 표준 보고서 출력
   ┌─────────────────────────────────────────────┐
   │ ■ 한 줄 요약 (이 코드가 하는 일 1줄로)       │
   │ ■ 함수별 설명 (파일명:줄번호 근거 포함)       │
@@ -301,7 +362,7 @@ selftest 출력에서 SHA-256 해시를 복사 →
   │ ■ 다음 확인사항 (추가로 볼 것 제안)          │
   └─────────────────────────────────────────────┘
           ↓
-[5단계] 로컬 저장
+[4단계] 로컬 저장
   .sodam-re/ 폴더에 저장 (.gitignore 등록됨)
   외부 서버 전송 없음
 ```
@@ -338,11 +399,12 @@ Claude AI (Anthropic 서버)
 
 ```
 [플러그인 폴더]/
-└── .sodam-re/                  ← 분석 결과 저장 폴더 (자동 생성)
-    ├── reports/                ← 보고서 파일들
-    ├── consent/                ← 동의 기록 (con-TIMESTAMP.json)
-    └── safety-log.jsonl        ← 차단 이벤트 기록 (원문 해시 처리됨)
+└── .sodam-re/                     ← 분석 결과 저장 폴더 (자동 생성)
+    ├── consent-log.jsonl          ← 동의 통과 기록 (한 줄에 하나씩 append, 덮어쓰기 없음)
+    └── safety-log.jsonl           ← 차단 이벤트 기록 (원문 대신 SHA-256 해시만 저장)
 ```
+
+> ⚠️ **정확성을 위한 표시**: 분석 보고서 자체는 "`.sodam-re/` 폴더 안에만 저장되고 외부로 전송되지 않는다"는 원칙만 확정돼 있으며, 파일별로 어떤 이름 규칙으로 저장할지는 아직 고정돼 있지 않습니다. 확실히 코드로 확인된 것은 위 두 파일(`consent-log.jsonl`·`safety-log.jsonl`)뿐이라, 확인 안 된 폴더 구조를 임의로 적지 않았습니다.
 
 `.sodam-re/` 폴더는 `.gitignore`에 등록되어 **Git에 업로드되지 않습니다.**
 
@@ -362,15 +424,17 @@ SoDam-Reverse-Eng/
 │   ├── re-start.md
 │   ├── re-report.md
 │   ├── re-selftest.md
-│   ├── re-android.md            ← Phase 2 예정
-│   └── re-binary.md             ← Phase 3 예정
+│   ├── re-agent.md              ← AI 에이전트 구조 분석
+│   ├── re-android.md            ← 실사용 라이브 검증 완료
+│   └── re-binary.md             ← 골격 완료(라이브 미검증)
 │
 ├── skills/                      ← 분석 AI 로직
 │   ├── re-router/               ← 1층 안전규칙 + 요청 분류
 │   ├── re-analyze-mycode/       ← 소스코드 분석
 │   ├── re-report/               ← 보고서 생성
-│   ├── re-analyze-android/      ← Phase 2 예정 (stub)
-│   └── re-analyze-binary/       ← Phase 3 예정 (stub)
+│   ├── re-analyze-agent/        ← 라이브 검증 완료
+│   ├── re-analyze-android/      ← 실사용 라이브 검증 완료
+│   └── re-analyze-binary/       ← 골격 완료(라이브 미검증)
 │
 ├── hooks/                       ← 안전장치 (2층 · 3층)
 │   ├── re-deny-guard.mjs        ← 2층: 위험 패턴 실시간 차단
@@ -378,8 +442,8 @@ SoDam-Reverse-Eng/
 │   └── hooks.json               ← hook 설정
 │
 ├── references/                  ← 데이터·규칙 파일
-│   ├── deny-corpus.json         ← 위험 키워드 43개 패턴
-│   ├── mask-patterns.json       ← 마스킹 패턴 10개
+│   ├── deny-corpus.json         ← 위험 패턴 (키워드 60개 + 정규식 7개)
+│   ├── mask-patterns.json       ← 마스킹 패턴 15개
 │   ├── trust-catalog.md         ← 신뢰 도구 카탈로그 (15개 repo)
 │   ├── report-template.md       ← 보고서 표준 양식
 │   └── integrity.json           ← 안전파일 SHA-256 해시 저장소
@@ -388,19 +452,23 @@ SoDam-Reverse-Eng/
 │   ├── re-inject-harness.mjs    ← Harness 시너지 설정
 │   ├── re-inject-context.mjs    ← Context 시너지 설정
 │   ├── check-family.mjs         ← 6형제 상태 확인
-│   └── check-trust-freshness.mjs← 도구 신뢰도 신선도 점검
+│   ├── check-trust-freshness.mjs← 도구 신뢰도 신선도 점검
+│   └── rotate-safety-log.mjs    ← 안전로그 보존기간 관리(자동만료)
 │
 ├── mcp/
-│   └── catalog.json             ← Phase 2·3 외부 도구 설정
+│   └── catalog.json             ← Phase 2·3 외부 도구 큐레이션 설정(신뢰등급·라이선스)
 │
 ├── samples/                     ← 테스트용 예제 파일
 │   ├── safe-login.js            ← 정상 분석 테스트용
-│   └── deny-demo.txt            ← 차단 테스트용
+│   ├── deny-demo.txt            ← 차단 테스트용
+│   ├── agent-injection-demo.md  ← 프롬프트 인젝션 방어 테스트용
+│   └── agent-injection-demo-2.md← 결합공격(레드팀) 방어 테스트용
 │
 ├── .sodam-re/                   ← 분석 결과 저장 (자동 생성, .gitignore)
 │
 ├── README.md                    ← 이 파일 (한국어 개요)
 ├── README.en.md                 ← English overview
+├── INSTALL.md                   ← 추가 도구(Android·바이너리) 설치 상세
 ├── TROUBLESHOOTING.md           ← 오류 해결 가이드
 ├── CHECKPOINT.md                ← 개발 진행 상태 (개발자용)
 ├── SETUP_BLOCKED_FILES.md       ← 안전파일 코드 전문
@@ -421,20 +489,23 @@ SoDam-Reverse-Eng/
 
 | 파일 / 문서 | 위치 | 목적 |
 |---|---|---|
-| 한국어 README | `README.md` | 이 파일 (전체 개요) |
-| 영어 README | `README.en.md` | English overview |
-| 오류 해결 가이드 | `TROUBLESHOOTING.md` | 실패 패턴 전체 해결법 |
-| 안전파일 코드 전문 | `SETUP_BLOCKED_FILES.md` | 수동 설정 파일 코드 |
-| 라이선스 원문 | `LICENSE` | Apache-2.0 전문 |
-| 저작권 고지 | `NOTICE` | 서드파티 고지 |
-| 개발 진행 상태 | `CHECKPOINT.md` | 개발자용 체크포인트 |
-| 위험 패턴 DB | `references/deny-corpus.json` | 43개 차단 패턴 |
-| 마스킹 패턴 | `references/mask-patterns.json` | 10개 마스킹 규칙 |
-| 신뢰 도구 목록 | `references/trust-catalog.md` | 15개 도구 신뢰등급 |
-| 보고서 표준 양식 | `references/report-template.md` | 보고서 형식 정의 |
-| 무결성 해시 | `references/integrity.json` | SHA-256 해시 저장 |
-| 형제 상태 확인 | `scripts/check-family.mjs` | 6형제 진단 스크립트 |
-| 신선도 점검 | `scripts/check-trust-freshness.mjs` | 신뢰 카탈로그 최신성 확인 |
+| 한국어 README | [`README.md`](./README.md) | 이 파일 (전체 개요) |
+| 영어 README | [`README.en.md`](./README.en.md) | English overview |
+| 추가 도구 설치 안내 | [`INSTALL.md`](./INSTALL.md) | Android(JADX·Apktool)·바이너리(Ghidra) 등 선택 도구 상세 설치법 |
+| 오류 해결 가이드 | [`TROUBLESHOOTING.md`](./TROUBLESHOOTING.md) | 실패 패턴 전체 해결법 |
+| 안전파일 코드 전문 | [`SETUP_BLOCKED_FILES.md`](./SETUP_BLOCKED_FILES.md) | 수동 설정 파일 코드 |
+| 라이선스 원문 | [`LICENSE`](./LICENSE) | Apache-2.0 전문 |
+| 저작권 고지 | [`NOTICE`](./NOTICE) | 서드파티 고지 |
+| 개발 진행 상태 | `CHECKPOINT.md` | 개발자용 체크포인트 (로컬 전용 파일 · GitHub에는 올리지 않음이라 링크 없음) |
+| 위험 패턴 DB | [`references/deny-corpus.json`](./references/deny-corpus.json) | 키워드 60개 + 정규식 7개 |
+| 마스킹 패턴 | [`references/mask-patterns.json`](./references/mask-patterns.json) | 15개 마스킹 규칙 |
+| 신뢰 도구 목록 | [`references/trust-catalog.md`](./references/trust-catalog.md) | 15개 도구 신뢰등급 |
+| 보고서 표준 양식 | [`references/report-template.md`](./references/report-template.md) | 보고서 형식 정의 |
+| 무결성 해시 | [`references/integrity.json`](./references/integrity.json) | SHA-256 해시 저장 |
+| 외부 도구 큐레이션 | [`mcp/catalog.json`](./mcp/catalog.json) | Phase 2·3 도구별 신뢰등급·라이선스·상태 |
+| 형제 상태 확인 | [`scripts/check-family.mjs`](./scripts/check-family.mjs) | 6형제 진단 스크립트 |
+| 신선도 점검 | [`scripts/check-trust-freshness.mjs`](./scripts/check-trust-freshness.mjs) | 신뢰 카탈로그 최신성 확인 |
+| 안전로그 보존기간 관리 | `scripts/rotate-safety-log.mjs` | 30일(기본) 지난 안전로그 항목 삭제(자기부죄 방지) |
 
 ---
 
@@ -483,8 +554,8 @@ claude
 
 ### Q5. 동의 질문에서 막혀요
 
-"예" 또는 "네" 또는 "동의합니다"처럼 **명확하게** 입력하세요.
-"그런 것 같아요", "아마도요" 같은 애매한 답변은 동의로 처리되지 않습니다.
+질문 3개가 뜨면 자연어로 타이핑하지 말고, **버튼(선택지)을 직접 클릭**하거나 **번호를 선택**하세요.
+"예" 계열 선택지를 골라야 동의로 처리됩니다 — "아니오"를 선택하거나 응답을 거부하면 그 즉시 분석이 중단됩니다.
 
 ---
 
@@ -496,7 +567,7 @@ claude
 
 ### Q7. `/re-selftest` 에서 일부 항목이 ❌
 
-`SETUP_BLOCKED_FILES.md`에서 5개 파일이 모두 있는지 확인 →
+[`SETUP_BLOCKED_FILES.md`](./SETUP_BLOCKED_FILES.md)에서 5개 파일이 모두 있는지 확인 →
 없는 파일만 다시 만들기 → Claude Code 완전 재시작 → 다시 `/re-selftest`
 
 SHA-256 불일치:
@@ -504,6 +575,11 @@ SHA-256 불일치:
 node hooks/_selftest.mjs
 ```
 출력 해시 → `references/integrity.json` 저장 → 재실행
+
+> ⚠️ **주의:** `integrity.json`에 **이미 값이 들어있는 상태**에서 해시가 달라 ❌가 뜬 경우, 위 명령은 "불일치(변조 의심)"라고만 알려주고 **새 해시를 화면에 출력하지 않습니다**(해시 출력은 `integrity.json`이 비어있을 때만 나옵니다). 이럴 때는 ❌가 뜬 파일 경로(`hooks/hooks.json` · `hooks/re-deny-guard.mjs` · `hooks/_selftest.mjs` · `references/deny-corpus.json` · `references/mask-patterns.json` 중 하나)를 아래 명령의 `<파일경로>` 자리에 넣어 새 해시를 직접 확인하세요:
+> ```powershell
+> node -e "console.log(require('crypto').createHash('sha256').update(require('fs').readFileSync('<파일경로>')).digest('hex'))"
+> ```
 
 ---
 
@@ -588,6 +664,21 @@ node scripts/re-inject-harness.mjs
 | Claude API 사용 | Anthropic 이용 약관 **별도** 적용 |
 | IDA Pro (Phase 3, 선택) | 상용 라이선스 **별도** 구매 필요 |
 
+### ⚠️ 반드시 알아야 할 법적 책임 한계 (엄격 적용)
+
+> 이 섹션은 **법률 자문이 아닙니다.** 실제 법적 판단이 필요한 상황이라면 반드시 변호사와 상담하세요. 아래는 "이 도구가 안전하다"는 것과 "내가 무엇을 분석하는가가 항상 합법이다"는 것이 **서로 다른 문제**임을 알려드리기 위한 안내입니다.
+
+| 상황 | 반드시 알아야 할 것 |
+|---|---|
+| **타인·제3자의 코드·앱 분석** | 동의 게이트에서 "본인 소유"라고 답했더라도, 실제로 저작권자의 허락이 없다면 그 자체로 **저작권법·컴퓨터프로그램보호법 위반 소지**가 있습니다. 이 도구는 사용자의 답변이 사실인지 검증할 방법이 없으며, 허위 답변에 대한 책임은 **전적으로 사용자 본인**에게 있습니다. |
+| **회사·직장에서 작성한 코드** | 재직 중 업무로 작성한 코드는 통상 **회사(고용주) 소유**인 경우가 많습니다(업무상저작물 법리). 본인이 직접 타이핑했다고 해서 "본인 소유"가 아닐 수 있습니다 — 분석 전 회사 정책·근로계약을 먼저 확인하세요. |
+| **분석 대상에 타인의 개인정보가 포함된 경우** | 코드나 설정 파일에 실제 사용자의 이름·이메일·전화번호 등이 들어있다면, 이를 AI에 전송해 분석하는 행위 자체가 **개인정보보호법(국내)·GDPR(EU) 등 관련 법령의 적용을 받을 수 있습니다.** 가능하면 분석 전에 해당 개인정보를 제거하거나 마스킹하세요. |
+| **국가·지역별 리버스 엔지니어링 법규 차이** | 리버스 엔지니어링(역공학)이 허용되는 범위는 국가·지역마다 다르며, 상호운용성 확보 등 **제한된 목적에서만 허용**되는 경우가 많습니다(예: EU 소프트웨어 지침, 미국 DMCA의 제한적 예외 조항 등). 본인 소유 소프트웨어라도 거주 국가·지역의 법률을 별도로 확인하세요. |
+| **분석 대상 소프트웨어의 이용약관(EULA)** | 많은 상용 소프트웨어의 EULA는 리버스 엔지니어링 자체를 계약으로 금지합니다. "내가 정식으로 구매했다"는 사실이 "역공학해도 된다"는 뜻은 아닙니다 — 반드시 해당 소프트웨어의 EULA를 먼저 확인하세요. |
+| **분석 보고서의 상업적 재배포** | 이 도구가 생성한 분석 보고서를 상업적으로 재배포·판매하려는 경우, 보고서 안에 원본 코드의 상당 부분이 그대로 인용돼 있다면 **원본 저작물의 저작권**이 별도로 적용될 수 있습니다. |
+
+> **요약**: 이 도구(SoDam-Reverse-Eng) 자체의 라이선스(Apache-2.0)는 상업적 사용을 포함해 자유롭게 허용하지만, **"무엇을 분석하는가"에 대한 법적 책임은 도구의 라이선스와 완전히 별개**입니다. 도구가 안전장치를 갖췄다고 해서 분석 행위 자체가 항상 합법인 것은 아닙니다 — 확신이 서지 않으면 분석 전에 변호사와 상담하세요.
+
 ### 면책 조항
 
 - **"있는 그대로(AS-IS)"** 제공
@@ -605,6 +696,116 @@ node scripts/re-inject-harness.mjs
 - **이메일:** startmxk@gmail.com
 - **GitHub 저장소:** https://github.com/sodam-ai/SoDam-Reverse-Eng (비공개 — 초대 필요)
 - **기여 방법:** 이메일로 먼저 연락 → 협의 후 진행 (비공개 저장소)
+
+---
+
+## 15. 업데이트 내용 요약
+
+> 각 항목을 클릭하면 상세 내용이 펼쳐집니다. (개발 이력 기반 — GitHub·브라우저 모두 접기/펼치기 지원)
+
+<details>
+<summary><strong>v0.1.0 — 초기 릴리스 (Phase 1 MVP)</strong></summary>
+
+- 안전 3층(①AI 출력 거부 ②deny-hook ③SHA-256 무결성) 자체 탑재
+- 동의 게이트(본인 소유/허가 + 책임 고지) — 통과 못 하면 분석 0건
+- 표준 한국어 보고서(요약·함수별·근거 위치·불확실성·다음 확인)
+- 명령어 `/re-start`·`/re-report`·`/re-selftest`
+- 마켓 큐레이션 카탈로그 + 연습용 안전 샘플(`samples/`)
+- 자동 마스킹(비밀번호·키·토큰 → `••••`)
+
+</details>
+
+<details>
+<summary><strong>Phase 1 정비 — 배포 준비(M5)</strong></summary>
+
+- `/re-ping` 신규: 설치 확인용 진단 명령(가장 먼저 눌러보는 명령)
+- `/re-start` 보고서 형식을 표준 양식(`report-template.md`)과 정합
+- 설치 문서 보강: 비공개 저장소 clone(A) / 폴더·압축 전달(B) 2가지 방법
+- 세션 파일 `.gitignore` 등록(우발 커밋 방지)
+
+</details>
+
+<details>
+<summary><strong>Phase 2 착수 — 안드로이드 분석 골격 (당시 라이브 미검증 · 이후 아래 항목에서 검증 완료됨)</strong></summary>
+
+- **안전 우선**: 안드로이드 위험 패턴으로 차단 코퍼스 확장(착수 당시 기준)
+- `re-analyze-android` 스킬 + `/re-android` 명령 **골격** 추가(동의 게이트 강화·읽기 전용)
+- GUIDE에 JADX·Apktool·Java 17+ 설치 안내(2-6절) 추가
+- 이 시점엔 도구 설치 환경에서의 라이브 검증이 아직 안 된 골격 단계였음 — **2026-07-13에 아래 항목대로 실사용 검증 완료**
+
+</details>
+
+<details>
+<summary><strong>Phase 1 + Phase 2(안드로이드) 실사용 라이브 E2E 검증 완료 (2026-07-13)</strong></summary>
+
+- 플러그인을 **처음부터 실제로 설치**(`/plugin marketplace add` → `/plugin install` → `/reload-plugins`)해 마켓 설치 흐름 자체를 실측 검증
+- Phase 1: `/re-start`로 실제 코드 파일 분석 → 동의 게이트 2문항 통과 → 진짜 보고서 생성 → API 키·비밀번호 마스킹(`••••`) 정상 확인 → 우회 요청 거부 확인
+- Phase 2(안드로이드): Java 17·JADX·Apktool 실제 설치 → `/re-android`로 실제 APK(F-Droid 오픈소스 앱) 분석 → 동의 게이트 3문항 통과 → 권한·네트워크통신·근거위치 포함 실제 보고서 생성 → 라이선스 우회 요청 거부 확인
+- deny-corpus를 **키워드 60개 + 정규식 7개**로 확장(4차 레드팀 감사 반영)
+- 발견된 결함(개발 중 문서화, 사용자 영향 없음): deny-hook이 "크랙 없음"류의 **정상 서술**을 과차단해 보고서 일부 내용이 누락된 사례 1건 확인 — 문맥 인식 개선을 백로그로 등록(다음 릴리스에서 개선 예정)
+
+</details>
+
+<details>
+<summary><strong>Phase 2 — AI 에이전트 구조 분석 모듈 (라이브 검증됨)</strong></summary>
+
+- `re-analyze-agent` 스킬 + `/re-agent` 명령 추가 — 내 Claude 설정이나 다른 플러그인 구조를 소스레벨로 분석(외부 도구 불필요)
+- 안드로이드와 달리 **외부 도구가 필요 없어 라이브 검증까지 완료**: 자기분석 도그푸드 + 프롬프트 인젝션 레드팀 2라운드(자체검증 → 독립 에이전트 블라인드 검증) 통과
+- `~/.claude` 전체 분석은 사용량 보호를 위해 확인 게이트를 통과해야 진행
+
+</details>
+
+<details>
+<summary><strong>Phase 3 착수 — 바이너리 분석 골격 (⚠️ 라이브 미검증)</strong></summary>
+
+- `re-analyze-binary` 스킬 + `/re-binary` 명령 **골격** 추가 — Ghidra(무료) 정적분석 wrap, IDA Pro는 `SODAM_RE_IDA_PATH` 설정 시 옵션
+- GUIDE에 Java·Ghidra 설치 안내(2-7절) 추가
+- 안드로이드와 동일한 프롬프트 인젝션 방어(§0-1)를 처음부터 반영
+- **악성코드 방어 분석은 이번 범위에 없음**(플랫폼 정책 검토 대기, 사용자 확정) — 관련 도구는 계속 보류 상태
+- ⚠️ 실제 디스어셈블 동작은 도구 설치 환경에서 **라이브 검증 예정**(현재 골격). 안전·동의·보고서 규칙은 Phase 1과 동일
+
+</details>
+
+<details>
+<summary><strong>전수 테스트·검증 세션 (2026-07-18)</strong></summary>
+
+- 안전 3층(선택기·경계값·실패 케이스 포함) 실행 기반 전수 재검증 — 회귀 없음(8/0 유지)
+- 설치 스크립트 전체 사이클(설치→언인스톨→재설치) 바이트 단위 일치 확인
+- 발견·수정 1건: `scripts/re-inject-harness.mjs`의 잘못된 주석("`/re-selftest`가 자동 호출") 정정
+- 발견(문서 정정): 무결성 해시가 **이미 등록된 상태에서 불일치**가 나면 `/re-selftest`가 새 해시를 출력하지 않는다는 사실 확인 → 본 문서·GUIDE.md의 관련 안내에 직접 계산 명령 보강
+- `references/trust-catalog.md` 최신화 필요 항목 3건 발견(1개 보관 처리됨·2개 장기 미갱신) — 별도 정리 예정
+
+</details>
+
+<details>
+<summary><strong>GUIDE 문서 제거 — 핵심 내용을 README로 통합 (2026-07-27)</strong></summary>
+
+- `GUIDE.md`·`GUIDE.en.md`(+html)를 제거하고, 유일했던 설치 정보(Android/JADX/Apktool·바이너리/Ghidra 도구 설치 절차)를 이 문서 §6-2로 이전했습니다. README 하나로 설치·실행·문제해결까지 끝나도록 문서 구조를 단순화했습니다.
+- **[추가 정리 · 2026-08-04]** §6-2의 도구별 상세 설치 내용(공식 배포처·확인 명령·실제 검증된 버전)이 점점 길어져, 별도 문서 **[`INSTALL.md`](./INSTALL.md)**로 다시 분리했습니다. README §6-2에는 요약 + 링크만 남아 있습니다. GUIDE를 부활시킨 것이 아니라, README 안에서 비대해진 한 절만 떼어낸 것입니다 — "README 하나로 시작 가능"이라는 §10.4 원칙은 그대로 유지됩니다(핵심 흐름은 README만으로 완결, INSTALL.md는 선택 기능 이용자만 필요).
+- 남은 상세 오류 해결은 `TROUBLESHOOTING.md`가 계속 담당합니다.
+
+</details>
+
+<details>
+<summary><strong>동의 게이트 버튼형 전환 + 안전로그 자동 정리 (2026-07-27)</strong></summary>
+
+- 동의 게이트 4곳(`/re-start`·`/re-android`·`/re-binary`·`/re-agent`)을 자연어 "예/아니오" 타이핑 방식에서 **버튼(선택지) 선택 방식**으로 전환 — 오타·애매한 답변으로 인한 오동작 가능성을 줄임.
+- `scripts/rotate-safety-log.mjs` 신규: 차단 이력(`safety-log.jsonl`)이 무기한 쌓이지 않도록 30일(기본, 조정 가능) 지난 항목을 자동 정리. 원문이 아닌 해시만 지우는 것이라 안전 판정에는 영향 없음.
+- 기획 문서(PRD) 내부 기록 4건의 누락·오기 수정(사용자에게 보이는 기능 변경은 없음).
+
+</details>
+
+<details>
+<summary><strong>안전장치 정밀도 개선 — 부정문 오탐 해소 + 우회 차단 강화 (2026-08-04)</strong></summary>
+
+- 2층 deny-hook(`hooks/re-deny-guard.mjs`)이 "이 코드에는 인증 우회 로직이 없습니다"처럼 **위험이 없다고 말하는 정상적인 문장까지 차단하던 문제**를 고쳤습니다. 이제는 "없습니다"·"아닙니다" 같은 부정 표현이 가까이 있으면 정상 통과시키되, "~해줘"·"~방법 알려줘"처럼 실제 요청으로 보이는 문구가 함께 있으면 여전히 차단합니다(안전 우선 원칙 유지).
+- 눈에 보이지 않는 특수문자(제로폭 문자)나 로마자와 비슷하게 생긴 키릴 문자로 위험 단어를 숨겨 우회하려는 시도를 감지해 차단하도록 보강했습니다.
+- 이 변경 후 안전 셀프테스트(13개 항목)와 별도의 경계값 테스트(빈 입력·손상된 데이터·대용량 입력·대소문자 변형 등 13종)를 직접 실행해 기존 기능에 회귀가 없음을 확인했습니다.
+- 위 개선에 맞춰 `/re-start`를 포함한 4개 분석 명령이 분석 시작 전 안전장치 자가검증을 자동으로 먼저 실행하도록 강화했고, 동의 통과 기록(`consent-log.jsonl`)을 남기도록 개선했습니다.
+
+</details>
+
+> 개발 상세 이력은 `CHECKPOINT.md`(개발자용)를 참고하세요.
 
 ---
 
