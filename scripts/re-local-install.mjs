@@ -10,10 +10,16 @@
  * 이중 설치했으나, 같은 이름이 두 곳에 등록되면서 bare `/re-start` 호출이 "Unknown command"로
  * 실패하는 걸 실사용 중 확인함. 플러그인 스코프(`sodam-reverse:`)로만 단일화해 이 모호성을 제거함.
  *
+ * [2026-08-02] 이전 버전은 skills/commands/plugin.json만 복사해 hooks/(안전 2·3층)·references/
+ * (deny-corpus·mask-patterns·integrity)·mcp/·samples/가 설치본에서 통째로 빠져 있었음(실제로 확인됨 —
+ * 이 PC의 설치본엔 hooks 폴더 자체가 없었음). hooks/_selftest.mjs·re-deny-guard.mjs는 자기 위치
+ * 기준 상대경로로 references/를 읽으므로, 두 폴더가 없으면 그 파일이 있어도 작동 불가. 아래에
+ * 4개 폴더 통째 복사를 추가해 실제 설치본에서도 안전 3층이 전부 작동하게 함.
+ *
  * 사용법: node scripts/re-local-install.mjs [--uninstall]
  */
 
-import { existsSync, mkdirSync, copyFileSync, rmSync } from 'node:fs';
+import { existsSync, mkdirSync, copyFileSync, rmSync, cpSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { homedir } from 'node:os';
 import { fileURLToPath } from 'node:url';
@@ -111,6 +117,18 @@ try {
   for (const cmd of COMMANDS) {
     const srcPath = join(PLUGIN_ROOT, 'commands', `${cmd}.md`);
     if (existsSync(srcPath)) copyFileSync(srcPath, join(destCmdDir, `${cmd}.md`));
+  }
+
+  // [2026-08-02] 안전 2·3층(hooks) + 그 데이터(references) + 카탈로그(mcp) + 연습샘플(samples) 통째 복사.
+  // 이전 버전은 이 네 폴더를 아예 복사하지 않아 설치본에 hooks 자체가 없었음(위 헤더 주석 참조).
+  for (const extraDir of ['hooks', 'references', 'mcp', 'samples']) {
+    const srcDir = join(PLUGIN_ROOT, extraDir);
+    if (existsSync(srcDir)) {
+      cpSync(srcDir, join(GLOBAL_PLUGIN_DIR, extraDir), { recursive: true });
+      console.log(`✅ ${extraDir}/ 복사 완료`);
+    } else {
+      console.log(`⏭️  ${extraDir}/ 없음(건너뜀)`);
+    }
   }
 
   console.log(`✅ sodam-reverse → ${GLOBAL_PLUGIN_DIR}`);
