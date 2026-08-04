@@ -529,22 +529,22 @@ SoDam-Reverse-Eng/
 
 | File / Document | Location | Purpose |
 |---|---|---|
-| Korean README | `README.md` | Korean overview |
-| English README | `README.en.md` | This file |
-| Additional Tool Install Guide | `INSTALL.md` | Detailed install steps for Android (JADX·Apktool) and binary (Ghidra) tools — **Korean only**, but §6-2 above already covers the same tools in English |
-| Error Resolution | `TROUBLESHOOTING.md` | Full troubleshooting reference |
-| Safety File Code | `SETUP_BLOCKED_FILES.md` | Manual setup file contents |
-| License Full Text | `LICENSE` | Apache-2.0 full text |
-| Copyright Notice | `NOTICE` | Third-party notices |
-| Dev Progress | `CHECKPOINT.md` | Developer milestones |
-| Danger Pattern DB | `references/deny-corpus.json` | 60 keyword + 7 regex patterns |
-| Masking Patterns | `references/mask-patterns.json` | 15 masking rules |
-| Trusted Tool List | `references/trust-catalog.md` | 15 tools with trust ratings |
-| Report Template | `references/report-template.md` | Report format definition |
-| Integrity Hashes | `references/integrity.json` | SHA-256 hash store |
-| External Tool Curation | `mcp/catalog.json` | Phase 2·3 per-tool trust tier, license, status |
-| Family Status | `scripts/check-family.mjs` | 6-sibling diagnostic script |
-| Trust Freshness | `scripts/check-trust-freshness.mjs` | Checks trusted-tool catalog for staleness |
+| Korean README | [`README.md`](./README.md) | Korean overview |
+| English README | [`README.en.md`](./README.en.md) | This file |
+| Additional Tool Install Guide | [`INSTALL.md`](./INSTALL.md) | Detailed install steps for Android (JADX·Apktool) and binary (Ghidra) tools — **Korean only**, but §6-2 above already covers the same tools in English |
+| Error Resolution | [`TROUBLESHOOTING.md`](./TROUBLESHOOTING.md) | Full troubleshooting reference |
+| Safety File Code | [`SETUP_BLOCKED_FILES.md`](./SETUP_BLOCKED_FILES.md) | Manual setup file contents |
+| License Full Text | [`LICENSE`](./LICENSE) | Apache-2.0 full text |
+| Copyright Notice | [`NOTICE`](./NOTICE) | Third-party notices |
+| Dev Progress | `CHECKPOINT.md` | Developer milestones (local file only — not pushed to GitHub, so no link) |
+| Danger Pattern DB | [`references/deny-corpus.json`](./references/deny-corpus.json) | 60 keyword + 7 regex patterns |
+| Masking Patterns | [`references/mask-patterns.json`](./references/mask-patterns.json) | 15 masking rules |
+| Trusted Tool List | [`references/trust-catalog.md`](./references/trust-catalog.md) | 15 tools with trust ratings |
+| Report Template | [`references/report-template.md`](./references/report-template.md) | Report format definition |
+| Integrity Hashes | [`references/integrity.json`](./references/integrity.json) | SHA-256 hash store |
+| External Tool Curation | [`mcp/catalog.json`](./mcp/catalog.json) | Phase 2·3 per-tool trust tier, license, status |
+| Family Status | [`scripts/check-family.mjs`](./scripts/check-family.mjs) | 6-sibling diagnostic script |
+| Trust Freshness | [`scripts/check-trust-freshness.mjs`](./scripts/check-trust-freshness.mjs) | Checks trusted-tool catalog for staleness |
 | Safety-Log Retention | `scripts/rotate-safety-log.mjs` | Deletes safety-log entries older than 30 days (default) — self-incrimination risk reduction |
 
 ---
@@ -605,7 +605,7 @@ Choose a "Yes"-type option to register consent. Choosing "No" or declining to an
 
 ### Q7. `/re-selftest` shows some items as ❌
 
-Check that all 5 files from `SETUP_BLOCKED_FILES.md` exist →
+Check that all 5 files from [`SETUP_BLOCKED_FILES.md`](./SETUP_BLOCKED_FILES.md) exist →
 Recreate any missing files → Fully restart Claude Code → Run `/re-selftest` again
 
 SHA-256 mismatch:

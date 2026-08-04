@@ -489,22 +489,22 @@ SoDam-Reverse-Eng/
 
 | 파일 / 문서 | 위치 | 목적 |
 |---|---|---|
-| 한국어 README | `README.md` | 이 파일 (전체 개요) |
-| 영어 README | `README.en.md` | English overview |
-| 추가 도구 설치 안내 | `INSTALL.md` | Android(JADX·Apktool)·바이너리(Ghidra) 등 선택 도구 상세 설치법 |
-| 오류 해결 가이드 | `TROUBLESHOOTING.md` | 실패 패턴 전체 해결법 |
-| 안전파일 코드 전문 | `SETUP_BLOCKED_FILES.md` | 수동 설정 파일 코드 |
-| 라이선스 원문 | `LICENSE` | Apache-2.0 전문 |
-| 저작권 고지 | `NOTICE` | 서드파티 고지 |
-| 개발 진행 상태 | `CHECKPOINT.md` | 개발자용 체크포인트 |
-| 위험 패턴 DB | `references/deny-corpus.json` | 키워드 60개 + 정규식 7개 |
-| 마스킹 패턴 | `references/mask-patterns.json` | 15개 마스킹 규칙 |
-| 신뢰 도구 목록 | `references/trust-catalog.md` | 15개 도구 신뢰등급 |
-| 보고서 표준 양식 | `references/report-template.md` | 보고서 형식 정의 |
-| 무결성 해시 | `references/integrity.json` | SHA-256 해시 저장 |
-| 외부 도구 큐레이션 | `mcp/catalog.json` | Phase 2·3 도구별 신뢰등급·라이선스·상태 |
-| 형제 상태 확인 | `scripts/check-family.mjs` | 6형제 진단 스크립트 |
-| 신선도 점검 | `scripts/check-trust-freshness.mjs` | 신뢰 카탈로그 최신성 확인 |
+| 한국어 README | [`README.md`](./README.md) | 이 파일 (전체 개요) |
+| 영어 README | [`README.en.md`](./README.en.md) | English overview |
+| 추가 도구 설치 안내 | [`INSTALL.md`](./INSTALL.md) | Android(JADX·Apktool)·바이너리(Ghidra) 등 선택 도구 상세 설치법 |
+| 오류 해결 가이드 | [`TROUBLESHOOTING.md`](./TROUBLESHOOTING.md) | 실패 패턴 전체 해결법 |
+| 안전파일 코드 전문 | [`SETUP_BLOCKED_FILES.md`](./SETUP_BLOCKED_FILES.md) | 수동 설정 파일 코드 |
+| 라이선스 원문 | [`LICENSE`](./LICENSE) | Apache-2.0 전문 |
+| 저작권 고지 | [`NOTICE`](./NOTICE) | 서드파티 고지 |
+| 개발 진행 상태 | `CHECKPOINT.md` | 개발자용 체크포인트 (로컬 전용 파일 · GitHub에는 올리지 않음이라 링크 없음) |
+| 위험 패턴 DB | [`references/deny-corpus.json`](./references/deny-corpus.json) | 키워드 60개 + 정규식 7개 |
+| 마스킹 패턴 | [`references/mask-patterns.json`](./references/mask-patterns.json) | 15개 마스킹 규칙 |
+| 신뢰 도구 목록 | [`references/trust-catalog.md`](./references/trust-catalog.md) | 15개 도구 신뢰등급 |
+| 보고서 표준 양식 | [`references/report-template.md`](./references/report-template.md) | 보고서 형식 정의 |
+| 무결성 해시 | [`references/integrity.json`](./references/integrity.json) | SHA-256 해시 저장 |
+| 외부 도구 큐레이션 | [`mcp/catalog.json`](./mcp/catalog.json) | Phase 2·3 도구별 신뢰등급·라이선스·상태 |
+| 형제 상태 확인 | [`scripts/check-family.mjs`](./scripts/check-family.mjs) | 6형제 진단 스크립트 |
+| 신선도 점검 | [`scripts/check-trust-freshness.mjs`](./scripts/check-trust-freshness.mjs) | 신뢰 카탈로그 최신성 확인 |
 | 안전로그 보존기간 관리 | `scripts/rotate-safety-log.mjs` | 30일(기본) 지난 안전로그 항목 삭제(자기부죄 방지) |
 
 ---
@@ -567,7 +567,7 @@ claude
 
 ### Q7. `/re-selftest` 에서 일부 항목이 ❌
 
-`SETUP_BLOCKED_FILES.md`에서 5개 파일이 모두 있는지 확인 →
+[`SETUP_BLOCKED_FILES.md`](./SETUP_BLOCKED_FILES.md)에서 5개 파일이 모두 있는지 확인 →
 없는 파일만 다시 만들기 → Claude Code 완전 재시작 → 다시 `/re-selftest`
 
 SHA-256 불일치:

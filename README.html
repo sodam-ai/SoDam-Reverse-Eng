@@ -975,82 +975,92 @@ Claude AI (Anthropic 서버)
 <tbody>
 <tr>
 <td>한국어 README</td>
-<td><code>README.md</code></td>
+<td><a href="./README.md"><code>README.md</code></a></td>
 <td>이 파일 (전체 개요)</td>
 </tr>
 <tr>
 <td>영어 README</td>
-<td><code>README.en.md</code></td>
+<td><a href="./README.en.md"><code>README.en.md</code></a></td>
 <td>English overview</td>
 </tr>
 <tr>
 <td>추가 도구 설치 안내</td>
-<td><code>INSTALL.md</code></td>
+<td><a href="./INSTALL.md"><code>INSTALL.md</code></a></td>
 <td>Android(JADX·Apktool)·바이너리(Ghidra) 등 선택 도구 상세 설치법</td>
 </tr>
 <tr>
 <td>오류 해결 가이드</td>
-<td><code>TROUBLESHOOTING.md</code></td>
+<td><a
+href="./TROUBLESHOOTING.md"><code>TROUBLESHOOTING.md</code></a></td>
 <td>실패 패턴 전체 해결법</td>
 </tr>
 <tr>
 <td>안전파일 코드 전문</td>
-<td><code>SETUP_BLOCKED_FILES.md</code></td>
+<td><a
+href="./SETUP_BLOCKED_FILES.md"><code>SETUP_BLOCKED_FILES.md</code></a></td>
 <td>수동 설정 파일 코드</td>
 </tr>
 <tr>
 <td>라이선스 원문</td>
-<td><code>LICENSE</code></td>
+<td><a href="./LICENSE"><code>LICENSE</code></a></td>
 <td>Apache-2.0 전문</td>
 </tr>
 <tr>
 <td>저작권 고지</td>
-<td><code>NOTICE</code></td>
+<td><a href="./NOTICE"><code>NOTICE</code></a></td>
 <td>서드파티 고지</td>
 </tr>
 <tr>
 <td>개발 진행 상태</td>
 <td><code>CHECKPOINT.md</code></td>
-<td>개발자용 체크포인트</td>
+<td>개발자용 체크포인트 (로컬 전용 파일 · GitHub에는 올리지 않음이라
+링크 없음)</td>
 </tr>
 <tr>
 <td>위험 패턴 DB</td>
-<td><code>references/deny-corpus.json</code></td>
+<td><a
+href="./references/deny-corpus.json"><code>references/deny-corpus.json</code></a></td>
 <td>키워드 60개 + 정규식 7개</td>
 </tr>
 <tr>
 <td>마스킹 패턴</td>
-<td><code>references/mask-patterns.json</code></td>
+<td><a
+href="./references/mask-patterns.json"><code>references/mask-patterns.json</code></a></td>
 <td>15개 마스킹 규칙</td>
 </tr>
 <tr>
 <td>신뢰 도구 목록</td>
-<td><code>references/trust-catalog.md</code></td>
+<td><a
+href="./references/trust-catalog.md"><code>references/trust-catalog.md</code></a></td>
 <td>15개 도구 신뢰등급</td>
 </tr>
 <tr>
 <td>보고서 표준 양식</td>
-<td><code>references/report-template.md</code></td>
+<td><a
+href="./references/report-template.md"><code>references/report-template.md</code></a></td>
 <td>보고서 형식 정의</td>
 </tr>
 <tr>
 <td>무결성 해시</td>
-<td><code>references/integrity.json</code></td>
+<td><a
+href="./references/integrity.json"><code>references/integrity.json</code></a></td>
 <td>SHA-256 해시 저장</td>
 </tr>
 <tr>
 <td>외부 도구 큐레이션</td>
-<td><code>mcp/catalog.json</code></td>
+<td><a href="./mcp/catalog.json"><code>mcp/catalog.json</code></a></td>
 <td>Phase 2·3 도구별 신뢰등급·라이선스·상태</td>
 </tr>
 <tr>
 <td>형제 상태 확인</td>
-<td><code>scripts/check-family.mjs</code></td>
+<td><a
+href="./scripts/check-family.mjs"><code>scripts/check-family.mjs</code></a></td>
 <td>6형제 진단 스크립트</td>
 </tr>
 <tr>
 <td>신선도 점검</td>
-<td><code>scripts/check-trust-freshness.mjs</code></td>
+<td><a
+href="./scripts/check-trust-freshness.mjs"><code>scripts/check-trust-freshness.mjs</code></a></td>
 <td>신뢰 카탈로그 최신성 확인</td>
 </tr>
 <tr>
@@ -1104,9 +1114,10 @@ class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb16
 <hr />
 <h3 id="q7.-re-selftest-에서-일부-항목이">Q7. <code>/re-selftest</code>
 에서 일부 항목이 ❌</h3>
-<p><code>SETUP_BLOCKED_FILES.md</code>에서 5개 파일이 모두 있는지 확인 →
-없는 파일만 다시 만들기 → Claude Code 완전 재시작 → 다시
-<code>/re-selftest</code></p>
+<p><a
+href="./SETUP_BLOCKED_FILES.md"><code>SETUP_BLOCKED_FILES.md</code></a>에서
+5개 파일이 모두 있는지 확인 → 없는 파일만 다시 만들기 → Claude Code 완전
+재시작 → 다시 <code>/re-selftest</code></p>
 <p>SHA-256 불일치:</p>
 <pre><code>node hooks/_selftest.mjs</code></pre>
 <p>출력 해시 → <code>references/integrity.json</code> 저장 → 재실행</p>

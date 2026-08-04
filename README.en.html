@@ -1077,84 +1077,94 @@ Structure</h2>
 <tbody>
 <tr>
 <td>Korean README</td>
-<td><code>README.md</code></td>
+<td><a href="./README.md"><code>README.md</code></a></td>
 <td>Korean overview</td>
 </tr>
 <tr>
 <td>English README</td>
-<td><code>README.en.md</code></td>
+<td><a href="./README.en.md"><code>README.en.md</code></a></td>
 <td>This file</td>
 </tr>
 <tr>
 <td>Additional Tool Install Guide</td>
-<td><code>INSTALL.md</code></td>
+<td><a href="./INSTALL.md"><code>INSTALL.md</code></a></td>
 <td>Detailed install steps for Android (JADX·Apktool) and binary
 (Ghidra) tools — <strong>Korean only</strong>, but §6-2 above already
 covers the same tools in English</td>
 </tr>
 <tr>
 <td>Error Resolution</td>
-<td><code>TROUBLESHOOTING.md</code></td>
+<td><a
+href="./TROUBLESHOOTING.md"><code>TROUBLESHOOTING.md</code></a></td>
 <td>Full troubleshooting reference</td>
 </tr>
 <tr>
 <td>Safety File Code</td>
-<td><code>SETUP_BLOCKED_FILES.md</code></td>
+<td><a
+href="./SETUP_BLOCKED_FILES.md"><code>SETUP_BLOCKED_FILES.md</code></a></td>
 <td>Manual setup file contents</td>
 </tr>
 <tr>
 <td>License Full Text</td>
-<td><code>LICENSE</code></td>
+<td><a href="./LICENSE"><code>LICENSE</code></a></td>
 <td>Apache-2.0 full text</td>
 </tr>
 <tr>
 <td>Copyright Notice</td>
-<td><code>NOTICE</code></td>
+<td><a href="./NOTICE"><code>NOTICE</code></a></td>
 <td>Third-party notices</td>
 </tr>
 <tr>
 <td>Dev Progress</td>
 <td><code>CHECKPOINT.md</code></td>
-<td>Developer milestones</td>
+<td>Developer milestones (local file only — not pushed to GitHub, so no
+link)</td>
 </tr>
 <tr>
 <td>Danger Pattern DB</td>
-<td><code>references/deny-corpus.json</code></td>
+<td><a
+href="./references/deny-corpus.json"><code>references/deny-corpus.json</code></a></td>
 <td>60 keyword + 7 regex patterns</td>
 </tr>
 <tr>
 <td>Masking Patterns</td>
-<td><code>references/mask-patterns.json</code></td>
+<td><a
+href="./references/mask-patterns.json"><code>references/mask-patterns.json</code></a></td>
 <td>15 masking rules</td>
 </tr>
 <tr>
 <td>Trusted Tool List</td>
-<td><code>references/trust-catalog.md</code></td>
+<td><a
+href="./references/trust-catalog.md"><code>references/trust-catalog.md</code></a></td>
 <td>15 tools with trust ratings</td>
 </tr>
 <tr>
 <td>Report Template</td>
-<td><code>references/report-template.md</code></td>
+<td><a
+href="./references/report-template.md"><code>references/report-template.md</code></a></td>
 <td>Report format definition</td>
 </tr>
 <tr>
 <td>Integrity Hashes</td>
-<td><code>references/integrity.json</code></td>
+<td><a
+href="./references/integrity.json"><code>references/integrity.json</code></a></td>
 <td>SHA-256 hash store</td>
 </tr>
 <tr>
 <td>External Tool Curation</td>
-<td><code>mcp/catalog.json</code></td>
+<td><a href="./mcp/catalog.json"><code>mcp/catalog.json</code></a></td>
 <td>Phase 2·3 per-tool trust tier, license, status</td>
 </tr>
 <tr>
 <td>Family Status</td>
-<td><code>scripts/check-family.mjs</code></td>
+<td><a
+href="./scripts/check-family.mjs"><code>scripts/check-family.mjs</code></a></td>
 <td>6-sibling diagnostic script</td>
 </tr>
 <tr>
 <td>Trust Freshness</td>
-<td><code>scripts/check-trust-freshness.mjs</code></td>
+<td><a
+href="./scripts/check-trust-freshness.mjs"><code>scripts/check-trust-freshness.mjs</code></a></td>
 <td>Checks trusted-tool catalog for staleness</td>
 </tr>
 <tr>
@@ -1213,8 +1223,9 @@ for defense, education, and analysis of code you own.</p>
 <hr />
 <h3 id="q7.-re-selftest-shows-some-items-as">Q7.
 <code>/re-selftest</code> shows some items as ❌</h3>
-<p>Check that all 5 files from <code>SETUP_BLOCKED_FILES.md</code> exist
-→ Recreate any missing files → Fully restart Claude Code → Run
+<p>Check that all 5 files from <a
+href="./SETUP_BLOCKED_FILES.md"><code>SETUP_BLOCKED_FILES.md</code></a>
+exist → Recreate any missing files → Fully restart Claude Code → Run
 <code>/re-selftest</code> again</p>
 <p>SHA-256 mismatch:</p>
 <pre><code>node hooks/_selftest.mjs</code></pre>
