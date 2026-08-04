@@ -22,7 +22,7 @@ function runGuardDenied(toolName, toolInput) {
 
 console.log('🔒 SoDam-Reverse 안전 3층 셀프테스트\n');
 
-const skillFiles = ['skills/re-router/SKILL.md', 'skills/re-analyze-mycode/SKILL.md', 'skills/re-report/SKILL.md', 'skills/re-analyze-agent/SKILL.md', 'skills/re-analyze-binary/SKILL.md'];
+const skillFiles = ['skills/re-router/SKILL.md', 'skills/re-analyze-mycode/SKILL.md', 'skills/re-report/SKILL.md', 'skills/re-analyze-agent/SKILL.md', 'skills/re-analyze-binary/SKILL.md', 'skills/re-analyze-android/SKILL.md'];
 for (const f of skillFiles) {
   const p = join(root, f);
   if (existsSync(p)) {
@@ -36,20 +36,41 @@ const safeSamples = [['Bash', { command: 'node --version' }], ['Write', { conten
 if (denySamples.every(([n, i]) => runGuardDenied(n, i))) ok('2층 deny-hook: 위험 샘플 전부 차단'); else no('2층 deny-hook: 위험 샘플 일부 통과(위험)');
 if (safeSamples.every(([n, i]) => !runGuardDenied(n, i))) ok('2층 deny-hook: 안전 샘플 전부 통과(오차단 없음)'); else no('2층 deny-hook: 안전 샘플 오차단(과차단)');
 
+// (2026-07-27 갱신: 검사 범위를 1개→5개 보호파일 전체로 확장. 기존엔 re-deny-guard.mjs만 검사해
+// deny-corpus.json(차단 키워드 원본) 등 나머지 4개가 위변조돼도 전혀 탐지되지 않는 공백이 있었음.)
 const manifestPath = join(root, 'references', 'integrity.json');
-const guardPath = join(here, 're-deny-guard.mjs');
-const guardHash = createHash('sha256').update(readFileSync(guardPath)).digest('hex');
+const PROTECTED_FILES = [
+  'hooks/hooks.json',
+  'hooks/re-deny-guard.mjs',
+  'hooks/_selftest.mjs',
+  'references/deny-corpus.json',
+  'references/mask-patterns.json',
+];
 if (existsSync(manifestPath)) {
-  try {
-    const expected = JSON.parse(readFileSync(manifestPath, 'utf8'))['hooks/re-deny-guard.mjs'];
-    if (!expected) no('3층 무결성: manifest에 guard 항목 없음');
-    else if (expected === guardHash) ok('3층 무결성: guard 해시 일치(변조 없음)');
-    else no('3층 무결성: guard 해시 불일치(변조 의심) → 재설치 권장');
-  } catch { no('3층 무결성: manifest 해석 실패'); }
+  let manifest;
+  try { manifest = JSON.parse(readFileSync(manifestPath, 'utf8')); }
+  catch { no('3층 무결성: manifest 해석 실패'); manifest = null; }
+  if (manifest) {
+    for (const relPath of PROTECTED_FILES) {
+      const abs = join(root, relPath);
+      if (!existsSync(abs)) { no(`3층 무결성: 파일 없음 (${relPath})`); continue; }
+      const hash = createHash('sha256').update(readFileSync(abs)).digest('hex');
+      const expected = manifest[relPath];
+      if (!expected) no(`3층 무결성: manifest에 항목 없음 (${relPath})`);
+      else if (expected === hash) ok(`3층 무결성: 해시 일치 (${relPath})`);
+      else no(`3층 무결성: 해시 불일치·변조 의심 (${relPath}) → 재설치 권장`);
+    }
+  }
 } else {
   lines.push('  ⚠️ 3층 무결성: manifest 없음 → 최초 1회 생성 필요.');
-  lines.push(`     현재 guard 해시: ${guardHash}`);
-  lines.push('     references/integrity.json 에 {"hooks/re-deny-guard.mjs":"<해시>"} 저장 시 활성화.');
+  for (const relPath of PROTECTED_FILES) {
+    const abs = join(root, relPath);
+    if (existsSync(abs)) {
+      const hash = createHash('sha256').update(readFileSync(abs)).digest('hex');
+      lines.push(`     ${relPath}: ${hash}`);
+    }
+  }
+  lines.push('     위 해시들을 references/integrity.json 에 저장하면 활성화됩니다.');
 }
 
 console.log(lines.join('\n'));
