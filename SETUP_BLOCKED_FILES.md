@@ -177,13 +177,20 @@ const REQUEST_MARKERS = [
   'please', 'how to', 'tell me', 'show me', 'give me', 'way to', 'method to',
 ];
 function isSafeObservation(text, matchIndex, matchLen) {
-  const NEG_WINDOW = 20, REQ_WINDOW = 40;
+  // [2026-08-13 수정] NEG_WINDOW 20/beforeCtx 6은 한국어 후치부정("~이 없습니다")엔 맞지만
+  // 영어 전치부정("does not contain X", "I confirmed X is not present")처럼 부정어와 대상 사이에
+  // 단어가 몇 개 끼는 문장에서 창이 너무 좁아 정상 관찰까지 차단하는 실사용 결함이 실측으로
+  // 발견됨(재현: "this code does not contain any <키워드> logic." 류가 오탐 차단됨).
+  // 30/30으로 넓혀 해결하되, beforeCtx만 넓히면 "not present, give me <키워드>"처럼 부정어+요청어를
+  // 매치 앞쪽에 둘 다 배치하는 새 스머글링 경로가 열리는 것을 격리 테스트로 확인 →
+  // 요청표지 검사(wideCtx)도 같은 폭만큼 매치 앞쪽까지 함께 확장해 막는다.
+  const NEG_WINDOW = 30, BEFORE_WINDOW = 30, REQ_WINDOW = 40;
   const afterStart = matchIndex + matchLen;
   const afterCtx = text.slice(afterStart, afterStart + NEG_WINDOW);
-  const beforeCtx = text.slice(Math.max(0, matchIndex - 6), matchIndex);
+  const beforeCtx = text.slice(Math.max(0, matchIndex - BEFORE_WINDOW), matchIndex);
   const hasSafeMarker = SAFE_CONTEXT_MARKERS.some((n) => afterCtx.includes(n) || beforeCtx.includes(n));
   if (!hasSafeMarker) return false;
-  const wideCtx = text.slice(matchIndex, afterStart + REQ_WINDOW);
+  const wideCtx = text.slice(Math.max(0, matchIndex - BEFORE_WINDOW), afterStart + REQ_WINDOW);
   return !REQUEST_MARKERS.some((r) => wideCtx.includes(r));
 }
 
