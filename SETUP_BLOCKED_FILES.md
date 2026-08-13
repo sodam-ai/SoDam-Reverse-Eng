@@ -21,16 +21,25 @@
 >
 > 5개를 만든 뒤 **완전 재시작 → `/re-selftest`** 로 안전 3층을 검증하세요.
 >
-> **권장 절차 (2026-08-13 추가) — OS 읽기전용으로 실질적 보호 걸기:**
-> 편집이 끝나면 PowerShell에서 아래처럼 잠가두면, 이후 AI가 이 5개 파일에 Edit/Write를 시도해도
-> 운영체제 자체가 쓰기를 거부합니다(내용 검사가 아니라 파일시스템 권한이라 회피 불가):
+> **권장 절차 (2026-08-13 추가, 34차 세션 §5-52에서 대상 8개로 확장) — OS 읽기전용으로 실질적 보호 걸기:**
+> 편집이 끝나면 PowerShell에서 아래처럼 잠가두면, 이후 AI가 이 파일들에 Edit/Write를 시도해도
+> 운영체제 자체가 쓰기를 거부합니다(내용 검사가 아니라 파일시스템 권한이라 회피 불가). **대상은 원래
+> 발표했던 5개가 아니라 8개**입니다 — `references/integrity.json`(3층 무결성의 "정답지" 자신, 이게
+> 안 잠기면 파일을 고치고 정답지도 같이 고쳐서 "일치"로 위장할 수 있음)과, 3층 무결성 대상이지만
+> AI-편집-금지 5개 목록엔 없었던 `deny-corpus.json`·`mask-patterns.json`(내용 기반 우연 차단에만
+> 의존해 왔던 건 이 5개와 동일)까지 포함합니다:
 > ```powershell
-> attrib +R "hooks\re-deny-guard.mjs" "hooks\_selftest.mjs" "hooks\hooks.json" ".claude-plugin\plugin.json" ".claude-plugin\marketplace.json"
+> attrib +R "hooks\re-deny-guard.mjs" "hooks\_selftest.mjs" "hooks\hooks.json" ".claude-plugin\plugin.json" ".claude-plugin\marketplace.json" "references\deny-corpus.json" "references\mask-patterns.json" "references\integrity.json"
 > ```
-> 다시 고쳐야 할 때만 사람이 직접 해제 후 편집 → 저장 → 재잠금:
+> 다시 고쳐야 할 때만 사람이 직접 해제 후 편집 → 저장 → 재잠금(**순서 중요**: 해제→편집→저장→해시
+> 재계산→`integrity.json` 갱신→**그 다음에** 재잠금. 잠근 채로 저장을 먼저 시도하면 실패합니다):
 > ```powershell
-> attrib -R "hooks\re-deny-guard.mjs" "hooks\_selftest.mjs" "hooks\hooks.json" ".claude-plugin\plugin.json" ".claude-plugin\marketplace.json"
+> attrib -R "hooks\re-deny-guard.mjs" "hooks\_selftest.mjs" "hooks\hooks.json" ".claude-plugin\plugin.json" ".claude-plugin\marketplace.json" "references\deny-corpus.json" "references\mask-patterns.json" "references\integrity.json"
 > ```
+> 읽기전용은 **읽기(셀프테스트의 해시 계산 등)는 막지 않고 쓰기만 막습니다** — 잠근 뒤에도
+> `/re-selftest`는 정상 작동합니다. 다만 이 속성이 Claude Code의 Edit 도구를 실제로 막아주는지는
+> **아직 실사용으로 검증되지 않았습니다**(다음 세션에서 잠근 뒤 AI가 이 파일 중 하나를 고쳐보도록
+> 시켜서 정말 거부되는지 재확인 권장).
 
 ---
 
