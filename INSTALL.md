@@ -67,7 +67,8 @@
 
 - **설치**: `pip install lief` (Python 3 필요)
 - **확인**: `python -c "import lief; print(lief.__version__)"` (Windows에서 `python`이 안 먹으면 `py`로 시도)
-- **실제 검증된 버전**: Python `3.13.7`, LIEF `1.0.0`
+- **실제 검증된 버전**: Python `3.13.7`(2026-08-02) → `3.14.7`(2026-08-13 재검증, 이 PC의 Python 자동 업데이트 후에도 재설치만으로 정상 동작 확인), LIEF `1.0.0`
+- **참고**: Python 버전이 바뀌어도 `pip install lief`를 다시 실행하면 그 버전에 맞는 LIEF가 자동으로 설치됩니다(별도 조치 불필요).
 - **한계**: 헤더·섹션·임포트 같은 구조 정보만 가능, 디스어셈블(코드 역분석)은 불가
 
 ### (선택) IDA Pro 연동
@@ -98,7 +99,7 @@ setx SODAM_RE_IDA_PATH "C:\Program Files\IDA Pro 8.x\ida64.exe"
 | JADX | github.com/skylot/jadx | `jadx --version` | 1.5.6 |
 | Apktool | apktool.org | `apktool --version` | 설치 확인됨(버전 미기재) |
 | Ghidra | ghidra-sre.org | `ghidraRun` 실행 | 미설치(라이브 미검증) |
-| Python + LIEF | pip install lief | `py -c "import lief"` | Python 3.13.7 · LIEF 1.0.0 |
+| Python + LIEF | pip install lief | `py -c "import lief"` | Python 3.14.7 · LIEF 1.0.0 |
 | IDA Pro | (본인 구매) | — | 미설치(상용, 선택) |
 
 문제가 생기면 [README.md §12 문제 해결·FAQ](./README.md#12-문제-해결faq)를 먼저 확인하세요.
