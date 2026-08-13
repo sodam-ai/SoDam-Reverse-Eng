@@ -1038,7 +1038,7 @@ Structure</h2>
 │   ├── re-inject-context.mjs    ← Context synergy setup
 │   ├── check-family.mjs         ← 6-sibling status check
 │   ├── check-trust-freshness.mjs
-│   └── rotate-safety-log.mjs    ← Safety-log retention cleanup (auto-expiry)
+│   └── rotate-safety-log.mjs    ← Safety-log & consent-log retention cleanup (auto-expiry)
 │
 ├── mcp/
 │   └── catalog.json             ← Phase 2·3 external tool curation (trust tier, license)
@@ -1168,10 +1168,11 @@ href="./scripts/check-trust-freshness.mjs"><code>scripts/check-trust-freshness.m
 <td>Checks trusted-tool catalog for staleness</td>
 </tr>
 <tr>
-<td>Safety-Log Retention</td>
+<td>Safety-Log &amp; Consent-Log Retention</td>
 <td><code>scripts/rotate-safety-log.mjs</code></td>
-<td>Deletes safety-log entries older than 30 days (default) —
-self-incrimination risk reduction</td>
+<td>Deletes safety-log and consent-log entries older than 30 days
+(default) — self-incrimination risk reduction
+(<code>--only=safety</code>|<code>consent</code> to target one)</td>
 </tr>
 </tbody>
 </table>
@@ -1718,6 +1719,28 @@ confirming no regression.</li>
 automatically run the safety self-check <em>before</em> the consent
 gate, and consent passes are now recorded to
 <code>consent-log.jsonl</code>.</li>
+</ul>
+</details>
+<details>
+<summary>
+<strong>Fixed a Safety-Integrity-Check Bug + Widened Log Auto-Cleanup
+Scope (2026-08-13)</strong>
+</summary>
+<ul>
+<li>The last of the three safety layers (tamper detection) had 4 stored
+reference values that had drifted, so it was wrongly flagging
+untouched, legitimate files as “possibly tampered.” Fixed after
+directly comparing the live files byte-for-byte against the canonical
+source to confirm they were unmodified. All 13 checks now pass
+cleanly.</li>
+<li>The <code>Python + LIEF</code> path (a lighter alternative to
+Ghidra for inspecting executable files) had quietly broken when this
+computer’s default Python version changed. Reconnected and
+re-verified it.</li>
+<li>The log auto-cleanup tool
+(<code>scripts/rotate-safety-log.mjs</code>), which already deleted
+30-day-old block-history entries, now also cleans up consent-record
+entries (<code>consent-log.jsonl</code>) the same way.</li>
 </ul>
 </details>
 <blockquote>

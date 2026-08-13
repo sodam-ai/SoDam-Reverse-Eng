@@ -453,7 +453,7 @@ SoDam-Reverse-Eng/
 │   ├── re-inject-context.mjs    ← Context 시너지 설정
 │   ├── check-family.mjs         ← 6형제 상태 확인
 │   ├── check-trust-freshness.mjs← 도구 신뢰도 신선도 점검
-│   └── rotate-safety-log.mjs    ← 안전로그 보존기간 관리(자동만료)
+│   └── rotate-safety-log.mjs    ← 안전로그·동의기록 보존기간 관리(자동만료)
 │
 ├── mcp/
 │   └── catalog.json             ← Phase 2·3 외부 도구 큐레이션 설정(신뢰등급·라이선스)
@@ -505,7 +505,7 @@ SoDam-Reverse-Eng/
 | 외부 도구 큐레이션 | [`mcp/catalog.json`](./mcp/catalog.json) | Phase 2·3 도구별 신뢰등급·라이선스·상태 |
 | 형제 상태 확인 | [`scripts/check-family.mjs`](./scripts/check-family.mjs) | 6형제 진단 스크립트 |
 | 신선도 점검 | [`scripts/check-trust-freshness.mjs`](./scripts/check-trust-freshness.mjs) | 신뢰 카탈로그 최신성 확인 |
-| 안전로그 보존기간 관리 | `scripts/rotate-safety-log.mjs` | 30일(기본) 지난 안전로그 항목 삭제(자기부죄 방지) |
+| 안전로그·동의기록 보존기간 관리 | `scripts/rotate-safety-log.mjs` | 30일(기본) 지난 안전로그·동의기록 항목 삭제(자기부죄 방지, `--only=safety`\|`consent`로 개별 지정 가능) |
 
 ---
 
@@ -802,6 +802,15 @@ node scripts/re-inject-harness.mjs
 - 눈에 보이지 않는 특수문자(제로폭 문자)나 로마자와 비슷하게 생긴 키릴 문자로 위험 단어를 숨겨 우회하려는 시도를 감지해 차단하도록 보강했습니다.
 - 이 변경 후 안전 셀프테스트(13개 항목)와 별도의 경계값 테스트(빈 입력·손상된 데이터·대용량 입력·대소문자 변형 등 13종)를 직접 실행해 기존 기능에 회귀가 없음을 확인했습니다.
 - 위 개선에 맞춰 `/re-start`를 포함한 4개 분석 명령이 분석 시작 전 안전장치 자가검증을 자동으로 먼저 실행하도록 강화했고, 동의 통과 기록(`consent-log.jsonl`)을 남기도록 개선했습니다.
+
+</details>
+
+<details>
+<summary><strong>안전장치 무결성 점검 오류 수정 + 로그 자동정리 범위 확대 (2026-08-13)</strong></summary>
+
+- 안전 3층 중 마지막 층(변조 감지)이 실제로는 저장된 확인값 4개가 틀어져 있어 정상 파일인데도 "변조 의심"으로 잘못 표시되던 문제를 발견해 바로잡았습니다(파일 자체는 문제없었음을 원본과 직접 대조해 먼저 확인). 지금은 13개 점검 항목이 전부 정상 통과합니다.
+- `Python + LIEF`(Ghidra 없이도 실행파일을 가볍게 살펴보는 대안 경로)가 이 컴퓨터의 파이썬 버전이 바뀌면서 조용히 끊겨 있던 것을 발견해 다시 연결·재확인했습니다.
+- 차단 이력을 30일 뒤 자동으로 지우던 정리 기능(`scripts/rotate-safety-log.mjs`)이 동의 확인 기록(`consent-log.jsonl`)도 함께 정리하도록 범위를 넓혔습니다.
 
 </details>
 

@@ -500,7 +500,7 @@ SoDam-Reverse-Eng/
 │   ├── re-inject-context.mjs    ← Context synergy setup
 │   ├── check-family.mjs         ← 6-sibling status check
 │   ├── check-trust-freshness.mjs
-│   └── rotate-safety-log.mjs    ← Safety-log retention cleanup (auto-expiry)
+│   └── rotate-safety-log.mjs    ← Safety-log & consent-log retention cleanup (auto-expiry)
 │
 ├── mcp/
 │   └── catalog.json             ← Phase 2·3 external tool curation (trust tier, license)
@@ -545,7 +545,7 @@ SoDam-Reverse-Eng/
 | External Tool Curation | [`mcp/catalog.json`](./mcp/catalog.json) | Phase 2·3 per-tool trust tier, license, status |
 | Family Status | [`scripts/check-family.mjs`](./scripts/check-family.mjs) | 6-sibling diagnostic script |
 | Trust Freshness | [`scripts/check-trust-freshness.mjs`](./scripts/check-trust-freshness.mjs) | Checks trusted-tool catalog for staleness |
-| Safety-Log Retention | `scripts/rotate-safety-log.mjs` | Deletes safety-log entries older than 30 days (default) — self-incrimination risk reduction |
+| Safety-Log & Consent-Log Retention | `scripts/rotate-safety-log.mjs` | Deletes safety-log and consent-log entries older than 30 days (default) — self-incrimination risk reduction (`--only=safety`\|`consent` to target one) |
 
 ---
 
@@ -839,6 +839,15 @@ node scripts/re-inject-harness.mjs
 - Hardened detection of attempts that hide risky keywords using invisible zero-width characters or Cyrillic look-alike letters that visually mimic the Latin alphabet.
 - After this change, the full safety self-test (13 checks) and a separate boundary-case battery (empty input, malformed data, oversized input, case variants, and 9 more — 13 cases total) were run directly, confirming no regression.
 - Alongside this, all 4 analysis commands were hardened to automatically run the safety self-check *before* the consent gate, and consent passes are now recorded to `consent-log.jsonl`.
+
+</details>
+
+<details>
+<summary><strong>Fixed a Safety-Integrity-Check Bug + Widened Log Auto-Cleanup Scope (2026-08-13)</strong></summary>
+
+- The last of the three safety layers (tamper detection) had 4 stored reference values that had drifted, so it was wrongly flagging untouched, legitimate files as "possibly tampered." Fixed after directly comparing the live files byte-for-byte against the canonical source to confirm they were unmodified. All 13 checks now pass cleanly.
+- The `Python + LIEF` path (a lighter alternative to Ghidra for inspecting executable files) had quietly broken when this computer's default Python version changed. Reconnected and re-verified it.
+- The log auto-cleanup tool (`scripts/rotate-safety-log.mjs`), which already deleted 30-day-old block-history entries, now also cleans up consent-record entries (`consent-log.jsonl`) the same way.
 
 </details>
 
