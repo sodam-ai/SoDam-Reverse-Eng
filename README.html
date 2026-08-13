@@ -656,26 +656,30 @@ class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb6-
 완료.</p>
 <h3 id="단계-5-안전-3층-검증-필수">단계 5: 안전 3층 검증 (필수!)</h3>
 <pre><code>/re-selftest</code></pre>
-<p><strong>기대 결과:</strong> ✅✅✅ 3개 모두 초록색</p>
+<p><strong>기대 결과:</strong> ✅ 13개 항목 전부 초록색(1층 스킬규칙 6개
++ 2층 deny-hook 2개 + 3층 무결성 5개)</p>
 <p>초록색 3개가 나오지 않으면 → <a
 href="./TROUBLESHOOTING.md">TROUBLESHOOTING.md</a> 참고</p>
 <h3 id="단계-6-무결성-해시-등록-3층-활성화">단계 6: 무결성 해시 등록
 (3층 활성화)</h3>
-<p>selftest 출력에서 <strong>핵심
-안전파일(<code>hooks/re-deny-guard.mjs</code>)의 해시</strong>를
+<p>selftest 출력에서 <strong>핵심 안전파일 5개의 해시</strong>를
 <code>references/integrity.json</code>에 저장하세요(이미 있는 항목은
 유지):</p>
 <div class="sourceCode" id="cb10"><pre
 class="sourceCode json"><code class="sourceCode json"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;hooks/re-deny-guard.mjs&quot;</span><span class="fu">:</span> <span class="st">&quot;&lt;셀프테스트가 출력한 해시&gt;&quot;</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
-<p>→ 다시 <code>/re-selftest</code> 실행 →
-<code>"3층 무결성: guard 해시 일치"</code> ✅ 확인</p>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;hooks/hooks.json&quot;</span><span class="fu">:</span> <span class="st">&quot;&lt;셀프테스트가 출력한 해시&gt;&quot;</span><span class="fu">,</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;hooks/re-deny-guard.mjs&quot;</span><span class="fu">:</span> <span class="st">&quot;&lt;셀프테스트가 출력한 해시&gt;&quot;</span><span class="fu">,</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;hooks/_selftest.mjs&quot;</span><span class="fu">:</span> <span class="st">&quot;&lt;셀프테스트가 출력한 해시&gt;&quot;</span><span class="fu">,</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;references/deny-corpus.json&quot;</span><span class="fu">:</span> <span class="st">&quot;&lt;셀프테스트가 출력한 해시&gt;&quot;</span><span class="fu">,</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;references/mask-patterns.json&quot;</span><span class="fu">:</span> <span class="st">&quot;&lt;셀프테스트가 출력한 해시&gt;&quot;</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<p>→ 다시 <code>/re-selftest</code> 실행 → <strong>“3층 무결성: 해시
+일치”가 5개 파일 전부에서</strong> ✅ 확인</p>
 <blockquote>
-<p>💡 <code>references/integrity.json</code>에는 다른 안전파일 항목이
-미리 채워져 있을 수 있습니다(향후 검사 범위 확장을 대비한 준비값). 지금
-이 단계에서 실제로 검사에 쓰이는 항목은
-<code>hooks/re-deny-guard.mjs</code> 하나뿐입니다 — 개발자용 상세는
+<p>💡 처음 설치하실 때는 <code>references/integrity.json</code>이 비어
+있어서 selftest가 5개 파일의 해시를 화면에 한 번에 출력해 줍니다. 이
+5개(<code>hooks.json</code>·<code>re-deny-guard.mjs</code>·<code>_selftest.mjs</code>·<code>deny-corpus.json</code>·<code>mask-patterns.json</code>)
+전부가 실제로 검사에 쓰입니다 — 개발자용 상세는
 <code>CHECKPOINT.md</code>를 참고하세요.</p>
 </blockquote>
 <hr />
@@ -687,8 +691,8 @@ class="sourceCode json"><code class="sourceCode json"><span id="cb10-1"><a href=
 <ol type="1">
 <li>Claude Code 완전 재시작(설치 직후 필수) 후 <code>/re-ping</code>
 입력 → “Pong!” 뜨면 설치 성공.</li>
-<li><code>/re-selftest</code> 입력 → 안전장치 6개 항목 전부 ✅ 인지
-확인(1개라도 ❌면 §12 문제해결 먼저 참고).</li>
+<li><code>/re-selftest</code> 입력 → 안전장치 <strong>13개</strong> 항목
+전부 ✅ 인지 확인(1개라도 ❌면 §12 문제해결 먼저 참고).</li>
 <li><code>/re-start samples/safe-login.js</code> 입력 → “본인 소유/허가
 대상인가요?” 등 질문에 <strong>“예”</strong>로 답하기.</li>
 <li>잠시 기다리면 한국어 분석 보고서가 화면에
@@ -716,6 +720,15 @@ href="./INSTALL.md">INSTALL.md — 필요 프로그램 설치
 </blockquote>
 <hr />
 <h2 id="명령어">7. 명령어</h2>
+<blockquote>
+<p>💡 <strong>명령어가 “Unknown command”로 안 뜨면</strong>: 컴퓨터에
+다른 Claude Code 플러그인이 여러 개 설치돼 있으면, 이름이 짧은
+명령어(<code>/re-start</code> 등)가 다른 플러그인과 겹쳐 인식이 안 될 수
+있습니다(2026-08-13 실사용 테스트로 확인된 실제 사례). 이럴 땐 앞에
+플러그인 이름을 붙인 <strong>완전한 형태</strong>로 입력하세요:
+<code>/sodam-reverse:re-start</code>처럼 아래 모든 명령어 앞에
+<code>sodam-reverse:</code>를 붙이면 항상 확실하게 동작합니다.</p>
+</blockquote>
 <table>
 <colgroup>
 <col style="width: 33%" />
@@ -868,8 +881,10 @@ Claude AI (Anthropic 서버)
 <tr>
 <td><strong>3층</strong></td>
 <td>무결성 점검</td>
-<td>안전파일이 변조됐는지 SHA-256으로 확인</td>
-<td><code>hooks/_selftest.mjs</code></td>
+<td>핵심 안전파일 <strong>5개</strong>가 변조됐는지 SHA-256으로
+확인</td>
+<td><code>hooks/_selftest.mjs</code> (검사 대상 5개:
+<code>hooks.json</code>·<code>re-deny-guard.mjs</code>·<code>_selftest.mjs</code>·<code>deny-corpus.json</code>·<code>mask-patterns.json</code>)</td>
 </tr>
 </tbody>
 </table>
@@ -1066,7 +1081,8 @@ href="./scripts/check-trust-freshness.mjs"><code>scripts/check-trust-freshness.m
 <tr>
 <td>안전로그·동의기록 보존기간 관리</td>
 <td><code>scripts/rotate-safety-log.mjs</code></td>
-<td>30일(기본) 지난 안전로그·동의기록 항목 삭제(자기부죄 방지, <code>--only=safety</code>|<code>consent</code>로 개별 지정 가능)</td>
+<td>30일(기본) 지난 안전로그·동의기록 항목 삭제(자기부죄 방지,
+<code>--only=safety</code>|<code>consent</code>로 개별 지정 가능)</td>
 </tr>
 </tbody>
 </table>
@@ -1074,13 +1090,19 @@ href="./scripts/check-trust-freshness.mjs"><code>scripts/check-trust-freshness.m
 <h2 id="문제-해결faq">12. 문제 해결·FAQ</h2>
 <h3 id="q1.-re-start-명령이-안-뜨거나-없어요-가장-흔한-문제">Q1.
 <code>/re-start</code> 명령이 안 뜨거나 없어요 (가장 흔한 문제)</h3>
-<p><strong>원인:</strong> Claude Code를 홈
+<p><strong>원인 1 — 폴더 문제:</strong> Claude Code를 홈
 폴더(<code>C:\Users\이름</code>)에서 실행했거나, 채팅창에서
 <code>cd</code>로 이동한 것을 “이동했다”고 착각한 경우.</p>
 <p><strong>해결:</strong> 1. Claude Code 완전히 닫기 2. PowerShell 새로
 열기 3. <strong>프로젝트 폴더로 이동 후 실행:</strong>
 <code>powershell    cd D:\내프로젝트폴더    claude</code> 4.
 <code>/re-ping</code> 입력 → <code>"Pong!"</code> 응답 확인</p>
+<p><strong>원인 2 — 다른 플러그인과 이름 겹침:</strong> 폴더는 맞게
+실행했는데도 <code>"Unknown command"</code>가 뜬다면, 설치된 다른
+플러그인 중 하나가 똑같이 짧은 명령어 이름을 쓰고 있어서 겹친
+것입니다(실제 확인된 사례, §7 참고). <strong>해결:</strong>
+<code>/re-start</code> 대신 <code>/sodam-reverse:re-start</code>처럼
+앞에 <code>sodam-reverse:</code>를 붙여서 입력하세요.</p>
 <hr />
 <h3 id="q2.-re-ping-이-뭔가요">Q2. <code>/re-ping</code> 이 뭔가요?</h3>
 <p>설치 확인용 진단 명령어입니다.
@@ -1118,6 +1140,12 @@ class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb16
 href="./SETUP_BLOCKED_FILES.md"><code>SETUP_BLOCKED_FILES.md</code></a>에서
 5개 파일이 모두 있는지 확인 → 없는 파일만 다시 만들기 → Claude Code 완전
 재시작 → 다시 <code>/re-selftest</code></p>
+<blockquote>
+<p>💡 만약 이 파일들을 안전을 위해 읽기전용으로 잠가
+두셨다면(<code>attrib +R</code>, <code>SETUP_BLOCKED_FILES.md</code>
+참고), 수정 전에 먼저 잠금을 해제(<code>attrib -R</code>)해야 편집기로
+저장이 됩니다.</p>
+</blockquote>
 <p>SHA-256 불일치:</p>
 <pre><code>node hooks/_selftest.mjs</code></pre>
 <p>출력 해시 → <code>references/integrity.json</code> 저장 → 재실행</p>
@@ -1579,8 +1607,8 @@ GitHub·브라우저 모두 접기/펼치기 지원)</p>
 <ul>
 <li>안전 3층 중 마지막 층(변조 감지)이 실제로는 저장된 확인값 4개가
 틀어져 있어 정상 파일인데도 “변조 의심”으로 잘못 표시되던 문제를 발견해
-바로잡았습니다(파일 자체는 문제없었음을 원본과 직접 대조해 먼저
-확인). 지금은 13개 점검 항목이 전부 정상 통과합니다.</li>
+바로잡았습니다(파일 자체는 문제없었음을 원본과 직접 대조해 먼저 확인).
+지금은 13개 점검 항목이 전부 정상 통과합니다.</li>
 <li><code>Python + LIEF</code>(Ghidra 없이도 실행파일을 가볍게 살펴보는
 대안 경로)가 이 컴퓨터의 파이썬 버전이 바뀌면서 조용히 끊겨 있던 것을
 발견해 다시 연결·재확인했습니다.</li>

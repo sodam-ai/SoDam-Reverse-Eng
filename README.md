@@ -268,21 +268,25 @@ Claude Code가 열리면 `/re-p` 입력 → 자동완성에 아래가 떠야 정
 /re-selftest
 ```
 
-**기대 결과:** ✅✅✅ 3개 모두 초록색
+**기대 결과:** ✅ 13개 항목 전부 초록색(1층 스킬규칙 6개 + 2층 deny-hook 2개 + 3층 무결성 5개)
 
 초록색 3개가 나오지 않으면 → [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) 참고
 
 ### 단계 6: 무결성 해시 등록 (3층 활성화)
 
-selftest 출력에서 **핵심 안전파일(`hooks/re-deny-guard.mjs`)의 해시**를 `references/integrity.json`에 저장하세요(이미 있는 항목은 유지):
+selftest 출력에서 **핵심 안전파일 5개의 해시**를 `references/integrity.json`에 저장하세요(이미 있는 항목은 유지):
 ```json
 {
-  "hooks/re-deny-guard.mjs": "<셀프테스트가 출력한 해시>"
+  "hooks/hooks.json": "<셀프테스트가 출력한 해시>",
+  "hooks/re-deny-guard.mjs": "<셀프테스트가 출력한 해시>",
+  "hooks/_selftest.mjs": "<셀프테스트가 출력한 해시>",
+  "references/deny-corpus.json": "<셀프테스트가 출력한 해시>",
+  "references/mask-patterns.json": "<셀프테스트가 출력한 해시>"
 }
 ```
-→ 다시 `/re-selftest` 실행 → `"3층 무결성: guard 해시 일치"` ✅ 확인
+→ 다시 `/re-selftest` 실행 → **"3층 무결성: 해시 일치"가 5개 파일 전부에서** ✅ 확인
 
-> 💡 `references/integrity.json`에는 다른 안전파일 항목이 미리 채워져 있을 수 있습니다(향후 검사 범위 확장을 대비한 준비값). 지금 이 단계에서 실제로 검사에 쓰이는 항목은 `hooks/re-deny-guard.mjs` 하나뿐입니다 — 개발자용 상세는 `CHECKPOINT.md`를 참고하세요.
+> 💡 처음 설치하실 때는 `references/integrity.json`이 비어 있어서 selftest가 5개 파일의 해시를 화면에 한 번에 출력해 줍니다. 이 5개(`hooks.json`·`re-deny-guard.mjs`·`_selftest.mjs`·`deny-corpus.json`·`mask-patterns.json`) 전부가 실제로 검사에 쓰입니다 — 개발자용 상세는 `CHECKPOINT.md`를 참고하세요.
 
 ---
 
@@ -291,7 +295,7 @@ selftest 출력에서 **핵심 안전파일(`hooks/re-deny-guard.mjs`)의 해시
 > 위 6단계를 이미 하셨다면, 설치 후 **첫 분석까지 이 5줄만 따라 하면 됩니다.**
 
 1. Claude Code 완전 재시작(설치 직후 필수) 후 `/re-ping` 입력 → "Pong!" 뜨면 설치 성공.
-2. `/re-selftest` 입력 → 안전장치 6개 항목 전부 ✅ 인지 확인(1개라도 ❌면 §12 문제해결 먼저 참고).
+2. `/re-selftest` 입력 → 안전장치 **13개** 항목 전부 ✅ 인지 확인(1개라도 ❌면 §12 문제해결 먼저 참고).
 3. `/re-start samples/safe-login.js` 입력 → "본인 소유/허가 대상인가요?" 등 질문에 **"예"**로 답하기.
 4. 잠시 기다리면 한국어 분석 보고서가 화면에 출력됩니다(요약·함수설명·근거위치 포함).
 5. 이후 내 코드로 실습: `/re-start [내 파일 경로]` — 이게 전부입니다.
@@ -311,6 +315,8 @@ selftest 출력에서 **핵심 안전파일(`hooks/re-deny-guard.mjs`)의 해시
 ---
 
 ## 7. 명령어
+
+> 💡 **명령어가 "Unknown command"로 안 뜨면**: 컴퓨터에 다른 Claude Code 플러그인이 여러 개 설치돼 있으면, 이름이 짧은 명령어(`/re-start` 등)가 다른 플러그인과 겹쳐 인식이 안 될 수 있습니다(2026-08-13 실사용 테스트로 확인된 실제 사례). 이럴 땐 앞에 플러그인 이름을 붙인 **완전한 형태**로 입력하세요: `/sodam-reverse:re-start`처럼 아래 모든 명령어 앞에 `sodam-reverse:`를 붙이면 항상 확실하게 동작합니다.
 
 | 명령어 | 언제 사용하나요 | 예시 |
 |---|---|---|
@@ -391,7 +397,7 @@ Claude AI (Anthropic 서버)
 |---|---|---|---|
 | **1층** | AI 거부 규칙 | AI 자체가 크랙·우회 내용 출력 거부 | `skills/re-router/SKILL.md` |
 | **2층** | deny-hook | 위험 키워드·패턴 실시간 차단 | `hooks/re-deny-guard.mjs` |
-| **3층** | 무결성 점검 | 안전파일이 변조됐는지 SHA-256으로 확인 | `hooks/_selftest.mjs` |
+| **3층** | 무결성 점검 | 핵심 안전파일 **5개**가 변조됐는지 SHA-256으로 확인 | `hooks/_selftest.mjs` (검사 대상 5개: `hooks.json`·`re-deny-guard.mjs`·`_selftest.mjs`·`deny-corpus.json`·`mask-patterns.json`) |
 
 **fail-closed 원칙:** hook에 오류가 생기면 "통과"가 아니라 **분석 즉시 중단**입니다.
 
@@ -513,7 +519,7 @@ SoDam-Reverse-Eng/
 
 ### Q1. `/re-start` 명령이 안 뜨거나 없어요 (가장 흔한 문제)
 
-**원인:** Claude Code를 홈 폴더(`C:\Users\이름`)에서 실행했거나,
+**원인 1 — 폴더 문제:** Claude Code를 홈 폴더(`C:\Users\이름`)에서 실행했거나,
 채팅창에서 `cd`로 이동한 것을 "이동했다"고 착각한 경우.
 
 **해결:**
@@ -525,6 +531,8 @@ SoDam-Reverse-Eng/
    claude
    ```
 4. `/re-ping` 입력 → `"Pong!"` 응답 확인
+
+**원인 2 — 다른 플러그인과 이름 겹침:** 폴더는 맞게 실행했는데도 `"Unknown command"`가 뜬다면, 설치된 다른 플러그인 중 하나가 똑같이 짧은 명령어 이름을 쓰고 있어서 겹친 것입니다(실제 확인된 사례, §7 참고). **해결:** `/re-start` 대신 `/sodam-reverse:re-start`처럼 앞에 `sodam-reverse:`를 붙여서 입력하세요.
 
 ---
 
@@ -569,6 +577,8 @@ claude
 
 [`SETUP_BLOCKED_FILES.md`](./SETUP_BLOCKED_FILES.md)에서 5개 파일이 모두 있는지 확인 →
 없는 파일만 다시 만들기 → Claude Code 완전 재시작 → 다시 `/re-selftest`
+
+> 💡 만약 이 파일들을 안전을 위해 읽기전용으로 잠가 두셨다면(`attrib +R`, `SETUP_BLOCKED_FILES.md` 참고), 수정 전에 먼저 잠금을 해제(`attrib -R`)해야 편집기로 저장이 됩니다.
 
 SHA-256 불일치:
 ```
