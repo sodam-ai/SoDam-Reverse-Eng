@@ -16,6 +16,11 @@ Thumbs.db
 # 내부 기획 문서 (GitHub 푸시 금지)
 .PRD/
 
+# 내부 감사 로그 — 미적용 보안패치·우회기법 재현법을 구체적으로 기록하므로 공개저장소 추적 금지
+# (2026-08-17: repo가 PUBLIC이고 CHECKPOINT.md가 feat/m5-readiness 브랜치에 공개 노출된 것을 확인 후 조치.
+#  파일 자체는 로컬에 그대로 유지되어 세션 인계 기능에는 영향 없음 — git 추적에서만 제외)
+CHECKPOINT.md
+
 # PDF 중간 생성 HTML 임시 파일 (아래 문서 HTML 2종은 영구 산출물이라 예외로 추적)
 /*.html
 !/README.html
