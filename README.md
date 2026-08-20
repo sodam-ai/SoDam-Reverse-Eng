@@ -331,7 +331,7 @@ selftest 출력에서 **핵심 안전파일 5개의 해시**를 `references/inte
 | 명령어 | 상태 | 설명 |
 |---|---|---|
 | `/re-android [APK경로]` | ✅ 실사용 라이브 검증 완료(2026-07-13) | Android 앱 분석 |
-| `/re-binary [파일경로]` | 🟡 Ghidra 환경 준비·명령 동작 확인(2026-08-19), 슬래시 명령 실사용은 미검증 | 바이너리/실행파일 분석 |
+| `/re-binary [파일경로]` | ✅ 실사용 라이브 검증 완료(2026-08-21) | 바이너리/실행파일 분석 |
 
 ---
 
@@ -432,7 +432,7 @@ SoDam-Reverse-Eng/
 │   ├── re-selftest.md
 │   ├── re-agent.md              ← AI 에이전트 구조 분석
 │   ├── re-android.md            ← 실사용 라이브 검증 완료
-│   └── re-binary.md             ← Ghidra 환경 검증 완료, 슬래시 명령 실행만 대기
+│   └── re-binary.md             ← 실사용 라이브 검증 완료
 │
 ├── skills/                      ← 분석 AI 로직
 │   ├── re-router/               ← 1층 안전규칙 + 요청 분류
@@ -440,7 +440,7 @@ SoDam-Reverse-Eng/
 │   ├── re-report/               ← 보고서 생성
 │   ├── re-analyze-agent/        ← 라이브 검증 완료
 │   ├── re-analyze-android/      ← 실사용 라이브 검증 완료
-│   └── re-analyze-binary/       ← Ghidra 환경 검증 완료, 슬래시 명령 실행만 대기
+│   └── re-analyze-binary/       ← 실사용 라이브 검증 완료
 │
 ├── hooks/                       ← 안전장치 (2층 · 3층)
 │   ├── re-deny-guard.mjs        ← 2층: 위험 패턴 실시간 차단
@@ -766,7 +766,7 @@ node scripts/re-inject-harness.mjs
 </details>
 
 <details>
-<summary><strong>Phase 3 착수 — 바이너리 분석 골격 (⚠️ 라이브 미검증)</strong></summary>
+<summary><strong>Phase 3 착수 — 바이너리 분석 골격 (당시 라이브 미검증 · 2026-08-21에 검증 완료됨, 아래 v0.3.0 항목 참고)</strong></summary>
 
 - `re-analyze-binary` 스킬 + `/re-binary` 명령 **골격** 추가 — Ghidra(무료) 정적분석 wrap, IDA Pro는 `SODAM_RE_IDA_PATH` 설정 시 옵션
 - GUIDE에 Java·Ghidra 설치 안내(2-7절) 추가
@@ -833,6 +833,16 @@ node scripts/re-inject-harness.mjs
 - 여러 명령어가 다른 플러그인과 이름이 겹쳐 "Unknown command"가 뜨던 문제의 해결법을 안내에 추가했습니다(`sodam-reverse:` 접두어 사용).
 - 기획 문서 곳곳에 남아있던, 실제로는 끝난 작업을 "미완료"라고 잘못 표시하던 기록 9건을 발견해 바로잡았습니다(사용자에게 보이는 기능 변경은 없음).
 - LICENSE·NOTICE 파일이 이미 갖춰져 있었는데 기획 문서만 "없음"으로 잘못 남아있던 것을 발견해 정정했습니다.
+
+</details>
+
+<details>
+<summary><strong>Phase 3 실사용 라이브 검증 완료 + 버그 2건 수정 (2026-08-21)</strong></summary>
+
+- **`/re-binary`가 실제 새 세션에서 동의 게이트 → Ghidra 분석 → 표준 보고서까지 전 과정을 처음으로 완주했습니다.** 이걸로 Phase 1·2·3 전부 실사용 검증이 끝났습니다.
+- 그 과정에서 두 가지 문제를 더 발견해 고쳤습니다:
+  - Ghidra가 실제로는 정상 작동 가능한 상태인데도, 확인 방법이 부정확해 "JDK 21 이상이 없다"고 잘못 판단해 더 약한 분석 방식으로 자동 전환되던 문제
+  - 동의 기록이 또 한 번 깨진 형식으로 저장되던 문제(v0.3.0에서 고친 것과 증상은 같지만 원인은 달랐음) — 이번엔 손으로 만든 문자열 대신 프로그램이 자동으로 형식을 만들도록 바꿔 같은 문제가 다시 생기지 않도록 근본적으로 고쳤습니다.
 
 </details>
 
