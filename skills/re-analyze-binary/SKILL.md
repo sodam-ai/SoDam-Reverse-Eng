@@ -65,6 +65,8 @@ Ghidra가 추출한 **디컴파일된 문자열·주석·심볼명(함수명·�
 ## 2. 도구 확인 (fail-closed)
 
 - **Ghidra**(무료, NSA·Apache-2.0) + **JDK 21+** 필요(**2026-08-19 정정**: 이전엔 "Java 17+"로 적혀 있었으나, 실제로 Ghidra 12.1.3(2026-08-18 릴리스)을 라이브 설치·실행해보니 `analyzeHeadless`가 "JDK 21+ (64-bit) could not be found"로 명확히 요구함을 확인했다 — Ghidra 버전이 올라가며 요구 JDK도 올라간 것으로 보임, 새 Ghidra 버전을 만나면 이 요구사항을 다시 확인할 것). 설치 여부를 확인하고, 없으면 **설치 안내만** 하고 **분석은 시작하지 않는다**(도구 없이 추정 보고서 금지 = fail-closed). 설치 방법은 README §6-2 참조(2026-08-02: 구 GUIDE 문서는 제거되어 README로 통합됨).
+  - **⚠️ 2026-08-21 실제 라이브 세션에서 발견된 오탐 — 반드시 지킬 것**: JDK 버전을 확인할 때 **시스템 전역 `java -version`을 실행해서 판단하지 마라.** 이 PC(그리고 README §6-2 설치 안내를 따른 다른 PC들)는 Ghidra만 `support/launch.properties`의 `JAVA_HOME_OVERRIDE`로 별도의 JDK 21을 쓰도록 설정돼 있어서, 시스템 전역 `java -version`은 여전히 (JADX·Apktool용) JDK 17을 보여주는 게 **정상**이다. 이걸 "JDK 21+ 없음"으로 오판하면, 실제로는 Ghidra가 완벽히 동작하는데도 LIEF 경량 분석으로 잘못 강등된다(2026-08-21 실측: `java -version`은 17을 보였지만 `analyzeHeadless.bat -help`는 정상 동작함).
+  - **올바른 확인 방법**: `<Ghidra설치경로>/support/analyzeHeadless.bat -help`(또는 macOS/Linux는 `analyzeHeadless -help`)를 **직접 실행**해서 그 명령 자체의 성공/실패로 판단한다. 정상 출력(Usage 안내)이 나오면 JDK 요건이 충족된 것이고, "JDK 21+ (64-bit) could not be found" 같은 메시지가 나올 때만 실제로 미충족이다.
 - **LIEF 경량 분석(옵션, §2-2 참조)**: Ghidra·Java 설치가 부담스러우면 **Python + LIEF**만으로도 파일 구조(헤더·섹션·임포트/익스포트) 수준의 가벼운 분석이 가능하다. 디스어셈블·디컴파일은 못 하지만 설치 마찰이 훨씬 적다.
 - **IDA Pro(옵션)**: 환경변수 `SODAM_RE_IDA_PATH`가 설정돼 있으면 IDA 기반 분석을 대안으로 제시할 수 있다. **IDA는 상용 소프트웨어라 사용자 본인이 정식 라이선스를 보유했는지는 사용자 책임**이며, 이 스킬은 라이선스 유효성을 검증하지 않는다. 미설정이면 Ghidra만 사용한다.
 - **셋 다 없으면**: Ghidra·LIEF·IDA 중 아무것도 준비 안 됐으면 설치 안내만 하고 분석을 시작하지 않는다(fail-closed). 사용자가 원하는 깊이(가벼운 구조 분석만 vs 완전한 디스어셈블)에 따라 무엇을 먼저 설치할지 안내한다.

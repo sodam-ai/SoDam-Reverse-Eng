@@ -3,7 +3,7 @@
   "owner": { "name": "SoDam AI Studio" },
   "metadata": {
     "description": "SoDam-Reverse-Eng 독립 마켓플레이스. 초보·바이브코더용 안전한 한국어 리버스 엔지니어링 플러그인.",
-    "version": "0.1.0"
+    "version": "0.3.0"
   },
   "plugins": [
     { "name": "sodam-reverse", "source": "./", "description": "방어·교육 전용 RE 플러그인 (안전 3층: AI 출력거부 + deny-hook + SHA-256 무결성)." }
