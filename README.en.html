@@ -685,25 +685,32 @@ is complete.</p>
 <h3 id="step-5-verify-the-3-layer-safety-required">Step 5: Verify the
 3-Layer Safety (Required!)</h3>
 <pre><code>/re-selftest</code></pre>
-<p><strong>Expected result:</strong> ✅✅✅ All three green</p>
+<p><strong>Expected result:</strong> ✅ All 13 checks green (6 Layer-1
+skill rules + 2 Layer-2 deny-hook checks + 5 Layer-3 integrity
+checks)</p>
 <p>If any are not green → See <a
 href="./TROUBLESHOOTING.md">TROUBLESHOOTING.md</a></p>
-<h3 id="step-6-register-integrity-hash-activate-layer-3">Step 6:
-Register Integrity Hash (Activate Layer 3)</h3>
-<p>Copy the <strong>hash of the core safety file
-(<code>hooks/re-deny-guard.mjs</code>)</strong> from the selftest output
-and save it to <code>references/integrity.json</code> (keep any existing
-entries):</p>
+<h3 id="step-6-register-integrity-hashes-activate-layer-3">Step 6:
+Register Integrity Hashes (Activate Layer 3)</h3>
+<p>Copy the <strong>hashes of the 5 core safety files</strong> from the
+selftest output and save them to <code>references/integrity.json</code>
+(keep any existing entries):</p>
 <div class="sourceCode" id="cb10"><pre
 class="sourceCode json"><code class="sourceCode json"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;hooks/re-deny-guard.mjs&quot;</span><span class="fu">:</span> <span class="st">&quot;&lt;hash from selftest&gt;&quot;</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
-<p>→ Run <code>/re-selftest</code> again → confirm the Layer-3
-guard-hash line shows ✅</p>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;hooks/hooks.json&quot;</span><span class="fu">:</span> <span class="st">&quot;&lt;hash from selftest&gt;&quot;</span><span class="fu">,</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;hooks/re-deny-guard.mjs&quot;</span><span class="fu">:</span> <span class="st">&quot;&lt;hash from selftest&gt;&quot;</span><span class="fu">,</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;hooks/_selftest.mjs&quot;</span><span class="fu">:</span> <span class="st">&quot;&lt;hash from selftest&gt;&quot;</span><span class="fu">,</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;references/deny-corpus.json&quot;</span><span class="fu">:</span> <span class="st">&quot;&lt;hash from selftest&gt;&quot;</span><span class="fu">,</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;references/mask-patterns.json&quot;</span><span class="fu">:</span> <span class="st">&quot;&lt;hash from selftest&gt;&quot;</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<p>→ Run <code>/re-selftest</code> again → confirm <strong>“Layer-3
+integrity: hash match”</strong> shows ✅ for all 5 files</p>
 <blockquote>
-<p>💡 <code>references/integrity.json</code> may already contain other
-file entries (values staged ahead of a future coverage expansion). Right
-now, only <code>hooks/re-deny-guard.mjs</code> is actually checked — see
+<p>💡 On first install, <code>references/integrity.json</code> is empty,
+so selftest prints all 5 file hashes at once. All 5
+(<code>hooks.json</code>, <code>re-deny-guard.mjs</code>,
+<code>_selftest.mjs</code>, <code>deny-corpus.json</code>,
+<code>mask-patterns.json</code>) are actually checked — see
 <code>CHECKPOINT.md</code> for the developer-facing roadmap.</p>
 </blockquote>
 <hr />
@@ -716,8 +723,9 @@ first analysis.</strong></p>
 <ol type="1">
 <li>Fully restart Claude Code (required right after install), then type
 <code>/re-ping</code> → “Pong!” means installed successfully.</li>
-<li>Type <code>/re-selftest</code> → confirm all 6 safety checks show ✅
-(if any show ❌, see §12 Troubleshooting first).</li>
+<li>Type <code>/re-selftest</code> → confirm all <strong>13</strong>
+safety checks show ✅ (if any show ❌, see §12 Troubleshooting
+first).</li>
 <li>Type <code>/re-start samples/safe-login.js</code> → answer
 <strong>“yes”</strong> to the ownership/consent questions.</li>
 <li>Wait a moment — a Korean-language analysis report appears on screen
@@ -736,7 +744,9 @@ Additional Tool Installation — Optional</h3>
 <p>If you only use <code>/re-start</code> (source code analysis), you
 can skip this section. <code>/re-android</code> (APK analysis) or
 <code>/re-binary</code> (executable analysis) need extra programs like
-Java·JADX·Apktool (Android) or Java·Ghidra (binary).</p>
+Java 17+·JADX·Apktool (Android) or <strong>JDK 21+</strong>·Ghidra
+(binary — corrected 2026-08-19, was previously documented as Java
+17).</p>
 <p>📄 <strong>A more detailed reference with the exact download links,
 verify-commands, and the specific versions confirmed on the dev machine
 also exists as <a href="./INSTALL.md"><code>INSTALL.md</code></a> — note
@@ -818,6 +828,16 @@ class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb11
 </details>
 <hr />
 <h2 id="commands">7. Commands</h2>
+<blockquote>
+<p>💡 <strong>If a command shows “Unknown command”</strong>: if you have
+several other Claude Code plugins installed, a short command name (like
+<code>/re-start</code>) can collide with one from another plugin and
+fail to resolve (confirmed by a live test on 2026-08-13). In that case,
+type the <strong>fully-qualified form</strong> with the plugin name in
+front: prefix every command below with <code>sodam-reverse:</code>,
+e.g. <code>/sodam-reverse:re-start</code>, and it will always resolve
+correctly.</p>
+</blockquote>
 <table>
 <colgroup>
 <col style="width: 33%" />
@@ -881,7 +901,8 @@ class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb11
 </tr>
 <tr>
 <td><code>/re-binary [file-path]</code></td>
-<td>🚧 Scaffolding complete (not yet live-verified)</td>
+<td>🟡 Ghidra environment ready &amp; headless command verified
+(2026-08-19); the slash command itself is not yet live-verified</td>
 <td>Binary/executable analysis</td>
 </tr>
 </tbody>
@@ -971,8 +992,11 @@ in code</li>
 <tr>
 <td><strong>Layer 3</strong></td>
 <td>Integrity Check</td>
-<td>Detects tampering via SHA-256 hashing</td>
-<td><code>hooks/_selftest.mjs</code></td>
+<td>Detects tampering in <strong>5</strong> core safety files via
+SHA-256 hashing</td>
+<td><code>hooks/_selftest.mjs</code> (checks: <code>hooks.json</code>,
+<code>re-deny-guard.mjs</code>, <code>_selftest.mjs</code>,
+<code>deny-corpus.json</code>, <code>mask-patterns.json</code>)</td>
 </tr>
 </tbody>
 </table>
@@ -1011,7 +1035,7 @@ Structure</h2>
 │   ├── re-selftest.md           ← /re-selftest
 │   ├── re-agent.md              ← /re-agent (AI agent structure analysis)
 │   ├── re-android.md            ← live-verified
-│   └── re-binary.md             ← scaffolding complete (not yet live-verified)
+│   └── re-binary.md             ← Ghidra environment verified, slash command run pending
 │
 ├── skills/                      ← AI analysis logic
 │   ├── re-router/               ← Layer 1 safety rules + request routing
@@ -1019,7 +1043,7 @@ Structure</h2>
 │   ├── re-report/               ← Report generation
 │   ├── re-analyze-agent/        ← live-verified
 │   ├── re-analyze-android/      ← live-verified
-│   └── re-analyze-binary/       ← scaffolding complete (not yet live-verified)
+│   └── re-analyze-binary/       ← Ghidra environment verified, slash command run pending
 │
 ├── hooks/                       ← Safety layers 2 and 3
 │   ├── re-deny-guard.mjs        ← Layer 2: real-time danger blocking
@@ -1038,7 +1062,7 @@ Structure</h2>
 │   ├── re-inject-context.mjs    ← Context synergy setup
 │   ├── check-family.mjs         ← 6-sibling status check
 │   ├── check-trust-freshness.mjs
-│   └── rotate-safety-log.mjs    ← Safety-log retention cleanup (auto-expiry)
+│   └── rotate-safety-log.mjs    ← Safety-log &amp; consent-log retention cleanup (auto-expiry)
 │
 ├── mcp/
 │   └── catalog.json             ← Phase 2·3 external tool curation (trust tier, license)
@@ -1168,10 +1192,11 @@ href="./scripts/check-trust-freshness.mjs"><code>scripts/check-trust-freshness.m
 <td>Checks trusted-tool catalog for staleness</td>
 </tr>
 <tr>
-<td>Safety-Log Retention</td>
+<td>Safety-Log &amp; Consent-Log Retention</td>
 <td><code>scripts/rotate-safety-log.mjs</code></td>
-<td>Deletes safety-log entries older than 30 days (default) —
-self-incrimination risk reduction</td>
+<td>Deletes safety-log and consent-log entries older than 30 days
+(default) — self-incrimination risk reduction
+(<code>--only=safety</code>|<code>consent</code> to target one)</td>
 </tr>
 </tbody>
 </table>
@@ -1181,14 +1206,21 @@ self-incrimination risk reduction</td>
 id="q1.-re-start-does-not-appear-or-shows-unknown-command-most-common">Q1.
 <code>/re-start</code> does not appear or shows “Unknown command” (most
 common)</h3>
-<p><strong>Cause:</strong> Claude Code was launched from the home folder
-(<code>C:\Users\name</code>) or you used <code>cd</code> inside the chat
-(commands do not reload on <code>cd</code>).</p>
+<p><strong>Cause 1 — wrong folder:</strong> Claude Code was launched
+from the home folder (<code>C:\Users\name</code>) or you used
+<code>cd</code> inside the chat (commands do not reload on
+<code>cd</code>).</p>
 <p><strong>Fix:</strong> 1. Fully close Claude Code 2. Open a new
 PowerShell window 3. <strong>Navigate to your project folder, then
 launch:</strong>
 <code>powershell    cd D:\my-project-folder    claude</code> 4. Type
 <code>/re-ping</code> → confirm <code>"Pong!"</code> response</p>
+<p><strong>Cause 2 — name collision with another plugin:</strong> If you
+launched from the right folder but still get
+<code>"Unknown command"</code>, another installed plugin is likely using
+the same short command name (a confirmed real case — see §7).
+<strong>Fix:</strong> type the fully-qualified form instead,
+e.g. <code>/sodam-reverse:re-start</code>.</p>
 <hr />
 <h3 id="q2.-what-is-re-ping">Q2. What is <code>/re-ping</code>?</h3>
 <p>A diagnostic command to verify the plugin loaded. If you get
@@ -1227,6 +1259,12 @@ for defense, education, and analysis of code you own.</p>
 href="./SETUP_BLOCKED_FILES.md"><code>SETUP_BLOCKED_FILES.md</code></a>
 exist → Recreate any missing files → Fully restart Claude Code → Run
 <code>/re-selftest</code> again</p>
+<blockquote>
+<p>💡 If you locked these files read-only for extra safety
+(<code>attrib +R</code>, see <code>SETUP_BLOCKED_FILES.md</code>),
+unlock them first (<code>attrib -R</code>) before your editor can save
+changes.</p>
+</blockquote>
 <p>SHA-256 mismatch:</p>
 <pre><code>node hooks/_selftest.mjs</code></pre>
 <p>Copy output hash → save to <code>references/integrity.json</code> →
@@ -1718,6 +1756,52 @@ confirming no regression.</li>
 automatically run the safety self-check <em>before</em> the consent
 gate, and consent passes are now recorded to
 <code>consent-log.jsonl</code>.</li>
+</ul>
+</details>
+<details>
+<summary>
+<strong>Fixed a Safety-Integrity-Check Bug + Widened Log Auto-Cleanup
+Scope (2026-08-13)</strong>
+</summary>
+<ul>
+<li>The last of the three safety layers (tamper detection) had 4 stored
+reference values that had drifted, so it was wrongly flagging untouched,
+legitimate files as “possibly tampered.” Fixed after directly comparing
+the live files byte-for-byte against the canonical source to confirm
+they were unmodified. All 13 checks now pass cleanly.</li>
+<li>The <code>Python + LIEF</code> path (a lighter alternative to Ghidra
+for inspecting executable files) had quietly broken when this computer’s
+default Python version changed. Reconnected and re-verified it.</li>
+<li>The log auto-cleanup tool
+(<code>scripts/rotate-safety-log.mjs</code>), which already deleted
+30-day-old block-history entries, now also cleans up consent-record
+entries (<code>consent-log.jsonl</code>) the same way.</li>
+</ul>
+</details>
+<details>
+<summary>
+<strong>v0.3.0 — Phase 3 (Binary Analysis) Environment Verified +
+Consent-Log Corruption Bug Fixed (2026-08-20)</strong>
+</summary>
+<ul>
+<li><strong>Fixed a bug where consent records were actually being saved
+corrupted.</strong> Consent entries containing a Windows path
+(e.g. <code>D:\myfile.js</code>) were being written in a broken format —
+found and fixed.</li>
+<li><strong>Actually verified the Ghidra (binary analysis tool) install
+instructions.</strong> Confirmed by hands-on testing that it requires
+JDK 21 or newer (the old guidance said Java 17), and verified the full
+install-and-run process end to end.</li>
+<li>Wrote a new extraction script that pulls function and string lists
+into the report, and verified it against a real file.</li>
+<li>Added guidance for the “Unknown command” issue caused by several
+commands colliding with other plugins’ short names (use the
+<code>sodam-reverse:</code> prefix).</li>
+<li>Found and corrected 9 spots in the planning documents that had
+wrongly kept describing already-finished work as “not done yet” (no
+user-facing feature changes).</li>
+<li>Found and corrected planning-doc text that claimed no LICENSE/NOTICE
+files existed, when both were already in place.</li>
 </ul>
 </details>
 <blockquote>

@@ -266,21 +266,25 @@ The `(sodam-reverse)` tag confirms the plugin loaded correctly.
 /re-selftest
 ```
 
-**Expected result:** ✅✅✅ All three green
+**Expected result:** ✅ All 13 checks green (6 Layer-1 skill rules + 2 Layer-2 deny-hook checks + 5 Layer-3 integrity checks)
 
 If any are not green → See [TROUBLESHOOTING.md](./TROUBLESHOOTING.md)
 
-### Step 6: Register Integrity Hash (Activate Layer 3)
+### Step 6: Register Integrity Hashes (Activate Layer 3)
 
-Copy the **hash of the core safety file (`hooks/re-deny-guard.mjs`)** from the selftest output and save it to `references/integrity.json` (keep any existing entries):
+Copy the **hashes of the 5 core safety files** from the selftest output and save them to `references/integrity.json` (keep any existing entries):
 ```json
 {
-  "hooks/re-deny-guard.mjs": "<hash from selftest>"
+  "hooks/hooks.json": "<hash from selftest>",
+  "hooks/re-deny-guard.mjs": "<hash from selftest>",
+  "hooks/_selftest.mjs": "<hash from selftest>",
+  "references/deny-corpus.json": "<hash from selftest>",
+  "references/mask-patterns.json": "<hash from selftest>"
 }
 ```
-→ Run `/re-selftest` again → confirm the Layer-3 guard-hash line shows ✅
+→ Run `/re-selftest` again → confirm **"Layer-3 integrity: hash match"** shows ✅ for all 5 files
 
-> 💡 `references/integrity.json` may already contain other file entries (values staged ahead of a future coverage expansion). Right now, only `hooks/re-deny-guard.mjs` is actually checked — see `CHECKPOINT.md` for the developer-facing roadmap.
+> 💡 On first install, `references/integrity.json` is empty, so selftest prints all 5 file hashes at once. All 5 (`hooks.json`, `re-deny-guard.mjs`, `_selftest.mjs`, `deny-corpus.json`, `mask-patterns.json`) are actually checked — see `CHECKPOINT.md` for the developer-facing roadmap.
 
 ---
 
@@ -289,7 +293,7 @@ Copy the **hash of the core safety file (`hooks/re-deny-guard.mjs`)** from the s
 > Already did the 6 steps above? Here's the **5-line path to your first analysis.**
 
 1. Fully restart Claude Code (required right after install), then type `/re-ping` → "Pong!" means installed successfully.
-2. Type `/re-selftest` → confirm all 6 safety checks show ✅ (if any show ❌, see §12 Troubleshooting first).
+2. Type `/re-selftest` → confirm all **13** safety checks show ✅ (if any show ❌, see §12 Troubleshooting first).
 3. Type `/re-start samples/safe-login.js` → answer **"yes"** to the ownership/consent questions.
 4. Wait a moment — a Korean-language analysis report appears on screen (summary, function descriptions, evidence locations).
 5. Now try your own code: `/re-start [your-file-path]` — that's it.
@@ -301,7 +305,7 @@ Copy the **hash of the core safety file (`hooks/re-deny-guard.mjs`)** from the s
 ### 6-2. (Phase 2·3) Additional Tool Installation — Optional
 
 > If you only use `/re-start` (source code analysis), you can skip this section.
-> `/re-android` (APK analysis) or `/re-binary` (executable analysis) need extra programs like Java·JADX·Apktool (Android) or Java·Ghidra (binary).
+> `/re-android` (APK analysis) or `/re-binary` (executable analysis) need extra programs like Java 17+·JADX·Apktool (Android) or **JDK 21+**·Ghidra (binary — corrected 2026-08-19, was previously documented as Java 17).
 >
 > 📄 **A more detailed reference with the exact download links, verify-commands, and the specific versions confirmed on the dev machine also exists as [`INSTALL.md`](./INSTALL.md) — note that file is Korean-only for now.** The English summary below covers the same tools and is enough to get started.
 
@@ -357,6 +361,8 @@ Once Java and Ghidra are ready, start analyzing with `/re-binary [executable-pat
 
 ## 7. Commands
 
+> 💡 **If a command shows "Unknown command"**: if you have several other Claude Code plugins installed, a short command name (like `/re-start`) can collide with one from another plugin and fail to resolve (confirmed by a live test on 2026-08-13). In that case, type the **fully-qualified form** with the plugin name in front: prefix every command below with `sodam-reverse:`, e.g. `/sodam-reverse:re-start`, and it will always resolve correctly.
+
 | Command | When to Use | Example |
 |---|---|---|
 | `/re-ping` | Verify installation · diagnostics (test this first) | `/re-ping` |
@@ -370,7 +376,7 @@ Once Java and Ghidra are ready, start analyzing with `/re-binary [executable-pat
 | Command | Status | Description |
 |---|---|---|
 | `/re-android [APK-path]` | ✅ Live-verified (2026-07-13) | Android app analysis |
-| `/re-binary [file-path]` | 🚧 Scaffolding complete (not yet live-verified) | Binary/executable analysis |
+| `/re-binary [file-path]` | 🟡 Ghidra environment ready & headless command verified (2026-08-19); the slash command itself is not yet live-verified | Binary/executable analysis |
 
 ---
 
@@ -438,7 +444,7 @@ Saved to .sodam-re/ on my computer
 |---|---|---|---|
 | **Layer 1** | AI Refusal Rules | AI itself refuses to output crack/bypass content | `skills/re-router/SKILL.md` |
 | **Layer 2** | deny-hook | Real-time blocking of dangerous keyword patterns | `hooks/re-deny-guard.mjs` |
-| **Layer 3** | Integrity Check | Detects tampering via SHA-256 hashing | `hooks/_selftest.mjs` |
+| **Layer 3** | Integrity Check | Detects tampering in **5** core safety files via SHA-256 hashing | `hooks/_selftest.mjs` (checks: `hooks.json`, `re-deny-guard.mjs`, `_selftest.mjs`, `deny-corpus.json`, `mask-patterns.json`) |
 
 **fail-closed principle:** If a hook encounters an error, analysis is **immediately halted** — not passed through.
 
@@ -473,7 +479,7 @@ SoDam-Reverse-Eng/
 │   ├── re-selftest.md           ← /re-selftest
 │   ├── re-agent.md              ← /re-agent (AI agent structure analysis)
 │   ├── re-android.md            ← live-verified
-│   └── re-binary.md             ← scaffolding complete (not yet live-verified)
+│   └── re-binary.md             ← Ghidra environment verified, slash command run pending
 │
 ├── skills/                      ← AI analysis logic
 │   ├── re-router/               ← Layer 1 safety rules + request routing
@@ -481,7 +487,7 @@ SoDam-Reverse-Eng/
 │   ├── re-report/               ← Report generation
 │   ├── re-analyze-agent/        ← live-verified
 │   ├── re-analyze-android/      ← live-verified
-│   └── re-analyze-binary/       ← scaffolding complete (not yet live-verified)
+│   └── re-analyze-binary/       ← Ghidra environment verified, slash command run pending
 │
 ├── hooks/                       ← Safety layers 2 and 3
 │   ├── re-deny-guard.mjs        ← Layer 2: real-time danger blocking
@@ -500,7 +506,7 @@ SoDam-Reverse-Eng/
 │   ├── re-inject-context.mjs    ← Context synergy setup
 │   ├── check-family.mjs         ← 6-sibling status check
 │   ├── check-trust-freshness.mjs
-│   └── rotate-safety-log.mjs    ← Safety-log retention cleanup (auto-expiry)
+│   └── rotate-safety-log.mjs    ← Safety-log & consent-log retention cleanup (auto-expiry)
 │
 ├── mcp/
 │   └── catalog.json             ← Phase 2·3 external tool curation (trust tier, license)
@@ -545,7 +551,7 @@ SoDam-Reverse-Eng/
 | External Tool Curation | [`mcp/catalog.json`](./mcp/catalog.json) | Phase 2·3 per-tool trust tier, license, status |
 | Family Status | [`scripts/check-family.mjs`](./scripts/check-family.mjs) | 6-sibling diagnostic script |
 | Trust Freshness | [`scripts/check-trust-freshness.mjs`](./scripts/check-trust-freshness.mjs) | Checks trusted-tool catalog for staleness |
-| Safety-Log Retention | `scripts/rotate-safety-log.mjs` | Deletes safety-log entries older than 30 days (default) — self-incrimination risk reduction |
+| Safety-Log & Consent-Log Retention | `scripts/rotate-safety-log.mjs` | Deletes safety-log and consent-log entries older than 30 days (default) — self-incrimination risk reduction (`--only=safety`\|`consent` to target one) |
 
 ---
 
@@ -553,7 +559,7 @@ SoDam-Reverse-Eng/
 
 ### Q1. `/re-start` does not appear or shows "Unknown command" (most common)
 
-**Cause:** Claude Code was launched from the home folder (`C:\Users\name`) or you used `cd` inside the chat (commands do not reload on `cd`).
+**Cause 1 — wrong folder:** Claude Code was launched from the home folder (`C:\Users\name`) or you used `cd` inside the chat (commands do not reload on `cd`).
 
 **Fix:**
 1. Fully close Claude Code
@@ -564,6 +570,8 @@ SoDam-Reverse-Eng/
    claude
    ```
 4. Type `/re-ping` → confirm `"Pong!"` response
+
+**Cause 2 — name collision with another plugin:** If you launched from the right folder but still get `"Unknown command"`, another installed plugin is likely using the same short command name (a confirmed real case — see §7). **Fix:** type the fully-qualified form instead, e.g. `/sodam-reverse:re-start`.
 
 ---
 
@@ -607,6 +615,8 @@ Choose a "Yes"-type option to register consent. Choosing "No" or declining to an
 
 Check that all 5 files from [`SETUP_BLOCKED_FILES.md`](./SETUP_BLOCKED_FILES.md) exist →
 Recreate any missing files → Fully restart Claude Code → Run `/re-selftest` again
+
+> 💡 If you locked these files read-only for extra safety (`attrib +R`, see `SETUP_BLOCKED_FILES.md`), unlock them first (`attrib -R`) before your editor can save changes.
 
 SHA-256 mismatch:
 ```
@@ -839,6 +849,27 @@ node scripts/re-inject-harness.mjs
 - Hardened detection of attempts that hide risky keywords using invisible zero-width characters or Cyrillic look-alike letters that visually mimic the Latin alphabet.
 - After this change, the full safety self-test (13 checks) and a separate boundary-case battery (empty input, malformed data, oversized input, case variants, and 9 more — 13 cases total) were run directly, confirming no regression.
 - Alongside this, all 4 analysis commands were hardened to automatically run the safety self-check *before* the consent gate, and consent passes are now recorded to `consent-log.jsonl`.
+
+</details>
+
+<details>
+<summary><strong>Fixed a Safety-Integrity-Check Bug + Widened Log Auto-Cleanup Scope (2026-08-13)</strong></summary>
+
+- The last of the three safety layers (tamper detection) had 4 stored reference values that had drifted, so it was wrongly flagging untouched, legitimate files as "possibly tampered." Fixed after directly comparing the live files byte-for-byte against the canonical source to confirm they were unmodified. All 13 checks now pass cleanly.
+- The `Python + LIEF` path (a lighter alternative to Ghidra for inspecting executable files) had quietly broken when this computer's default Python version changed. Reconnected and re-verified it.
+- The log auto-cleanup tool (`scripts/rotate-safety-log.mjs`), which already deleted 30-day-old block-history entries, now also cleans up consent-record entries (`consent-log.jsonl`) the same way.
+
+</details>
+
+<details>
+<summary><strong>v0.3.0 — Phase 3 (Binary Analysis) Environment Verified + Consent-Log Corruption Bug Fixed (2026-08-20)</strong></summary>
+
+- **Fixed a bug where consent records were actually being saved corrupted.** Consent entries containing a Windows path (e.g. `D:\myfile.js`) were being written in a broken format — found and fixed.
+- **Actually verified the Ghidra (binary analysis tool) install instructions.** Confirmed by hands-on testing that it requires JDK 21 or newer (the old guidance said Java 17), and verified the full install-and-run process end to end.
+- Wrote a new extraction script that pulls function and string lists into the report, and verified it against a real file.
+- Added guidance for the "Unknown command" issue caused by several commands colliding with other plugins' short names (use the `sodam-reverse:` prefix).
+- Found and corrected 9 spots in the planning documents that had wrongly kept describing already-finished work as "not done yet" (no user-facing feature changes).
+- Found and corrected planning-doc text that claimed no LICENSE/NOTICE files existed, when both were already in place.
 
 </details>
 

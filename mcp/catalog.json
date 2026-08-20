@@ -25,7 +25,7 @@
       "license": "Apache-2.0",
       "tools_count": 251,
       "capabilities": ["바이너리 역공학", "함수 분석", "어셈블리 분석", "251 tools"],
-      "requires": ["Ghidra (무료)", "Java 17+"],
+      "requires": ["Ghidra (무료)", "JDK 21+ (2026-08-19 실측 정정, 이전엔 Java 17+로 적혀 있었음)"],
       "status": "active",
       "skill_target": "skills/re-analyze-binary/SKILL.md"
     },
@@ -53,7 +53,7 @@
       "requires": ["Python 3", "pip install lief"],
       "status": "active",
       "skill_target": "skills/re-analyze-binary/SKILL.md",
-      "note": "PRD 00_PRD_DIRECTION G3 백로그 반영(2026-07-16). PRD가 예로 든 Ap3x/BinaryAnalysis-MCP는 라이선스 미확인이라 wrap하지 않고, 그 기반 라이브러리인 LIEF 자체를 직접 감쌈. 라이브 미검증(이 PC에 Python 미설치 확인됨)"
+      "note": "PRD 00_PRD_DIRECTION G3 백로그 반영(2026-07-16). PRD가 예로 든 Ap3x/BinaryAnalysis-MCP는 라이선스 미확인이라 wrap하지 않고, 그 기반 라이브러리인 LIEF 자체를 직접 감쌈. Python 3.14.7 + LIEF 1.0.0 설치·PE 파싱 실제 검증 완료(2026-08-19 재확인, 더미 실행파일로 스킬 흐름 사전점검까지 마침) — 남은 건 /re-binary 슬래시 명령의 라이브 세션 실행뿐"
     },
     {
       "id": "malware-analysis",

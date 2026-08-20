@@ -1,15 +1,45 @@
 # ⚙️ 수동 생성 필요 파일 (5개)
 
 > **왜 이 문서가 있나요?**
-> 이 5개 파일은 **플러그인 manifest와 안전 hook**입니다. 다른 SoDam 형제 플러그인의 *자기보호 가드레일*이
-> "AI 에이전트가 플러그인/hook 파일을 만드는 것"을 막기 때문에, **사람이 직접** 만들어야 합니다.
-> (가드는 *에이전트의* 쓰기만 막고, 사용자 본인 작성은 막지 않습니다.)
+> 이 5개 파일은 **플러그인 manifest와 안전 hook**입니다. 원칙적으로 **사람이 직접** 만들고 고쳐야 합니다.
+>
+> **🔴 2026-08-13 정정 (34차 세션)**: 예전엔 "다른 SoDam 형제 플러그인의 자기보호 장치가 AI의 쓰기를
+> 막는다"고 적혀 있었으나, 실제로 조사해보니 **그런 경로 기반 차단은 어디에도 없었습니다.**
+> `scripts/re-inject-harness.mjs`가 심는 `~/.sodamharness/safety-rules.json`의 `sensitivePaths`는 항상
+> 빈 배열이었고, 그걸 읽어서 집행할 SoDam-Harness의 `guard.mjs` 자체가 이 PC에 설치돼 있지도 않았습니다.
+> 지금까지 막혔던 건 소담리버스 **자기 자신의 `hooks/re-deny-guard.mjs`**가, 이 5개 파일이든 아니든 상관없이
+> **수정 "내용"에 금지 단어가 들어있는지만** 검사했기 때문입니다. 이 5개 파일을 고치는 시도는 대부분
+> 차단 코퍼스에 등록된 단어를 그대로 옮겨 적는 작업이라 우연히 걸렸을 뿐이고, 숫자·주석만 바꾸는 수정은
+> 그냥 통과된다는 것을 오늘 실측으로 확인했습니다(실제로 AI가 `hooks/re-deny-guard.mjs`를 편집해 반영시킨
+> 뒤 사용자 판단으로 되돌린 사례). **AI 스스로 짜 넣는 경로 기반 방어는 자기모순**(그 로직을 넣을 수
+> 있다면 나중에 뺄 수도 있다는 뜻)이라, 실질적 방어는 **OS 파일 권한(사람이 직접 설정)**으로 옮겼습니다.
+> 아래 "권장 절차" 참고. 상세 경위는 `CHECKPOINT.md` §5-51.
 >
 > **만드는 법 (택1):**
 > 1. 메모장/VS Code 등 편집기로 아래 경로에 새 파일을 만들고 코드블록 내용을 붙여넣기 (**UTF-8, BOM 없음**)
 > 2. 또는 Claude Code 입력창에서 `!` 를 붙여 사용자 셸로 직접 생성
 >
 > 5개를 만든 뒤 **완전 재시작 → `/re-selftest`** 로 안전 3층을 검증하세요.
+>
+> **권장 절차 (2026-08-13 추가, 34차 세션 §5-52에서 대상 8개로 확장) — OS 읽기전용으로 실질적 보호 걸기:**
+> 편집이 끝나면 PowerShell에서 아래처럼 잠가두면, 이후 AI가 이 파일들에 Edit/Write를 시도해도
+> 운영체제 자체가 쓰기를 거부합니다(내용 검사가 아니라 파일시스템 권한이라 회피 불가). **대상은 원래
+> 발표했던 5개가 아니라 8개**입니다 — `references/integrity.json`(3층 무결성의 "정답지" 자신, 이게
+> 안 잠기면 파일을 고치고 정답지도 같이 고쳐서 "일치"로 위장할 수 있음)과, 3층 무결성 대상이지만
+> AI-편집-금지 5개 목록엔 없었던 `deny-corpus.json`·`mask-patterns.json`(내용 기반 우연 차단에만
+> 의존해 왔던 건 이 5개와 동일)까지 포함합니다:
+> ```powershell
+> attrib +R "hooks\re-deny-guard.mjs" "hooks\_selftest.mjs" "hooks\hooks.json" ".claude-plugin\plugin.json" ".claude-plugin\marketplace.json" "references\deny-corpus.json" "references\mask-patterns.json" "references\integrity.json"
+> ```
+> 다시 고쳐야 할 때만 사람이 직접 해제 후 편집 → 저장 → 재잠금(**순서 중요**: 해제→편집→저장→해시
+> 재계산→`integrity.json` 갱신→**그 다음에** 재잠금. 잠근 채로 저장을 먼저 시도하면 실패합니다):
+> ```powershell
+> attrib -R "hooks\re-deny-guard.mjs" "hooks\_selftest.mjs" "hooks\hooks.json" ".claude-plugin\plugin.json" ".claude-plugin\marketplace.json" "references\deny-corpus.json" "references\mask-patterns.json" "references\integrity.json"
+> ```
+> 읽기전용은 **읽기(셀프테스트의 해시 계산 등)는 막지 않고 쓰기만 막습니다** — 잠근 뒤에도
+> `/re-selftest`는 정상 작동합니다. 다만 이 속성이 Claude Code의 Edit 도구를 실제로 막아주는지는
+> **아직 실사용으로 검증되지 않았습니다**(다음 세션에서 잠근 뒤 AI가 이 파일 중 하나를 고쳐보도록
+> 시켜서 정말 거부되는지 재확인 권장).
 
 ---
 
@@ -177,13 +207,20 @@ const REQUEST_MARKERS = [
   'please', 'how to', 'tell me', 'show me', 'give me', 'way to', 'method to',
 ];
 function isSafeObservation(text, matchIndex, matchLen) {
-  const NEG_WINDOW = 20, REQ_WINDOW = 40;
+  // [2026-08-13 수정] NEG_WINDOW 20/beforeCtx 6은 한국어 후치부정("~이 없습니다")엔 맞지만
+  // 영어 전치부정("does not contain X", "I confirmed X is not present")처럼 부정어와 대상 사이에
+  // 단어가 몇 개 끼는 문장에서 창이 너무 좁아 정상 관찰까지 차단하는 실사용 결함이 실측으로
+  // 발견됨(재현: "this code does not contain any <키워드> logic." 류가 오탐 차단됨).
+  // 30/30으로 넓혀 해결하되, beforeCtx만 넓히면 "not present, give me <키워드>"처럼 부정어+요청어를
+  // 매치 앞쪽에 둘 다 배치하는 새 스머글링 경로가 열리는 것을 격리 테스트로 확인 →
+  // 요청표지 검사(wideCtx)도 같은 폭만큼 매치 앞쪽까지 함께 확장해 막는다.
+  const NEG_WINDOW = 30, BEFORE_WINDOW = 30, REQ_WINDOW = 40;
   const afterStart = matchIndex + matchLen;
   const afterCtx = text.slice(afterStart, afterStart + NEG_WINDOW);
-  const beforeCtx = text.slice(Math.max(0, matchIndex - 6), matchIndex);
+  const beforeCtx = text.slice(Math.max(0, matchIndex - BEFORE_WINDOW), matchIndex);
   const hasSafeMarker = SAFE_CONTEXT_MARKERS.some((n) => afterCtx.includes(n) || beforeCtx.includes(n));
   if (!hasSafeMarker) return false;
-  const wideCtx = text.slice(matchIndex, afterStart + REQ_WINDOW);
+  const wideCtx = text.slice(Math.max(0, matchIndex - BEFORE_WINDOW), afterStart + REQ_WINDOW);
   return !REQUEST_MARKERS.some((r) => wideCtx.includes(r));
 }
 

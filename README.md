@@ -268,21 +268,25 @@ Claude Code가 열리면 `/re-p` 입력 → 자동완성에 아래가 떠야 정
 /re-selftest
 ```
 
-**기대 결과:** ✅✅✅ 3개 모두 초록색
+**기대 결과:** ✅ 13개 항목 전부 초록색(1층 스킬규칙 6개 + 2층 deny-hook 2개 + 3층 무결성 5개)
 
 초록색 3개가 나오지 않으면 → [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) 참고
 
 ### 단계 6: 무결성 해시 등록 (3층 활성화)
 
-selftest 출력에서 **핵심 안전파일(`hooks/re-deny-guard.mjs`)의 해시**를 `references/integrity.json`에 저장하세요(이미 있는 항목은 유지):
+selftest 출력에서 **핵심 안전파일 5개의 해시**를 `references/integrity.json`에 저장하세요(이미 있는 항목은 유지):
 ```json
 {
-  "hooks/re-deny-guard.mjs": "<셀프테스트가 출력한 해시>"
+  "hooks/hooks.json": "<셀프테스트가 출력한 해시>",
+  "hooks/re-deny-guard.mjs": "<셀프테스트가 출력한 해시>",
+  "hooks/_selftest.mjs": "<셀프테스트가 출력한 해시>",
+  "references/deny-corpus.json": "<셀프테스트가 출력한 해시>",
+  "references/mask-patterns.json": "<셀프테스트가 출력한 해시>"
 }
 ```
-→ 다시 `/re-selftest` 실행 → `"3층 무결성: guard 해시 일치"` ✅ 확인
+→ 다시 `/re-selftest` 실행 → **"3층 무결성: 해시 일치"가 5개 파일 전부에서** ✅ 확인
 
-> 💡 `references/integrity.json`에는 다른 안전파일 항목이 미리 채워져 있을 수 있습니다(향후 검사 범위 확장을 대비한 준비값). 지금 이 단계에서 실제로 검사에 쓰이는 항목은 `hooks/re-deny-guard.mjs` 하나뿐입니다 — 개발자용 상세는 `CHECKPOINT.md`를 참고하세요.
+> 💡 처음 설치하실 때는 `references/integrity.json`이 비어 있어서 selftest가 5개 파일의 해시를 화면에 한 번에 출력해 줍니다. 이 5개(`hooks.json`·`re-deny-guard.mjs`·`_selftest.mjs`·`deny-corpus.json`·`mask-patterns.json`) 전부가 실제로 검사에 쓰입니다 — 개발자용 상세는 `CHECKPOINT.md`를 참고하세요.
 
 ---
 
@@ -291,7 +295,7 @@ selftest 출력에서 **핵심 안전파일(`hooks/re-deny-guard.mjs`)의 해시
 > 위 6단계를 이미 하셨다면, 설치 후 **첫 분석까지 이 5줄만 따라 하면 됩니다.**
 
 1. Claude Code 완전 재시작(설치 직후 필수) 후 `/re-ping` 입력 → "Pong!" 뜨면 설치 성공.
-2. `/re-selftest` 입력 → 안전장치 6개 항목 전부 ✅ 인지 확인(1개라도 ❌면 §12 문제해결 먼저 참고).
+2. `/re-selftest` 입력 → 안전장치 **13개** 항목 전부 ✅ 인지 확인(1개라도 ❌면 §12 문제해결 먼저 참고).
 3. `/re-start samples/safe-login.js` 입력 → "본인 소유/허가 대상인가요?" 등 질문에 **"예"**로 답하기.
 4. 잠시 기다리면 한국어 분석 보고서가 화면에 출력됩니다(요약·함수설명·근거위치 포함).
 5. 이후 내 코드로 실습: `/re-start [내 파일 경로]` — 이게 전부입니다.
@@ -303,7 +307,7 @@ selftest 출력에서 **핵심 안전파일(`hooks/re-deny-guard.mjs`)의 해시
 ### 6-2. (Phase 2·3) 추가 도구 설치 — 선택 사항
 
 > `/re-start`(소스 코드 분석)만 쓴다면 이 항목은 건너뛰어도 됩니다.
-> `/re-android`(APK 분석) 또는 `/re-binary`(실행파일 분석)를 쓰려면 Java·JADX·Apktool(안드로이드) 또는 Java·Ghidra(바이너리) 같은 추가 프로그램이 필요합니다.
+> `/re-android`(APK 분석) 또는 `/re-binary`(실행파일 분석)를 쓰려면 Java 17+·JADX·Apktool(안드로이드) 또는 **JDK 21+**·Ghidra(바이너리, 2026-08-19 실측 정정 — 이전엔 Java 17로 안내됨) 같은 추가 프로그램이 필요합니다.
 >
 > **상세 설치 방법(공식 배포처 링크·확인 명령·실제 검증된 버전)은 별도 문서로 정리했습니다:**
 > **📄 [INSTALL.md — 필요 프로그램 설치 안내](./INSTALL.md)**
@@ -311,6 +315,8 @@ selftest 출력에서 **핵심 안전파일(`hooks/re-deny-guard.mjs`)의 해시
 ---
 
 ## 7. 명령어
+
+> 💡 **명령어가 "Unknown command"로 안 뜨면**: 컴퓨터에 다른 Claude Code 플러그인이 여러 개 설치돼 있으면, 이름이 짧은 명령어(`/re-start` 등)가 다른 플러그인과 겹쳐 인식이 안 될 수 있습니다(2026-08-13 실사용 테스트로 확인된 실제 사례). 이럴 땐 앞에 플러그인 이름을 붙인 **완전한 형태**로 입력하세요: `/sodam-reverse:re-start`처럼 아래 모든 명령어 앞에 `sodam-reverse:`를 붙이면 항상 확실하게 동작합니다.
 
 | 명령어 | 언제 사용하나요 | 예시 |
 |---|---|---|
@@ -325,7 +331,7 @@ selftest 출력에서 **핵심 안전파일(`hooks/re-deny-guard.mjs`)의 해시
 | 명령어 | 상태 | 설명 |
 |---|---|---|
 | `/re-android [APK경로]` | ✅ 실사용 라이브 검증 완료(2026-07-13) | Android 앱 분석 |
-| `/re-binary [파일경로]` | 🚧 골격 완료(라이브 미검증) | 바이너리/실행파일 분석 |
+| `/re-binary [파일경로]` | 🟡 Ghidra 환경 준비·명령 동작 확인(2026-08-19), 슬래시 명령 실사용은 미검증 | 바이너리/실행파일 분석 |
 
 ---
 
@@ -391,7 +397,7 @@ Claude AI (Anthropic 서버)
 |---|---|---|---|
 | **1층** | AI 거부 규칙 | AI 자체가 크랙·우회 내용 출력 거부 | `skills/re-router/SKILL.md` |
 | **2층** | deny-hook | 위험 키워드·패턴 실시간 차단 | `hooks/re-deny-guard.mjs` |
-| **3층** | 무결성 점검 | 안전파일이 변조됐는지 SHA-256으로 확인 | `hooks/_selftest.mjs` |
+| **3층** | 무결성 점검 | 핵심 안전파일 **5개**가 변조됐는지 SHA-256으로 확인 | `hooks/_selftest.mjs` (검사 대상 5개: `hooks.json`·`re-deny-guard.mjs`·`_selftest.mjs`·`deny-corpus.json`·`mask-patterns.json`) |
 
 **fail-closed 원칙:** hook에 오류가 생기면 "통과"가 아니라 **분석 즉시 중단**입니다.
 
@@ -426,7 +432,7 @@ SoDam-Reverse-Eng/
 │   ├── re-selftest.md
 │   ├── re-agent.md              ← AI 에이전트 구조 분석
 │   ├── re-android.md            ← 실사용 라이브 검증 완료
-│   └── re-binary.md             ← 골격 완료(라이브 미검증)
+│   └── re-binary.md             ← Ghidra 환경 검증 완료, 슬래시 명령 실행만 대기
 │
 ├── skills/                      ← 분석 AI 로직
 │   ├── re-router/               ← 1층 안전규칙 + 요청 분류
@@ -434,7 +440,7 @@ SoDam-Reverse-Eng/
 │   ├── re-report/               ← 보고서 생성
 │   ├── re-analyze-agent/        ← 라이브 검증 완료
 │   ├── re-analyze-android/      ← 실사용 라이브 검증 완료
-│   └── re-analyze-binary/       ← 골격 완료(라이브 미검증)
+│   └── re-analyze-binary/       ← Ghidra 환경 검증 완료, 슬래시 명령 실행만 대기
 │
 ├── hooks/                       ← 안전장치 (2층 · 3층)
 │   ├── re-deny-guard.mjs        ← 2층: 위험 패턴 실시간 차단
@@ -453,7 +459,7 @@ SoDam-Reverse-Eng/
 │   ├── re-inject-context.mjs    ← Context 시너지 설정
 │   ├── check-family.mjs         ← 6형제 상태 확인
 │   ├── check-trust-freshness.mjs← 도구 신뢰도 신선도 점검
-│   └── rotate-safety-log.mjs    ← 안전로그 보존기간 관리(자동만료)
+│   └── rotate-safety-log.mjs    ← 안전로그·동의기록 보존기간 관리(자동만료)
 │
 ├── mcp/
 │   └── catalog.json             ← Phase 2·3 외부 도구 큐레이션 설정(신뢰등급·라이선스)
@@ -505,7 +511,7 @@ SoDam-Reverse-Eng/
 | 외부 도구 큐레이션 | [`mcp/catalog.json`](./mcp/catalog.json) | Phase 2·3 도구별 신뢰등급·라이선스·상태 |
 | 형제 상태 확인 | [`scripts/check-family.mjs`](./scripts/check-family.mjs) | 6형제 진단 스크립트 |
 | 신선도 점검 | [`scripts/check-trust-freshness.mjs`](./scripts/check-trust-freshness.mjs) | 신뢰 카탈로그 최신성 확인 |
-| 안전로그 보존기간 관리 | `scripts/rotate-safety-log.mjs` | 30일(기본) 지난 안전로그 항목 삭제(자기부죄 방지) |
+| 안전로그·동의기록 보존기간 관리 | `scripts/rotate-safety-log.mjs` | 30일(기본) 지난 안전로그·동의기록 항목 삭제(자기부죄 방지, `--only=safety`\|`consent`로 개별 지정 가능) |
 
 ---
 
@@ -513,7 +519,7 @@ SoDam-Reverse-Eng/
 
 ### Q1. `/re-start` 명령이 안 뜨거나 없어요 (가장 흔한 문제)
 
-**원인:** Claude Code를 홈 폴더(`C:\Users\이름`)에서 실행했거나,
+**원인 1 — 폴더 문제:** Claude Code를 홈 폴더(`C:\Users\이름`)에서 실행했거나,
 채팅창에서 `cd`로 이동한 것을 "이동했다"고 착각한 경우.
 
 **해결:**
@@ -525,6 +531,8 @@ SoDam-Reverse-Eng/
    claude
    ```
 4. `/re-ping` 입력 → `"Pong!"` 응답 확인
+
+**원인 2 — 다른 플러그인과 이름 겹침:** 폴더는 맞게 실행했는데도 `"Unknown command"`가 뜬다면, 설치된 다른 플러그인 중 하나가 똑같이 짧은 명령어 이름을 쓰고 있어서 겹친 것입니다(실제 확인된 사례, §7 참고). **해결:** `/re-start` 대신 `/sodam-reverse:re-start`처럼 앞에 `sodam-reverse:`를 붙여서 입력하세요.
 
 ---
 
@@ -569,6 +577,8 @@ claude
 
 [`SETUP_BLOCKED_FILES.md`](./SETUP_BLOCKED_FILES.md)에서 5개 파일이 모두 있는지 확인 →
 없는 파일만 다시 만들기 → Claude Code 완전 재시작 → 다시 `/re-selftest`
+
+> 💡 만약 이 파일들을 안전을 위해 읽기전용으로 잠가 두셨다면(`attrib +R`, `SETUP_BLOCKED_FILES.md` 참고), 수정 전에 먼저 잠금을 해제(`attrib -R`)해야 편집기로 저장이 됩니다.
 
 SHA-256 불일치:
 ```
@@ -802,6 +812,27 @@ node scripts/re-inject-harness.mjs
 - 눈에 보이지 않는 특수문자(제로폭 문자)나 로마자와 비슷하게 생긴 키릴 문자로 위험 단어를 숨겨 우회하려는 시도를 감지해 차단하도록 보강했습니다.
 - 이 변경 후 안전 셀프테스트(13개 항목)와 별도의 경계값 테스트(빈 입력·손상된 데이터·대용량 입력·대소문자 변형 등 13종)를 직접 실행해 기존 기능에 회귀가 없음을 확인했습니다.
 - 위 개선에 맞춰 `/re-start`를 포함한 4개 분석 명령이 분석 시작 전 안전장치 자가검증을 자동으로 먼저 실행하도록 강화했고, 동의 통과 기록(`consent-log.jsonl`)을 남기도록 개선했습니다.
+
+</details>
+
+<details>
+<summary><strong>안전장치 무결성 점검 오류 수정 + 로그 자동정리 범위 확대 (2026-08-13)</strong></summary>
+
+- 안전 3층 중 마지막 층(변조 감지)이 실제로는 저장된 확인값 4개가 틀어져 있어 정상 파일인데도 "변조 의심"으로 잘못 표시되던 문제를 발견해 바로잡았습니다(파일 자체는 문제없었음을 원본과 직접 대조해 먼저 확인). 지금은 13개 점검 항목이 전부 정상 통과합니다.
+- `Python + LIEF`(Ghidra 없이도 실행파일을 가볍게 살펴보는 대안 경로)가 이 컴퓨터의 파이썬 버전이 바뀌면서 조용히 끊겨 있던 것을 발견해 다시 연결·재확인했습니다.
+- 차단 이력을 30일 뒤 자동으로 지우던 정리 기능(`scripts/rotate-safety-log.mjs`)이 동의 확인 기록(`consent-log.jsonl`)도 함께 정리하도록 범위를 넓혔습니다.
+
+</details>
+
+<details>
+<summary><strong>v0.3.0 — Phase 3(바이너리 분석) 환경 구축 + 동의기록 손상 버그 수정 (2026-08-20)</strong></summary>
+
+- **동의 기록이 실제로 깨져서 저장되던 버그를 고쳤습니다.** 윈도우 경로(예: `D:\내파일.js`)가 포함된 동의 기록이 손상된 형식으로 저장되던 문제를 발견해 수정했습니다.
+- **Ghidra(바이너리 분석 도구) 설치 안내를 실제로 검증했습니다.** JDK 21 이상이 필요하다는 걸 실측으로 확인했고(기존 안내는 Java 17이었음), 실제 설치·실행까지 전 과정을 직접 검증했습니다.
+- 함수·문자열 목록을 뽑아 보고서에 채워 넣는 추출 스크립트를 새로 만들고 실제 파일로 검증했습니다.
+- 여러 명령어가 다른 플러그인과 이름이 겹쳐 "Unknown command"가 뜨던 문제의 해결법을 안내에 추가했습니다(`sodam-reverse:` 접두어 사용).
+- 기획 문서 곳곳에 남아있던, 실제로는 끝난 작업을 "미완료"라고 잘못 표시하던 기록 9건을 발견해 바로잡았습니다(사용자에게 보이는 기능 변경은 없음).
+- LICENSE·NOTICE 파일이 이미 갖춰져 있었는데 기획 문서만 "없음"으로 잘못 남아있던 것을 발견해 정정했습니다.
 
 </details>
 
