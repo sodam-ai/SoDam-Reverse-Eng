@@ -4,6 +4,6 @@
   "hooks/re-deny-guard.mjs": "85170a0ebdef4eb6a15d6011e90f99296adfb7b322b917ddfc97e113ff395850",
   "hooks/_selftest.mjs": "16e0167e2b0ccf254e85497e02028271ecd4ae31519e0e9d889c9cd74d01cc91",
   "hooks/hooks.json": "677c9ffbbb7f63a4dd135171462ed83b4043d13877852927f1b4250e904418fc",
-  "references/deny-corpus.json": "30b556117a9658a09d1246b2822bd7e20249acb077cde343f58c76fb12408c49",
+  "references/deny-corpus.json": "797474c2dcd9e00dd63ed2dbd78139cccfd07224873d692132791b2c07a1680b",
   "references/mask-patterns.json": "a0675eafa568f80dcc62278897ca2f3c767e881b92e743316c025cb23a03a03d"
 }

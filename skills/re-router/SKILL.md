@@ -52,6 +52,7 @@ description: 리버스 엔지니어링(내 코드·앱 이해/분석) 요청을 
 ```json
 {"id":"con-<현재시각 밀리초>","target_scope":"<분석 대상 경로>","ownership":"<질문1 응답 그대로>","disclaimer_ack":true,"agreed_at":"<현재 ISO 8601 시각>"}
 ```
+**⚠️ target_scope 경로에 `\`(윈도우 경로의 백슬래시)가 있으면 반드시 `\\`로 이스케이프한다** — 예: `D:\test6\sample.js`는 JSON에 `"D:\\test6\\sample.js"`로 써야 한다. 그냥 `"D:\test6\sample.js"`처럼 쓰면 깨진 JSON이 된다(2026-08-19 실제 라이브 로그에서 5건 중 4건이 이 실수로 손상된 것이 확인됨). **쓰기 직전 재확인**: target_scope 값 안의 `\`가 전부 `\\`로 바뀌었는지 한 번 더 확인한 뒤 Write한다.
 (02_DATA_MODEL의 ConsentRecord — `session_id`는 세션 개념이 구현돼 있지 않아 SafetyLog와 동일하게 생략한다.) 기록 실패해도 분석은 계속 진행한다(감사용 기록일 뿐 동의 판정 자체엔 영향 없음 — SafetyLog와 동일한 fail-safe 원칙).
 
 ## 3. 진행

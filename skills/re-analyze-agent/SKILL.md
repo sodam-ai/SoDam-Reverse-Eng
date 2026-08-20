@@ -71,6 +71,7 @@ status: active
 ```json
 {"id":"con-<현재시각 밀리초>","target_scope":"<분석 대상: ~/.claude 또는 지정 경로>","ownership":"<질문1 응답 그대로>","disclaimer_ack":true,"agreed_at":"<현재 ISO 8601 시각>"}
 ```
+**⚠️ target_scope 경로에 `\`(윈도우 경로의 백슬래시)가 있으면 반드시 `\\`로 이스케이프한다** — 예: `D:\test6\.claude`는 JSON에 `"D:\\test6\\.claude"`로 써야 한다. 그냥 `"D:\test6\.claude"`처럼 쓰면 깨진 JSON이 된다(2026-08-19 실제 라이브 로그에서 5건 중 4건이 이 실수로 손상된 것이 확인됨). **쓰기 직전 재확인**: target_scope 값 안의 `\`가 전부 `\\`로 바뀌었는지 한 번 더 확인한 뒤 Write한다.
 (02_DATA_MODEL의 ConsentRecord, `session_id`는 생략 — SafetyLog와 동일한 fail-safe: 기록 실패해도 분석은 계속 진행)
 
 ## 2. 분석 대상 + 비용 가드 (읽기 전용·주입 방지)
