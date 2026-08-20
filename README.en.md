@@ -861,6 +861,18 @@ node scripts/re-inject-harness.mjs
 
 </details>
 
+<details>
+<summary><strong>v0.3.0 — Phase 3 (Binary Analysis) Environment Verified + Consent-Log Corruption Bug Fixed (2026-08-20)</strong></summary>
+
+- **Fixed a bug where consent records were actually being saved corrupted.** Consent entries containing a Windows path (e.g. `D:\myfile.js`) were being written in a broken format — found and fixed.
+- **Actually verified the Ghidra (binary analysis tool) install instructions.** Confirmed by hands-on testing that it requires JDK 21 or newer (the old guidance said Java 17), and verified the full install-and-run process end to end.
+- Wrote a new extraction script that pulls function and string lists into the report, and verified it against a real file.
+- Added guidance for the "Unknown command" issue caused by several commands colliding with other plugins' short names (use the `sodam-reverse:` prefix).
+- Found and corrected 9 spots in the planning documents that had wrongly kept describing already-finished work as "not done yet" (no user-facing feature changes).
+- Found and corrected planning-doc text that claimed no LICENSE/NOTICE files existed, when both were already in place.
+
+</details>
+
 > For detailed development history, see `CHECKPOINT.md` (for developers).
 
 ---

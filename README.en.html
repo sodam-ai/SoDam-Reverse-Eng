@@ -1778,6 +1778,32 @@ default Python version changed. Reconnected and re-verified it.</li>
 entries (<code>consent-log.jsonl</code>) the same way.</li>
 </ul>
 </details>
+<details>
+<summary>
+<strong>v0.3.0 — Phase 3 (Binary Analysis) Environment Verified +
+Consent-Log Corruption Bug Fixed (2026-08-20)</strong>
+</summary>
+<ul>
+<li><strong>Fixed a bug where consent records were actually being saved
+corrupted.</strong> Consent entries containing a Windows path
+(e.g. <code>D:\myfile.js</code>) were being written in a broken format —
+found and fixed.</li>
+<li><strong>Actually verified the Ghidra (binary analysis tool) install
+instructions.</strong> Confirmed by hands-on testing that it requires
+JDK 21 or newer (the old guidance said Java 17), and verified the full
+install-and-run process end to end.</li>
+<li>Wrote a new extraction script that pulls function and string lists
+into the report, and verified it against a real file.</li>
+<li>Added guidance for the “Unknown command” issue caused by several
+commands colliding with other plugins’ short names (use the
+<code>sodam-reverse:</code> prefix).</li>
+<li>Found and corrected 9 spots in the planning documents that had
+wrongly kept describing already-finished work as “not done yet” (no
+user-facing feature changes).</li>
+<li>Found and corrected planning-doc text that claimed no LICENSE/NOTICE
+files existed, when both were already in place.</li>
+</ul>
+</details>
 <blockquote>
 <p>For detailed development history, see <code>CHECKPOINT.md</code> (for
 developers).</p>
