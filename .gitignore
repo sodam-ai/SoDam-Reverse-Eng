@@ -34,3 +34,6 @@ CHECKPOINT.md
 
 # AI 페어프로그래밍 세션 리포트 (자동 생성, 로컬 전용)
 .pair-programming-session.md
+
+# 외부 하네스/훅이 남기는 실패 추적 로그 (이 프로젝트 소스 아님, 2026-08-20 발견)
+.failure-tracker.jsonl
