@@ -120,10 +120,10 @@ node scripts/check-trust-freshness.mjs
 
 ## 12. Phase 2·3 명령어(/re-android·/re-binary)가 안 돼요
 
-Phase 2·3는 **골격이 이미 작성돼 있으나, 실제 도구로 라이브 검증된 적은 없는 상태**입니다(2026-07-27 재확인: Java/JADX/Apktool은 이 PC에 설치·작동 확인됨, Ghidra는 여전히 미설치). "구현 전"이 아니라 "라이브 미검증"이 정확한 표현입니다.
+Phase 2는 실제 도구로 라이브 검증 완료, Phase 3(바이너리)은 **코드·도구·환경까지는 검증됐으나 `/re-binary` 슬래시 명령 자체의 라이브 실행만 아직 남은 상태**입니다(2026-08-19 재확인: Java/JADX/Apktool·Ghidra·JDK 21 전부 이 PC에 설치·작동 확인됨). "구현 전"이 아니라 "슬래시 명령 실사용만 미검증"이 정확한 표현입니다.
 
 - Phase 2(안드로이드): ✅ 라이브 검증 완료(2026-07-13). JADX·Apktool·Java 17+ 설치 필요(README.md §6-2).
-- Phase 3(바이너리): 골격 완료. Ghidra·Java 17+ 설치 필요(README.md §6-2).
+- Phase 3(바이너리): ✅ Ghidra 12.1.3 설치 + headless 분석·추출 스크립트 실제 성공까지 확인(2026-08-19). **JDK 21+** 필요(Java 17이 아님 — 실측 정정, README.md §6-2 참고). 슬래시 명령 자체의 새 세션 라이브 실행만 남음.
 
 도구를 설치했는데도 명령이 실패하면 아래 12-1·12-2를 확인하세요.
 
@@ -144,9 +144,10 @@ Phase 2·3는 **골격이 이미 작성돼 있으나, 실제 도구로 라이브
 
 ## 12-2. 바이너리(Ghidra) 도구 설치했는데 안 돼요
 
-**`ghidraRun`(또는 `.bat`) 실행이 안 됨:**
-- 대부분 **JAVA_HOME 환경변수 미설정**이 원인입니다. Java 17+ 설치 경로를 JAVA_HOME으로 지정한 뒤 새 터미널에서 재시도하세요.
-- Windows 설정 방법은 README.md §6-2 참고.
+**`ghidraRun`(또는 `analyzeHeadless.bat`) 실행 시 "JDK 21+ (64-bit) could not be found" 에러가 남:**
+- **2026-08-19 실측 확인된 원인**: Ghidra 12.1.3부터 **JDK 21 이상**이 필요합니다(예전엔 Java 17로 안내됐으나 버전 요구사항이 올라갔습니다). 이 PC의 Java 17(안드로이드 도구용)만으로는 부족합니다.
+- **검증된 해결법**: 시스템 전역 `JAVA_HOME`을 바꾸지 마세요(JADX·Apktool이 Java 17에 의존하므로 깨질 수 있습니다). 대신 JDK 21을 별도 폴더에 받아 압축만 풀고, **Ghidra 설치 폴더의 `support/launch.properties` 파일에서 `JAVA_HOME_OVERRIDE=` 줄에 그 JDK 21 폴더 경로를 적어 넣으세요**(예: `JAVA_HOME_OVERRIDE=D:\Tools\jdk-21`). Ghidra만 21을 쓰고 나머지 도구는 그대로 17을 씁니다.
+- 상세 설치 방법은 README.md §6-2 참고.
 
 **IDA Pro 옵션이 인식 안 됨:**
 - `SODAM_RE_IDA_PATH` 환경변수가 정확히 설정됐는지 확인(README.md §6-2에 Windows `setx` 명령 안내).

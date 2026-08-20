@@ -307,7 +307,7 @@ selftest 출력에서 **핵심 안전파일 5개의 해시**를 `references/inte
 ### 6-2. (Phase 2·3) 추가 도구 설치 — 선택 사항
 
 > `/re-start`(소스 코드 분석)만 쓴다면 이 항목은 건너뛰어도 됩니다.
-> `/re-android`(APK 분석) 또는 `/re-binary`(실행파일 분석)를 쓰려면 Java·JADX·Apktool(안드로이드) 또는 Java·Ghidra(바이너리) 같은 추가 프로그램이 필요합니다.
+> `/re-android`(APK 분석) 또는 `/re-binary`(실행파일 분석)를 쓰려면 Java 17+·JADX·Apktool(안드로이드) 또는 **JDK 21+**·Ghidra(바이너리, 2026-08-19 실측 정정 — 이전엔 Java 17로 안내됨) 같은 추가 프로그램이 필요합니다.
 >
 > **상세 설치 방법(공식 배포처 링크·확인 명령·실제 검증된 버전)은 별도 문서로 정리했습니다:**
 > **📄 [INSTALL.md — 필요 프로그램 설치 안내](./INSTALL.md)**
@@ -331,7 +331,7 @@ selftest 출력에서 **핵심 안전파일 5개의 해시**를 `references/inte
 | 명령어 | 상태 | 설명 |
 |---|---|---|
 | `/re-android [APK경로]` | ✅ 실사용 라이브 검증 완료(2026-07-13) | Android 앱 분석 |
-| `/re-binary [파일경로]` | 🚧 골격 완료(라이브 미검증) | 바이너리/실행파일 분석 |
+| `/re-binary [파일경로]` | 🟡 Ghidra 환경 준비·명령 동작 확인(2026-08-19), 슬래시 명령 실사용은 미검증 | 바이너리/실행파일 분석 |
 
 ---
 
@@ -432,7 +432,7 @@ SoDam-Reverse-Eng/
 │   ├── re-selftest.md
 │   ├── re-agent.md              ← AI 에이전트 구조 분석
 │   ├── re-android.md            ← 실사용 라이브 검증 완료
-│   └── re-binary.md             ← 골격 완료(라이브 미검증)
+│   └── re-binary.md             ← Ghidra 환경 검증 완료, 슬래시 명령 실행만 대기
 │
 ├── skills/                      ← 분석 AI 로직
 │   ├── re-router/               ← 1층 안전규칙 + 요청 분류
@@ -440,7 +440,7 @@ SoDam-Reverse-Eng/
 │   ├── re-report/               ← 보고서 생성
 │   ├── re-analyze-agent/        ← 라이브 검증 완료
 │   ├── re-analyze-android/      ← 실사용 라이브 검증 완료
-│   └── re-analyze-binary/       ← 골격 완료(라이브 미검증)
+│   └── re-analyze-binary/       ← Ghidra 환경 검증 완료, 슬래시 명령 실행만 대기
 │
 ├── hooks/                       ← 안전장치 (2층 · 3층)
 │   ├── re-deny-guard.mjs        ← 2층: 위험 패턴 실시간 차단

@@ -59,11 +59,12 @@ Ghidra가 추출한 **디컴파일된 문자열·주석·심볼명(함수명·�
 ```json
 {"id":"con-<현재시각 밀리초>","target_scope":"<분석 대상 실행파일 경로>","ownership":"<질문1 응답 그대로>","disclaimer_ack":true,"agreed_at":"<현재 ISO 8601 시각>"}
 ```
+**⚠️ target_scope 경로에 `\`(윈도우 경로의 백슬래시)가 있으면 반드시 `\\`로 이스케이프한다** — 예: `D:\test6\sample.exe`는 JSON에 `"D:\\test6\\sample.exe"`로 써야 한다. 그냥 `"D:\test6\sample.exe"`처럼 쓰면 깨진 JSON이 된다(2026-08-19 실제 라이브 로그에서 5건 중 4건이 이 실수로 손상된 것이 확인됨). **쓰기 직전 재확인**: target_scope 값 안의 `\`가 전부 `\\`로 바뀌었는지 한 번 더 확인한 뒤 Write한다.
 (02_DATA_MODEL의 ConsentRecord, `session_id`는 생략 — SafetyLog와 동일한 fail-safe: 기록 실패해도 분석은 계속 진행)
 
 ## 2. 도구 확인 (fail-closed)
 
-- **Ghidra**(무료, NSA·Apache-2.0) + **Java 17+** 필요. 설치 여부를 확인하고, 없으면 **설치 안내만** 하고 **분석은 시작하지 않는다**(도구 없이 추정 보고서 금지 = fail-closed). 설치 방법은 README §6-2 참조(2026-08-02: 구 GUIDE 문서는 제거되어 README로 통합됨).
+- **Ghidra**(무료, NSA·Apache-2.0) + **JDK 21+** 필요(**2026-08-19 정정**: 이전엔 "Java 17+"로 적혀 있었으나, 실제로 Ghidra 12.1.3(2026-08-18 릴리스)을 라이브 설치·실행해보니 `analyzeHeadless`가 "JDK 21+ (64-bit) could not be found"로 명확히 요구함을 확인했다 — Ghidra 버전이 올라가며 요구 JDK도 올라간 것으로 보임, 새 Ghidra 버전을 만나면 이 요구사항을 다시 확인할 것). 설치 여부를 확인하고, 없으면 **설치 안내만** 하고 **분석은 시작하지 않는다**(도구 없이 추정 보고서 금지 = fail-closed). 설치 방법은 README §6-2 참조(2026-08-02: 구 GUIDE 문서는 제거되어 README로 통합됨).
 - **LIEF 경량 분석(옵션, §2-2 참조)**: Ghidra·Java 설치가 부담스러우면 **Python + LIEF**만으로도 파일 구조(헤더·섹션·임포트/익스포트) 수준의 가벼운 분석이 가능하다. 디스어셈블·디컴파일은 못 하지만 설치 마찰이 훨씬 적다.
 - **IDA Pro(옵션)**: 환경변수 `SODAM_RE_IDA_PATH`가 설정돼 있으면 IDA 기반 분석을 대안으로 제시할 수 있다. **IDA는 상용 소프트웨어라 사용자 본인이 정식 라이선스를 보유했는지는 사용자 책임**이며, 이 스킬은 라이선스 유효성을 검증하지 않는다. 미설정이면 Ghidra만 사용한다.
 - **셋 다 없으면**: Ghidra·LIEF·IDA 중 아무것도 준비 안 됐으면 설치 안내만 하고 분석을 시작하지 않는다(fail-closed). 사용자가 원하는 깊이(가벼운 구조 분석만 vs 완전한 디스어셈블)에 따라 무엇을 먼저 설치할지 안내한다.
@@ -95,27 +96,33 @@ print(json.dumps(result, ensure_ascii=False))
 
 ## 2-1. Ghidra 헤드리스(headless) 호출 방법 (실제 명령 구조)
 
-> ⚠️ **아직 라이브 미검증**: `mcp/catalog.json`의 `ghidra-mcp`(bethington/ghidra-mcp)는 카탈로그 채택 상태일 뿐
+> `mcp/catalog.json`의 `ghidra-mcp`(bethington/ghidra-mcp)는 카탈로그 채택 상태일 뿐
 > 실제로 MCP 서버로 연결된 적이 없다(`.mcp.json` 부재, `plugin.json`에 MCP 설정 없음 — 확인됨). 그래서 이 스킬은
-> Ghidra의 **공식 headless 모드**를 직접 호출하는 방식을 쓴다. 아래 명령 구조는 Ghidra 공식 문서 기준으로
-> 정확하나, **이 프로젝트에서 실제로 실행해본 적은 없다**(Ghidra 미설치 환경) — 처음 라이브 실행 시 출력을
-> 주의 깊게 확인하고, 버전별 차이가 있으면 이 섹션을 갱신할 것.
+> Ghidra의 **공식 headless 모드**를 직접 호출하는 방식을 쓴다.
+>
+> ✅ **환경 준비·명령 구조 검증됨(2026-08-19)**: Ghidra 12.1.3을 실제로 설치(`gh release download` 공식 릴리스)하고,
+> 자체 저작 더미 실행파일(`sodam_dummy.exe`)로 아래와 같은 실제 `analyzeHeadless -import` 명령을 직접 실행해
+> **"REPORT: Analysis succeeded" · "REPORT: Import succeeded"까지 정상 완료를 확인했다.** JDK는 21+가 필요해
+> 이 PC엔 별도로 JDK 21(Temurin)을 받아 Ghidra 설치 폴더의 `support/launch.properties`의
+> `JAVA_HOME_OVERRIDE`에 그 경로만 지정했다(시스템 전역 `JAVA_HOME`은 건드리지 않아 기존 Java 17 의존 항목에
+> 영향 없음). **단, 이건 어디까지나 Ghidra 자체·이 명령 구조의 환경 점검일 뿐**이다 — `/sodam-reverse:re-binary`
+> 슬래시 명령을 실제 Claude Code 라이브 세션에서 동의 게이트→이 명령 호출→표준 보고서 생성까지 전 과정을
+> 거치는 **종단 검증은 아직 사람이 새 세션에서 확인해야 하는 몫으로 남아있다**(LIEF 경로와 동일한 구도).
 
 ```
 <Ghidra설치경로>/support/analyzeHeadless <프로젝트폴더> <프로젝트이름> \
   -import <분석대상파일> \
-  -postScript <스크립트이름> \
+  -postScript ExtractSummary.java <출력파일경로> \
+  -scriptPath <이 스킬 폴더>/ghidra-scripts \
   -deleteProject
 ```
 (Windows는 `analyzeHeadless.bat`, macOS/Linux는 `analyzeHeadless`)
 
-- `<프로젝트폴더>`: 매 분석마다 새로 만드는 임시 작업 폴더(예: `./.sodam-re/binary/ghidra-project`) — 분석 후 `-deleteProject`로 정리.
-- `-postScript`: 분석 완료 후 실행할 스크립트. 함수 목록·디컴파일 결과·문자열·임포트를 텍스트로 추출하려면
-  Ghidra의 **FlatProgramAPI**(공식 Java/Python 스크립팅 인터페이스, `getCurrentProgram()`으로 분석 결과 접근)를
-  쓰는 짧은 스크립트를 그 자리에서 작성해 `-scriptPath`로 지정한다.
-- 스크립트 출력은 파일로 저장(예: `analysis-output.txt`)한 뒤 그 파일을 읽어 §4 표준 보고서로 정리한다.
+- `<프로젝트폴더>`: 매 분석마다 새로 만드는 임시 작업 폴더(예: `./.sodam-re/binary/ghidra-project`, **폴더명이 `.`으로 시작하면 안 됨** — Ghidra가 거부함, 2026-08-19 실측) — 분석 후 `-deleteProject`로 정리.
+- `-postScript`: 분석 완료 후 실행할 스크립트. **함수 목록·문자열·임포트 추출은 `ghidra-scripts/ExtractSummary.java`(이 스킬 폴더에 이미 동봉, 실제 실행 검증됨 — 아래 참고)를 그대로 재사용한다. "그 자리에서 즉석 작성"하지 않는다** — Ghidra 12.1.3은 headless에서 기본적으로 Jython(`.py`) 스크립트를 지원하지 않아("Ghidra was not started with PyGhidra. Python is not available", 2026-08-19 실측) `.java` 스크립트만 신뢰할 수 있는 경로다.
+- 스크립트 출력은 `<출력파일경로>`에 텍스트로 저장되며, 그 파일을 읽어 §4 표준 보고서(함수별 설명·문자열/임포트)로 정리한다.
 
-**첫 라이브 실행 시 반드시 확인**: ①`analyzeHeadless`가 실제로 그 경로에 있는지 ②이 Ghidra 버전이 설치된 Java 버전과 호환되는지 ③스크립트 인자 전달이 그대로 동작하는지 — 전부 이번이 최초 확인이다. 예상과 다르게 동작하면 §5-11e(CHECKPOINT)에 실측 기록 후 이 섹션을 정정할 것.
+**검증 결과(2026-08-19, CHECKPOINT §5-69)**: 자체 저작 더미 실행파일(`sodam_dummy.exe`)로 위 명령을 그대로 실행해 **함수 5개(`Add`·`Greet`·`Main`·`.ctor`·`entry`)·PE 리소스 문자열·임포트(`_CorExeMain`)가 실제 텍스트 파일로 정상 추출됨을 확인**했다. `analyzeHeadless.bat -help`부터 `-import`·`-postScript`·실제 함수/문자열 추출까지 이 명령 구조 전체가 이제 end-to-end로 검증된 상태다. 남은 건 `/sodam-reverse:re-binary` 슬래시 명령이 이 검증된 명령을 실제 라이브 세션에서 그대로 호출하는 것뿐이다(사람 몫).
 
 ## 3. 분석 (읽기 전용·주입 방지, 정적 분석만)
 

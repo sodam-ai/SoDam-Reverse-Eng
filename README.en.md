@@ -305,7 +305,7 @@ Copy the **hashes of the 5 core safety files** from the selftest output and save
 ### 6-2. (Phase 2·3) Additional Tool Installation — Optional
 
 > If you only use `/re-start` (source code analysis), you can skip this section.
-> `/re-android` (APK analysis) or `/re-binary` (executable analysis) need extra programs like Java·JADX·Apktool (Android) or Java·Ghidra (binary).
+> `/re-android` (APK analysis) or `/re-binary` (executable analysis) need extra programs like Java 17+·JADX·Apktool (Android) or **JDK 21+**·Ghidra (binary — corrected 2026-08-19, was previously documented as Java 17).
 >
 > 📄 **A more detailed reference with the exact download links, verify-commands, and the specific versions confirmed on the dev machine also exists as [`INSTALL.md`](./INSTALL.md) — note that file is Korean-only for now.** The English summary below covers the same tools and is enough to get started.
 
@@ -376,7 +376,7 @@ Once Java and Ghidra are ready, start analyzing with `/re-binary [executable-pat
 | Command | Status | Description |
 |---|---|---|
 | `/re-android [APK-path]` | ✅ Live-verified (2026-07-13) | Android app analysis |
-| `/re-binary [file-path]` | 🚧 Scaffolding complete (not yet live-verified) | Binary/executable analysis |
+| `/re-binary [file-path]` | 🟡 Ghidra environment ready & headless command verified (2026-08-19); the slash command itself is not yet live-verified | Binary/executable analysis |
 
 ---
 
@@ -479,7 +479,7 @@ SoDam-Reverse-Eng/
 │   ├── re-selftest.md           ← /re-selftest
 │   ├── re-agent.md              ← /re-agent (AI agent structure analysis)
 │   ├── re-android.md            ← live-verified
-│   └── re-binary.md             ← scaffolding complete (not yet live-verified)
+│   └── re-binary.md             ← Ghidra environment verified, slash command run pending
 │
 ├── skills/                      ← AI analysis logic
 │   ├── re-router/               ← Layer 1 safety rules + request routing
@@ -487,7 +487,7 @@ SoDam-Reverse-Eng/
 │   ├── re-report/               ← Report generation
 │   ├── re-analyze-agent/        ← live-verified
 │   ├── re-analyze-android/      ← live-verified
-│   └── re-analyze-binary/       ← scaffolding complete (not yet live-verified)
+│   └── re-analyze-binary/       ← Ghidra environment verified, slash command run pending
 │
 ├── hooks/                       ← Safety layers 2 and 3
 │   ├── re-deny-guard.mjs        ← Layer 2: real-time danger blocking

@@ -744,7 +744,9 @@ Additional Tool Installation — Optional</h3>
 <p>If you only use <code>/re-start</code> (source code analysis), you
 can skip this section. <code>/re-android</code> (APK analysis) or
 <code>/re-binary</code> (executable analysis) need extra programs like
-Java·JADX·Apktool (Android) or Java·Ghidra (binary).</p>
+Java 17+·JADX·Apktool (Android) or <strong>JDK 21+</strong>·Ghidra
+(binary — corrected 2026-08-19, was previously documented as Java
+17).</p>
 <p>📄 <strong>A more detailed reference with the exact download links,
 verify-commands, and the specific versions confirmed on the dev machine
 also exists as <a href="./INSTALL.md"><code>INSTALL.md</code></a> — note
@@ -899,7 +901,8 @@ correctly.</p>
 </tr>
 <tr>
 <td><code>/re-binary [file-path]</code></td>
-<td>🚧 Scaffolding complete (not yet live-verified)</td>
+<td>🟡 Ghidra environment ready &amp; headless command verified
+(2026-08-19); the slash command itself is not yet live-verified</td>
 <td>Binary/executable analysis</td>
 </tr>
 </tbody>
@@ -1032,7 +1035,7 @@ Structure</h2>
 │   ├── re-selftest.md           ← /re-selftest
 │   ├── re-agent.md              ← /re-agent (AI agent structure analysis)
 │   ├── re-android.md            ← live-verified
-│   └── re-binary.md             ← scaffolding complete (not yet live-verified)
+│   └── re-binary.md             ← Ghidra environment verified, slash command run pending
 │
 ├── skills/                      ← AI analysis logic
 │   ├── re-router/               ← Layer 1 safety rules + request routing
@@ -1040,7 +1043,7 @@ Structure</h2>
 │   ├── re-report/               ← Report generation
 │   ├── re-analyze-agent/        ← live-verified
 │   ├── re-analyze-android/      ← live-verified
-│   └── re-analyze-binary/       ← scaffolding complete (not yet live-verified)
+│   └── re-analyze-binary/       ← Ghidra environment verified, slash command run pending
 │
 ├── hooks/                       ← Safety layers 2 and 3
 │   ├── re-deny-guard.mjs        ← Layer 2: real-time danger blocking

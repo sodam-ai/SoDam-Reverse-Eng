@@ -710,9 +710,10 @@ class="sourceCode json"><code class="sourceCode json"><span id="cb10-1"><a href=
 <blockquote>
 <p><code>/re-start</code>(소스 코드 분석)만 쓴다면 이 항목은 건너뛰어도
 됩니다. <code>/re-android</code>(APK 분석) 또는
-<code>/re-binary</code>(실행파일 분석)를 쓰려면
-Java·JADX·Apktool(안드로이드) 또는 Java·Ghidra(바이너리) 같은 추가
-프로그램이 필요합니다.</p>
+<code>/re-binary</code>(실행파일 분석)를 쓰려면 Java
+17+·JADX·Apktool(안드로이드) 또는 <strong>JDK
+21+</strong>·Ghidra(바이너리, 2026-08-19 실측 정정 — 이전엔 Java 17로
+안내됨) 같은 추가 프로그램이 필요합니다.</p>
 <p><strong>상세 설치 방법(공식 배포처 링크·확인 명령·실제 검증된 버전)은
 별도 문서로 정리했습니다:</strong> <strong>📄 <a
 href="./INSTALL.md">INSTALL.md — 필요 프로그램 설치
@@ -792,7 +793,8 @@ href="./INSTALL.md">INSTALL.md — 필요 프로그램 설치
 </tr>
 <tr>
 <td><code>/re-binary [파일경로]</code></td>
-<td>🚧 골격 완료(라이브 미검증)</td>
+<td>🟡 Ghidra 환경 준비·명령 동작 확인(2026-08-19), 슬래시 명령 실사용은
+미검증</td>
 <td>바이너리/실행파일 분석</td>
 </tr>
 </tbody>
@@ -920,7 +922,7 @@ Claude AI (Anthropic 서버)
 │   ├── re-selftest.md
 │   ├── re-agent.md              ← AI 에이전트 구조 분석
 │   ├── re-android.md            ← 실사용 라이브 검증 완료
-│   └── re-binary.md             ← 골격 완료(라이브 미검증)
+│   └── re-binary.md             ← Ghidra 환경 검증 완료, 슬래시 명령 실행만 대기
 │
 ├── skills/                      ← 분석 AI 로직
 │   ├── re-router/               ← 1층 안전규칙 + 요청 분류
@@ -928,7 +930,7 @@ Claude AI (Anthropic 서버)
 │   ├── re-report/               ← 보고서 생성
 │   ├── re-analyze-agent/        ← 라이브 검증 완료
 │   ├── re-analyze-android/      ← 실사용 라이브 검증 완료
-│   └── re-analyze-binary/       ← 골격 완료(라이브 미검증)
+│   └── re-analyze-binary/       ← Ghidra 환경 검증 완료, 슬래시 명령 실행만 대기
 │
 ├── hooks/                       ← 안전장치 (2층 · 3층)
 │   ├── re-deny-guard.mjs        ← 2층: 위험 패턴 실시간 차단
