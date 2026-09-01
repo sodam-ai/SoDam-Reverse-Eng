@@ -38,11 +38,23 @@ node "${CLAUDE_PLUGIN_ROOT}/hooks/_selftest.mjs"
 
 - **세 질문 모두 "예" 계열 선택** → 4단계 진행
 - **하나라도 "아니오" 선택 또는 응답 거부** → 즉시 중단: "동의가 확인되지 않아 분석할 수 없습니다."
-- **동의가 확인되면** `Write` 도구로 `.sodam-re/consent-log.jsonl`에 한 줄을 추가한다(파일 없으면 새로 생성, 기존 내용 뒤에 append):
-  ```json
-  {"id":"con-<현재시각 밀리초>","target_scope":"$ARGUMENTS","ownership":"<질문1 응답 그대로>","disclaimer_ack":true,"agreed_at":"<현재 ISO 8601 시각>"}
-  ```
-  **⚠️ target_scope 경로에 `\`(윈도우 경로의 백슬래시)가 있으면 반드시 `\\`로 이스케이프한다** — 예: `D:\test6\sample.js`는 JSON에 `"D:\\test6\\sample.js"`로 써야 한다. 그냥 `"D:\test6\sample.js"`처럼 쓰면 깨진 JSON이 된다(2026-08-19 실제 라이브 로그에서 5건 중 4건이 이 실수로 손상된 것이 확인됨). **쓰기 직전 재확인**: target_scope 값 안의 `\`가 전부 `\\`로 바뀌었는지 한 번 더 확인한 뒤 Write한다.
+- **동의가 확인되면** 아래 방법으로 `.sodam-re/consent-log.jsonl`에 한 줄을 추가한다(파일 없으면 새로 생성, 기존 내용 뒤에 append). **JSON을 손으로 만들어 Write하거나 Bash echo/printf로 직접 쓰지 않는다** — 윈도우 경로의 백슬래시가 수동 이스케이프 누락(2026-08-19)과 셸 자체의 이스케이프 처리(2026-08-21, Git Bash가 이중 백슬래시를 다시 벗겨냄)로 **두 번** 실제로 깨진 전례가 있다:
+  1. `Write` 도구로 임시 스크립트 `.sodam-re/_consent_tmp.mjs`를 만든다:
+     ```js
+     import fs from 'fs';
+     const entry = {
+       id: 'con-' + Date.now(),
+       target_scope: String.raw`$ARGUMENTS`,
+       ownership: '<질문1 응답 그대로>',
+       disclaimer_ack: true,
+       agreed_at: new Date().toISOString(),
+     };
+     fs.appendFileSync('.sodam-re/consent-log.jsonl', JSON.stringify(entry) + '\n');
+     ```
+  2. `Bash`로 `node .sodam-re/_consent_tmp.mjs` 실행(파일명만 넘기므로 셸 이스케이프 위험 없음).
+  3. 실행 후 스크립트 파일은 삭제한다.
+
+  **왜 이 방식인가**: `String.raw`는 백슬래시를 이스케이프 없이 그대로 쓸 수 있게 하고, `JSON.stringify()`가 나머지 이스케이프를 전담한다 — AI가 `\`를 `\\`로 세어 바꾸는 수작업 자체가 없어진다. `Write` 도구는 셸을 거치지 않으므로 Bash의 이스케이프 문제도 원천 차단된다.
   (02_DATA_MODEL의 ConsentRecord, `session_id`는 생략 — SafetyLog와 동일한 fail-safe: 기록 실패해도 분석은 계속 진행)
 
 ---

@@ -793,8 +793,7 @@ href="./INSTALL.md">INSTALL.md — 필요 프로그램 설치
 </tr>
 <tr>
 <td><code>/re-binary [파일경로]</code></td>
-<td>🟡 Ghidra 환경 준비·명령 동작 확인(2026-08-19), 슬래시 명령 실사용은
-미검증</td>
+<td>✅ 실사용 라이브 검증 완료(2026-08-21)</td>
 <td>바이너리/실행파일 분석</td>
 </tr>
 </tbody>
@@ -922,7 +921,7 @@ Claude AI (Anthropic 서버)
 │   ├── re-selftest.md
 │   ├── re-agent.md              ← AI 에이전트 구조 분석
 │   ├── re-android.md            ← 실사용 라이브 검증 완료
-│   └── re-binary.md             ← Ghidra 환경 검증 완료, 슬래시 명령 실행만 대기
+│   └── re-binary.md             ← 실사용 라이브 검증 완료
 │
 ├── skills/                      ← 분석 AI 로직
 │   ├── re-router/               ← 1층 안전규칙 + 요청 분류
@@ -930,7 +929,7 @@ Claude AI (Anthropic 서버)
 │   ├── re-report/               ← 보고서 생성
 │   ├── re-analyze-agent/        ← 라이브 검증 완료
 │   ├── re-analyze-android/      ← 실사용 라이브 검증 완료
-│   └── re-analyze-binary/       ← Ghidra 환경 검증 완료, 슬래시 명령 실행만 대기
+│   └── re-analyze-binary/       ← 실사용 라이브 검증 완료
 │
 ├── hooks/                       ← 안전장치 (2층 · 3층)
 │   ├── re-deny-guard.mjs        ← 2층: 위험 패턴 실시간 차단
@@ -1505,7 +1504,8 @@ GitHub·브라우저 모두 접기/펼치기 지원)</p>
 </details>
 <details>
 <summary>
-<strong>Phase 3 착수 — 바이너리 분석 골격 (⚠️ 라이브 미검증)</strong>
+<strong>Phase 3 착수 — 바이너리 분석 골격 (당시 라이브 미검증 ·
+2026-08-21에 검증 완료됨, 아래 v0.3.0 항목 참고)</strong>
 </summary>
 <ul>
 <li><code>re-analyze-binary</code> 스킬 + <code>/re-binary</code> 명령
@@ -1643,6 +1643,27 @@ GitHub·브라우저 모두 접기/펼치기 지원)</p>
 없음).</li>
 <li>LICENSE·NOTICE 파일이 이미 갖춰져 있었는데 기획 문서만 “없음”으로
 잘못 남아있던 것을 발견해 정정했습니다.</li>
+</ul>
+</details>
+<details>
+<summary>
+<strong>Phase 3 실사용 라이브 검증 완료 + 버그 2건 수정
+(2026-08-21)</strong>
+</summary>
+<ul>
+<li><strong><code>/re-binary</code>가 실제 새 세션에서 동의 게이트 →
+Ghidra 분석 → 표준 보고서까지 전 과정을 처음으로 완주했습니다.</strong>
+이걸로 Phase 1·2·3 전부 실사용 검증이 끝났습니다.</li>
+<li>그 과정에서 두 가지 문제를 더 발견해 고쳤습니다:
+<ul>
+<li>Ghidra가 실제로는 정상 작동 가능한 상태인데도, 확인 방법이 부정확해
+“JDK 21 이상이 없다”고 잘못 판단해 더 약한 분석 방식으로 자동 전환되던
+문제</li>
+<li>동의 기록이 또 한 번 깨진 형식으로 저장되던 문제(v0.3.0에서 고친
+것과 증상은 같지만 원인은 달랐음) — 이번엔 손으로 만든 문자열 대신
+프로그램이 자동으로 형식을 만들도록 바꿔 같은 문제가 다시 생기지 않도록
+근본적으로 고쳤습니다.</li>
+</ul></li>
 </ul>
 </details>
 <blockquote>

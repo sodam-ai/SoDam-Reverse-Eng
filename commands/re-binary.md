@@ -25,4 +25,4 @@ description: 바이너리 역공학 분석 시작 (본인 소유/허가 실행�
 | 악성코드 의심 파일 | 🛑 이번 범위에 없음 — 분석 거부(정책검토 대기) |
 | 타사 실행파일 무단 분석 | 🛑 동의 게이트 차단 |
 
-> 소스레벨이 아닌 정적 바이너리 분석이라 Ghidra+JDK 21+ 설치가 필요합니다. **2026-08-19: Ghidra 12.1.3을 실제로 설치해 headless 분석 명령이 정상 동작함을 환경 차원에서 확인했습니다**(CHECKPOINT §5-68) — 다만 `/sodam-reverse:re-binary` 슬래시 명령을 실제 Claude Code 세션에서 처음부터 끝까지(동의→분석→보고서) 실행하는 검증은 아직 사람이 새 세션에서 확인해야 합니다.
+> 소스레벨이 아닌 정적 바이너리 분석이라 Ghidra+JDK 21+ 설치가 필요합니다. **2026-08-19: Ghidra 12.1.3을 실제로 설치해 headless 분석 명령이 정상 동작함을 환경 차원에서 확인했습니다**(CHECKPOINT §5-68). **2026-08-21 갱신: `/sodam-reverse:re-binary` 슬래시 명령도 실제 Claude Code 세션에서 동의→Ghidra 분석→표준 보고서까지 전 과정 실사용 검증 완료**(CHECKPOINT §5-87, 함수 5개 추출 확인 — `D:\Test_Dev\test6\.sodam-re\binary\report_sodam_dummy.exe.md` 실제 보고서 파일로 재확인).

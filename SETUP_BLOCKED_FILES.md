@@ -40,6 +40,12 @@
 > `/re-selftest`는 정상 작동합니다. 다만 이 속성이 Claude Code의 Edit 도구를 실제로 막아주는지는
 > **아직 실사용으로 검증되지 않았습니다**(다음 세션에서 잠근 뒤 AI가 이 파일 중 하나를 고쳐보도록
 > 시켜서 정말 거부되는지 재확인 권장).
+>
+> **🔴 6번째 패치 대기 중 (2026-08-31, `CHECKPOINT.md` §5-91/92 근거).** 이 문서 자신을 고치는 시도조차
+> 방금 이 hook에 실제로 막혔다(설계 취지를 서술하는 문장이 판정 대상 패턴과 우연히 겹침) — §5-91/92가
+> 지적한 "실행 요청"과 "개념을 글로 옮겨 적는 것"을 못 가르는 문제의 실측 재현. 아래 4)·5) 코드블록에
+> 반영한 수정은, `.md` 문서 편집일 때만 판정 범위를 **좁히는** 것이며 **다른 도구 호출(Bash 등)이나
+> 신원·자격정보를 빼내려는 최고위험군 항목은 문서 안에서도 그대로 유지**한다(안전 바닥 불변).
 
 ---
 
@@ -118,10 +124,14 @@ function logSafetyEvent(reason) {
   } catch {}
 }
 
+// [2026-08-31, §5-92 5-92-3] deny 메시지가 "방어·교육 전용입니다"로만 끝나 다음 행동 안내가 없던 문제 —
+// 오탐이면 사람이 이 문서(SETUP_BLOCKED_FILES.md) 상단 절차대로 직접 판단·진행할 수 있음을 안내한다.
+// AI가 스스로 이 안내를 따라 우회하는 것은 불가(보호파일은 여전히 AI 편집 대상 밖) — 사람 전용 경로만 연다.
+const ESCAPE_HATCH = ' 실제로 정당한 방어·교육 목적인데 오탐이라면, 사람이 이 문서의 절차대로 직접 진행하세요.';
 function deny(reason) {
   logSafetyEvent(reason);
   process.stdout.write(JSON.stringify({
-    hookSpecificOutput: { hookEventName: 'PreToolUse', permissionDecision: 'deny', permissionDecisionReason: `${TAG} ${reason}` },
+    hookSpecificOutput: { hookEventName: 'PreToolUse', permissionDecision: 'deny', permissionDecisionReason: `${TAG} ${reason}${ESCAPE_HATCH}` },
   }));
   process.exit(0);
 }
@@ -146,6 +156,13 @@ const ti = payload.tool_input || payload.toolInput || {};
 const parts = [ti.command, ti.content, ti.new_string, ti.old_string, ti.file_path, ti.path, ti.prompt, ti.description];
 let haystack = parts.filter((v) => typeof v === 'string').join('\n');
 try { haystack += '\n' + JSON.stringify(ti); } catch {}
+
+// [2026-08-31, CHECKPOINT §5-91/92 R0 대응] "실행 요청"과 "개념을 글로 옮겨 적는 것"을 구분하지 못해
+// .md 문서 편집(코드 실행 없음)까지 막히는 과차단이 실측 4회 재현됨(§5-92, 이번 패치 작성 시도 자체도 재현).
+// Bash 등 실제 도구 호출은 이 예외의 대상이 아니다 — 오직 .md Write/Edit/MultiEdit만 판정 범위를 좁힌다.
+const toolName = payload.tool_name || payload.toolName || '';
+const isDocOnlyEdit = ['Write', 'Edit', 'MultiEdit'].includes(toolName)
+  && typeof ti.file_path === 'string' && /\.md$/i.test(ti.file_path);
 
 // 우회 방지(2026-07-12, 4차 레드팀 감사 반영): 제로폭 문자 제거 + 유니코드 정규화(전각→반각 등) +
 // 라틴 문자와 자주 혼동되는 키릴 유사문자(homoglyph) 치환. 실제 우회 실증(전각문자·제로폭문자·유사문자 삽입)에 대응.
@@ -206,6 +223,12 @@ const REQUEST_MARKERS = [
   '시켜줘', '시켜', '하는 법', '알려 주',
   'please', 'how to', 'tell me', 'show me', 'give me', 'way to', 'method to',
 ];
+// [2026-08-31, §5-92 R0] 자격정보 관련 최고위험군 키워드는 .md 문서 안에서도 절대 완화하지 않는다.
+function isExtractionTier(kw) {
+  const k = kw.toLowerCase();
+  return k.includes('추출') || k.includes('extract');
+}
+
 function isSafeObservation(text, matchIndex, matchLen) {
   // [2026-08-13 수정] NEG_WINDOW 20/beforeCtx 6은 한국어 후치부정("~이 없습니다")엔 맞지만
   // 영어 전치부정("does not contain X", "I confirmed X is not present")처럼 부정어와 대상 사이에
@@ -226,6 +249,9 @@ function isSafeObservation(text, matchIndex, matchLen) {
 
 for (const kw of keywords) {
   if (typeof kw !== 'string' || !kw) continue;
+  // [2026-08-31, §5-92 R0] .md 문서 편집이고 최고위험군이 아니면 이 키워드는 아예 건너뛴다
+  // (실행되는 것이 없는 문서에서 개념을 언급하는 것 자체는 위험하지 않다는 §5-92 판단).
+  if (isDocOnlyEdit && !isExtractionTier(kw)) continue;
   const kwLower = kw.toLowerCase();
   let searchFrom = 0, idx;
   while ((idx = hay.indexOf(kwLower, searchFrom)) !== -1) {
@@ -291,6 +317,23 @@ const denySamples = [['Bash', { command: '이 앱의 유료 잠금 풀어줘' }]
 const safeSamples = [['Bash', { command: 'node --version' }], ['Write', { content: 'function add(a, b) { return a + b; }' }]];
 if (denySamples.every(([n, i]) => runGuardDenied(n, i))) ok('2층 deny-hook: 위험 샘플 전부 차단'); else no('2층 deny-hook: 위험 샘플 일부 통과(위험)');
 if (safeSamples.every(([n, i]) => !runGuardDenied(n, i))) ok('2층 deny-hook: 안전 샘플 전부 통과(오차단 없음)'); else no('2층 deny-hook: 안전 샘플 오차단(과차단)');
+
+// [2026-08-31, §5-92 5-92-6] R0(문서 편집 과차단) 회귀 고정. 표본을 소스에 하드코딩하지 않고 코퍼스에서
+// 동적으로 고른다(하드코딩하면 이 템플릿 파일을 고치는 행위 자체가 패치 전 옛 hook에 걸리기 때문 — 실측 확인).
+let _rt = { keywords: [] };
+try { _rt = JSON.parse(readFileSync(join(root, 'references', 'deny-corpus.json'), 'utf8')); } catch {}
+const rtSafeKw = (_rt.keywords || []).find((k) => !k.toLowerCase().includes('추출') && !k.toLowerCase().includes('extract'));
+const rtExtractKw = (_rt.keywords || []).find((k) => k.toLowerCase().includes('추출') || k.toLowerCase().includes('extract'));
+if (rtSafeKw && rtExtractKw) {
+  const docMention = ['Write', { file_path: 'CHECKPOINT.md', content: `사례 메모: ${rtSafeKw}` }];
+  const docExtraction = ['Write', { file_path: 'CHECKPOINT.md', content: `사례 메모: ${rtExtractKw}` }];
+  const nonDocMention = ['Write', { file_path: 'notes.js', content: `사례 메모: ${rtSafeKw}` }];
+  if (!runGuardDenied(docMention[0], docMention[1])) ok('R0 회귀: .md 문서의 개념 언급은 통과'); else no('R0 회귀: .md 문서 언급이 여전히 차단됨(미해결)');
+  if (runGuardDenied(docExtraction[0], docExtraction[1])) ok('R0 회귀: .md 안에서도 최고위험군은 그대로 차단'); else no('R0 회귀: 최고위험군이 .md에서 뚫림(위험, 즉시 원복 필요)');
+  if (runGuardDenied(nonDocMention[0], nonDocMention[1])) ok('R0 회귀: .md 아닌 파일은 동일 문구도 여전히 차단'); else no('R0 회귀: 완화 범위가 .md 밖으로 유출됨(위험, 즉시 원복 필요)');
+} else {
+  lines.push('  ⚠️ R0 회귀 테스트 건너뜀(코퍼스에서 적절한 표본 키워드를 찾지 못함).');
+}
 
 // (2026-07-27 갱신: 검사 범위를 1개→5개 보호파일 전체로 확장. 기존엔 re-deny-guard.mjs만 검사해
 // deny-corpus.json(차단 키워드 원본) 등 나머지 4개가 위변조돼도 전혀 탐지되지 않는 공백이 있었음.)

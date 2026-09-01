@@ -335,25 +335,26 @@ Once all 3 respond to `--version`, start analyzing with `/re-android [APK-path]`
 </details>
 
 <details>
-<summary><strong>Binary Analysis Tools — Java · Ghidra (⚠️ Scaffolding complete, still not live-verified — Ghidra itself remains uninstalled on the dev machine)</strong></summary>
+<summary><strong>Binary Analysis Tools — JDK 21+ · Ghidra (✅ Live-verified 2026-08-21 — consent gate → Ghidra analysis → report, end to end, in a real session)</strong></summary>
 
-2 free tools are needed. Install **Java first** (Ghidra runs on top of Java).
+2 free tools are needed. Install **the JDK first** (Ghidra runs on top of it).
 
-**1) Java 17 or higher** — Official: [adoptium.net](https://adoptium.net) · Verify: `java --version`
+**1) JDK 21 or higher** (2026-08-19 correction: earlier guidance said "Java 17+" — as of Ghidra 12.1.3, Ghidra itself needs **JDK 21+**) — Official: [adoptium.net](https://adoptium.net) · Verify: `java --version`
 
-**2) Ghidra (free, built by the NSA)**
-- Official: [ghidra-sre.org](https://ghidra-sre.org/)
+**2) Ghidra 12.1.3 or later (free, built by the NSA)**
+- Official: [ghidra-sre.org](https://ghidra-sre.org/) (or download a specific release via `gh release download` from `NationalSecurityAgency/ghidra`)
 - After extracting, verify `ghidraRun.bat` (Windows) launches
-- If `ghidraRun` won't launch, it's usually a missing `JAVA_HOME` — point it at your Java install path and retry from a new terminal
+- **If you already have an older JDK for other tools (e.g. JDK 17 for JADX/Apktool)**: do **not** overwrite your system-wide `JAVA_HOME` — that would break those other tools. Instead, install JDK 21 separately and point only Ghidra at it: open Ghidra's own `support/launch.properties` and set `JAVA_HOME_OVERRIDE=<path to your JDK 21 folder>`. Ghidra alone will use JDK 21; everything else keeps using your existing JDK.
+- If `analyzeHeadless`/`ghidraRun` still reports "JDK 21+ (64-bit) could not be found" after this, re-check that `JAVA_HOME_OVERRIDE` points at a real JDK 21 (not just a JRE) folder.
 
-**(Alternative) Installation feels heavy?**: `pip install lief` gives lightweight structure analysis only (headers, sections, imports — no disassembly). This alternative path **has been installed and smoke-tested** on the dev machine: `Python 3.13.7` + `LIEF 1.0.0`, verified with `python -c "import lief; print(lief.__version__)"` (use `py` instead of `python` if Windows doesn't recognize the latter).
+**(Alternative) Installation feels heavy?**: `pip install lief` gives lightweight structure analysis only (headers, sections, imports — no disassembly). This alternative path **has been installed and smoke-tested** on the dev machine: `Python 3.14.7` + `LIEF 1.0.0`, verified against a real PE file (use `py` instead of `python` if Windows doesn't recognize the latter).
 
 **(Optional) IDA Pro integration**: if you own a commercial license, run the following then reopen your terminal:
 ```powershell
 setx SODAM_RE_IDA_PATH "C:\Program Files\IDA Pro 8.x\ida64.exe"
 ```
 
-Once Java and Ghidra are ready, start analyzing with `/re-binary [executable-path]`.
+Once the JDK and Ghidra are ready, start analyzing with `/re-binary [executable-path]`.
 
 </details>
 
@@ -376,7 +377,7 @@ Once Java and Ghidra are ready, start analyzing with `/re-binary [executable-pat
 | Command | Status | Description |
 |---|---|---|
 | `/re-android [APK-path]` | ✅ Live-verified (2026-07-13) | Android app analysis |
-| `/re-binary [file-path]` | 🟡 Ghidra environment ready & headless command verified (2026-08-19); the slash command itself is not yet live-verified | Binary/executable analysis |
+| `/re-binary [file-path]` | ✅ Live-verified (2026-08-21) | Binary/executable analysis |
 
 ---
 
@@ -475,11 +476,11 @@ SoDam-Reverse-Eng/
 ├── commands/                    ← Command definitions
 │   ├── re-ping.md               ← /re-ping (diagnostic)
 │   ├── re-start.md              ← /re-start (analysis start)
-│   ├── re-report.md             ← /re-report
+│   ├── re-report.md             ← /re-report, live-verified
 │   ├── re-selftest.md           ← /re-selftest
-│   ├── re-agent.md              ← /re-agent (AI agent structure analysis)
+│   ├── re-agent.md              ← /re-agent (AI agent structure analysis), live-verified
 │   ├── re-android.md            ← live-verified
-│   └── re-binary.md             ← Ghidra environment verified, slash command run pending
+│   └── re-binary.md             ← Live-verified
 │
 ├── skills/                      ← AI analysis logic
 │   ├── re-router/               ← Layer 1 safety rules + request routing
@@ -487,7 +488,7 @@ SoDam-Reverse-Eng/
 │   ├── re-report/               ← Report generation
 │   ├── re-analyze-agent/        ← live-verified
 │   ├── re-analyze-android/      ← live-verified
-│   └── re-analyze-binary/       ← Ghidra environment verified, slash command run pending
+│   └── re-analyze-binary/       ← Live-verified
 │
 ├── hooks/                       ← Safety layers 2 and 3
 │   ├── re-deny-guard.mjs        ← Layer 2: real-time danger blocking
@@ -804,7 +805,7 @@ node scripts/re-inject-harness.mjs
 </details>
 
 <details>
-<summary><strong>Phase 3 Start — Binary Analysis Scaffolding (⚠️ Not Live-Verified)</strong></summary>
+<summary><strong>Phase 3 Start — Binary Analysis Scaffolding (not live-verified at the time · verified 2026-08-21, see the v0.3.0 and later entries below)</strong></summary>
 
 - Added `re-analyze-binary` skill + `/re-binary` command **scaffolding** — static analysis wrap around Ghidra (free), with optional IDA Pro support via `SODAM_RE_IDA_PATH`
 - Added Java/Ghidra install guide (section 2-7) to GUIDE
@@ -870,6 +871,16 @@ node scripts/re-inject-harness.mjs
 - Added guidance for the "Unknown command" issue caused by several commands colliding with other plugins' short names (use the `sodam-reverse:` prefix).
 - Found and corrected 9 spots in the planning documents that had wrongly kept describing already-finished work as "not done yet" (no user-facing feature changes).
 - Found and corrected planning-doc text that claimed no LICENSE/NOTICE files existed, when both were already in place.
+
+</details>
+
+<details>
+<summary><strong>Phase 3 Live End-to-End Verification Complete + 2 Bugs Fixed (2026-08-21)</strong></summary>
+
+- **`/re-binary` completed its first full run in a real new session** — consent gate → Ghidra analysis → standard report, start to finish. Phase 1, 2, and 3 are now all live-verified.
+- Two more issues surfaced and were fixed along the way:
+  - Ghidra was actually fully usable, but an imprecise check made the AI wrongly conclude "JDK 21+ is missing," silently downgrading to a weaker analysis method.
+  - The consent log got corrupted again (same symptom as the v0.3.0 fix, but a different root cause this time) — fixed at the root by having a small script generate the JSON automatically instead of hand-building the string, so this class of bug can't recur.
 
 </details>
 
