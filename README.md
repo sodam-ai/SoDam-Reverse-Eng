@@ -9,6 +9,8 @@
 
 ---
 
+> 🌸 [SoDam Family](https://github.com/sodam-ai/SoDam-Family) 7형제 중 하나입니다.
+
 ## 목차
 
 0. [컴퓨터·AI가 정말 처음이신가요? (기본 용어)](#0-컴퓨터ai가-정말-처음이신가요-기본-용어)
