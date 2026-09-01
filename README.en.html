@@ -610,20 +610,18 @@ folder) 3. Type <code>claude</code> to launch Claude Code</p>
 <code>/re-start</code> will not appear.</p>
 </blockquote>
 <hr />
-<h3 id="step-1-register-the-marketplace">Step 1: Register the
-Marketplace</h3>
-<p>Type one of the following in the Claude Code chat:</p>
+<h3 id="step-1-download-and-register-the-marketplace">Step 1: Download
+and Register the Marketplace</h3>
 <blockquote>
-<p>📦 <strong>This is a private repository.</strong> Choose the method
-below that matches how you received the plugin.</p>
+<p>📦 <strong>This is a public repository.</strong> Anyone can get it
+directly with the methods below — no invitation or approval needed.</p>
 </blockquote>
+<p><strong>Download it first.</strong> Pick whichever of the two methods
+below is more comfortable — both lead to the same result. If you have
+never used git, <strong>Option B</strong> is recommended.</p>
 <hr />
-<p><strong>Option A — Clone from GitHub (for invited repository
-members)</strong></p>
-<blockquote>
-<p>⚠️ You need a GitHub account and access permission (invitation) to
-the repository. Request an invitation: startmxk@gmail.com</p>
-</blockquote>
+<p><strong>Option A — Clone with git (if you have git
+experience)</strong></p>
 <ol type="1">
 <li><p>Open PowerShell (black window) and run the clone command:</p>
 <div class="sourceCode" id="cb2"><pre
@@ -632,27 +630,34 @@ class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb2-
 your current directory.</p></li>
 <li><p>Note the path to the cloned folder (e.g.,
 <code>C:\Users\YourName\SoDam-Reverse-Eng</code>)</p></li>
-<li><p>In the Claude Code chat, type:</p>
-<pre><code>/plugin marketplace add C:\Users\YourName\SoDam-Reverse-Eng</code></pre>
-<blockquote>
-<p>💡 Replace <code>YourName</code> with your actual Windows
-username.</p>
-</blockquote></li>
 </ol>
 <hr />
-<p><strong>Option B — Received as a folder or zip file (no git
-required)</strong></p>
+<p><strong>Option B — Download a ZIP directly from the GitHub page (no
+git required, recommended for first-timers)</strong></p>
 <ol type="1">
-<li><p>Unzip the received file or place the folder in a convenient
-location (e.g.,
-<code>C:\Users\YourName\SoDam-Reverse-Eng</code>)</p></li>
-<li><p>In the Claude Code chat, type the actual path:</p>
+<li>Open https://github.com/sodam-ai/SoDam-Reverse-Eng in your
+browser</li>
+<li>Click the green <strong><code>&lt;&gt; Code</code></strong> button →
+click <strong><code>Download ZIP</code></strong></li>
+<li>Unzip the downloaded <code>SoDam-Reverse-Eng-main.zip</code> into a
+location of your choice (e.g.,
+<code>C:\Users\YourName\SoDam-Reverse-Eng</code>)</li>
+</ol>
+<blockquote>
+<p>💡 No login or account is required. After unzipping, the folder name
+may end in <code>-main</code> — feel free to rename it to
+<code>SoDam-Reverse-Eng</code>.</p>
+</blockquote>
+<hr />
+<p><strong>Once downloaded</strong>, type the path of the folder you got
+from A or B into the Claude Code chat to register it as a
+marketplace:</p>
 <pre><code>/plugin marketplace add C:\Users\YourName\SoDam-Reverse-Eng</code></pre>
 <blockquote>
-<p>💡 If the path contains spaces, wrap it in double quotes:
+<p>💡 Replace <code>YourName</code> with your actual Windows username.
+If the path contains spaces, wrap it in double quotes:
 <code>/plugin marketplace add "C:\My Folder\SoDam-Reverse-Eng"</code></p>
-</blockquote></li>
-</ol>
+</blockquote>
 <h3 id="step-2-install-the-plugin">Step 2: Install the Plugin</h3>
 <p>After registering the marketplace, type:</p>
 <pre><code>/plugin install sodam-reverse@sodamreverse-marketplace</code></pre>
@@ -667,9 +672,9 @@ must fully exit and restart.</p>
 <li><p><strong>Completely close</strong> the terminal window</p></li>
 <li><p>Open a new PowerShell window</p></li>
 <li><p><strong>Start from your project folder:</strong></p>
-<div class="sourceCode" id="cb6"><pre
-class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cd</span> D<span class="op">:</span>\my-project-folder</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>claude</span></code></pre></div></li>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cd</span> D<span class="op">:</span>\my-project-folder</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>claude</span></code></pre></div></li>
 </ol>
 <h3 id="step-4-verify-installation">Step 4: Verify Installation</h3>
 <p>Once Claude Code opens, type <code>/re-p</code> — autocomplete should
@@ -695,14 +700,14 @@ Register Integrity Hashes (Activate Layer 3)</h3>
 <p>Copy the <strong>hashes of the 5 core safety files</strong> from the
 selftest output and save them to <code>references/integrity.json</code>
 (keep any existing entries):</p>
-<div class="sourceCode" id="cb10"><pre
-class="sourceCode json"><code class="sourceCode json"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;hooks/hooks.json&quot;</span><span class="fu">:</span> <span class="st">&quot;&lt;hash from selftest&gt;&quot;</span><span class="fu">,</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;hooks/re-deny-guard.mjs&quot;</span><span class="fu">:</span> <span class="st">&quot;&lt;hash from selftest&gt;&quot;</span><span class="fu">,</span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;hooks/_selftest.mjs&quot;</span><span class="fu">:</span> <span class="st">&quot;&lt;hash from selftest&gt;&quot;</span><span class="fu">,</span></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;references/deny-corpus.json&quot;</span><span class="fu">:</span> <span class="st">&quot;&lt;hash from selftest&gt;&quot;</span><span class="fu">,</span></span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;references/mask-patterns.json&quot;</span><span class="fu">:</span> <span class="st">&quot;&lt;hash from selftest&gt;&quot;</span></span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode json"><code class="sourceCode json"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;hooks/hooks.json&quot;</span><span class="fu">:</span> <span class="st">&quot;&lt;hash from selftest&gt;&quot;</span><span class="fu">,</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;hooks/re-deny-guard.mjs&quot;</span><span class="fu">:</span> <span class="st">&quot;&lt;hash from selftest&gt;&quot;</span><span class="fu">,</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;hooks/_selftest.mjs&quot;</span><span class="fu">:</span> <span class="st">&quot;&lt;hash from selftest&gt;&quot;</span><span class="fu">,</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;references/deny-corpus.json&quot;</span><span class="fu">:</span> <span class="st">&quot;&lt;hash from selftest&gt;&quot;</span><span class="fu">,</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;references/mask-patterns.json&quot;</span><span class="fu">:</span> <span class="st">&quot;&lt;hash from selftest&gt;&quot;</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
 <p>→ Run <code>/re-selftest</code> again → confirm <strong>“Layer-3
 integrity: hash match”</strong> shows ✅ for all 5 files</p>
 <blockquote>
@@ -832,11 +837,63 @@ real PE file (use <code>py</code> instead of <code>python</code> if
 Windows doesn’t recognize the latter).</p>
 <p><strong>(Optional) IDA Pro integration</strong>: if you own a
 commercial license, run the following then reopen your terminal:</p>
-<div class="sourceCode" id="cb11"><pre
-class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>setx SODAM_RE_IDA_PATH <span class="st">&quot;C:\Program Files\IDA Pro 8.x\ida64.exe&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>setx SODAM_RE_IDA_PATH <span class="st">&quot;C:\Program Files\IDA Pro 8.x\ida64.exe&quot;</span></span></code></pre></div>
 <p>Once the JDK and Ghidra are ready, start analyzing with
 <code>/re-binary [executable-path]</code>.</p>
 </details>
+<hr />
+<h3 id="environment-variables-build-test-deployment-quick-summary">6-3.
+Environment Variables · Build · Test · Deployment (Quick Summary)</h3>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Item</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Environment variables</strong></td>
+<td>None required for basic use. The one exception is
+<code>SODAM_RE_IDA_PATH</code> (optional) — set it only if you want to
+connect your own licensed copy of IDA Pro. See <a
+href="./INSTALL.md">INSTALL.md</a> (Korean) for the setup command.</td>
+</tr>
+<tr>
+<td><strong>Build</strong></td>
+<td><strong>There is no build step.</strong> This project consists
+entirely of files that need no compiling (Markdown, JSON, plain
+JavaScript) — once you get the folder and register it as a marketplace
+per “Installation” above, it just works.</td>
+</tr>
+<tr>
+<td><strong>Lint</strong></td>
+<td>No lint configuration exists (nothing to lint, for the same reason
+there is no build).</td>
+</tr>
+<tr>
+<td><strong>Test</strong></td>
+<td><code>/re-selftest</code> is this project’s own test command (checks
+all 3 safety layers — see §7). For developers, running
+<code>node hooks/_selftest.mjs</code> from the project folder does the
+same thing.</td>
+</tr>
+<tr>
+<td><strong>Deployment (how to hand this project to someone
+else)</strong></td>
+<td>There is no separate deployment pipeline —
+<code>git clone</code>-ing the GitHub repository or downloading it as a
+ZIP <em>is</em> the deployment method (see §6, Step 1). If you
+distribute a modified version, you only need to keep the license terms
+(§13).</td>
+</tr>
+</tbody>
+</table>
 <hr />
 <h2 id="commands">7. Commands</h2>
 <blockquote>
@@ -1041,9 +1098,9 @@ Structure</h2>
 ├── commands/                    ← Command definitions
 │   ├── re-ping.md               ← /re-ping (diagnostic)
 │   ├── re-start.md              ← /re-start (analysis start)
-│   ├── re-report.md             ← /re-report
+│   ├── re-report.md             ← /re-report, live-verified
 │   ├── re-selftest.md           ← /re-selftest
-│   ├── re-agent.md              ← /re-agent (AI agent structure analysis)
+│   ├── re-agent.md              ← /re-agent (AI agent structure analysis), live-verified
 │   ├── re-android.md            ← live-verified
 │   └── re-binary.md             ← Live-verified
 │
@@ -1246,9 +1303,9 @@ also fail.</p>
 operations keep getting blocked</h3>
 <p>You are likely running Claude Code from <code>C:\Users\name</code>
 (home folder).</p>
-<div class="sourceCode" id="cb16"><pre
-class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cd</span> D<span class="op">:</span>\my-project-folder</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>claude</span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cd</span> D<span class="op">:</span>\my-project-folder</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>claude</span></code></pre></div>
 <p>Restart Claude Code from a <strong>project folder</strong>.</p>
 <hr />
 <h3 id="q5.-the-consent-question-keeps-prompting">Q5. The consent
@@ -1289,8 +1346,8 @@ In that case, take the path of whichever file shows ❌ (one of
 <code>hooks/_selftest.mjs</code>,
 <code>references/deny-corpus.json</code>,
 <code>references/mask-patterns.json</code>) and compute it directly:</p>
-<div class="sourceCode" id="cb18"><pre
-class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>node <span class="op">-</span>e <span class="st">&quot;console.log(require(&#39;crypto&#39;).createHash(&#39;sha256&#39;).update(require(&#39;fs&#39;).readFileSync(&#39;&lt;file-path&gt;&#39;)).digest(&#39;hex&#39;))&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>node <span class="op">-</span>e <span class="st">&quot;console.log(require(&#39;crypto&#39;).createHash(&#39;sha256&#39;).update(require(&#39;fs&#39;).readFileSync(&#39;&lt;file-path&gt;&#39;)).digest(&#39;hex&#39;))&quot;</span></span></code></pre></div>
 </blockquote>
 <hr />
 <h3 id="q8.-passwords-appear-in-plain-text-in-the-report">Q8. Passwords
@@ -1359,6 +1416,58 @@ Commercial Use</h2>
 </tr>
 </tbody>
 </table>
+<p><strong>Common specific scenarios</strong> (under Apache-2.0, all
+permitted as long as you meet the “Required Actions” below):</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>What you want to do</th>
+<th>Permitted?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Modify this code and use it in my own project</td>
+<td>✅ Permitted</td>
+</tr>
+<tr>
+<td>Fork it and redistribute under my own name</td>
+<td>✅ Permitted (must keep the original copyright/license notice)</td>
+</tr>
+<tr>
+<td>Run a paid service built on this tool (e.g., SaaS)</td>
+<td>✅ Permitted</td>
+</tr>
+<tr>
+<td>Sell this tool or a modified version of it</td>
+<td>✅ Permitted</td>
+</tr>
+<tr>
+<td>Include it in a deliverable for a company or client</td>
+<td>✅ Permitted</td>
+</tr>
+<tr>
+<td>Use it as teaching/course material</td>
+<td>✅ Permitted</td>
+</tr>
+<tr>
+<td>Use “SoDam” as my own product name as-is</td>
+<td>❌ Not permitted — separate from the code license, this is a
+trademark issue</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>The table above covers <strong>the license of this tool
+itself</strong>. Whether it is lawful to analyze a given piece of
+third-party code or app with this tool is a completely separate
+question, covered below under “⚠️ Legal Responsibility Limits You Must
+Understand.”</p>
+</blockquote>
 <h3 id="required-actions-obligations">Required Actions
 (Obligations)</h3>
 <table>
@@ -1458,8 +1567,40 @@ this product</li>
 <td>IDA Pro (Phase 3, optional)</td>
 <td>Requires <strong>separate</strong> commercial license purchase</td>
 </tr>
+<tr>
+<td>This tool’s own external dependencies</td>
+<td><strong>None</strong> — there is no <code>package.json</code> or any
+other dependency manifest, and no third-party code is bundled (confirmed
+2026-09-01). Ghidra, JADX, etc. are installed by the user separately
+(“wrap,” not bundled), so they do not affect this project’s own
+redistribution terms.</td>
+</tr>
 </tbody>
 </table>
+<h3 id="a-note-on-ai-generated-content">🤖 A Note on AI-Generated
+Content</h3>
+<ul>
+<li><strong>The analysis reports this tool produces</strong>: reports
+created by <code>/re-start</code>, <code>/re-android</code>,
+<code>/re-binary</code>, <code>/re-agent</code>, and similar commands
+are written by AI. Before using a report commercially, submitting it
+externally, or relying on it for a legal or contractual decision,
+<strong>have a person review it directly</strong>, and confirm the
+copyright/provenance of the original analyzed material and that the
+report’s content actually matches the real code. The possibility of
+incidental resemblance to other works cannot be fully ruled out.</li>
+<li><strong>How this project itself was built</strong>: this project’s
+own source code and documentation were developed with extensive use of
+an AI coding tool (Claude Code) — as of 2026-09-01, 43 of 103 total
+commits carry a “Co-Authored-By: Claude” co-author trailer (a confirmed
+fact, not a guess). How copyright attaches to and is attributed for
+AI-assisted works varies by country and jurisdiction (for example,
+whether such works are eligible for copyright registration at all). If
+this matters in practice for your situation (copyright/patent
+registration, a dispute, etc.), <strong>seek legal/professional
+review</strong> — this document does not resolve that question for
+you.</li>
+</ul>
 <h3 id="legal-responsibility-limits-you-must-understand-strict">⚠️ Legal
 Responsibility Limits You Must Understand (Strict)</h3>
 <blockquote>
@@ -1553,13 +1694,17 @@ use</li>
 <ul>
 <li><strong>Bug reports and feature requests:</strong> <a
 href="https://github.com/sodam-ai/SoDam-Reverse-Eng/issues">GitHub
-Issues</a> (accessible to invited members only) or by email</li>
+Issues</a> — open to anyone (public repository), or by email</li>
 <li><strong>Email:</strong> startmxk@gmail.com</li>
 <li><strong>GitHub repository:</strong>
-https://github.com/sodam-ai/SoDam-Reverse-Eng (private — invitation
-required)</li>
-<li><strong>How to contribute:</strong> Contact by email first → discuss
-and proceed (private repository)</li>
+https://github.com/sodam-ai/SoDam-Reverse-Eng (public — no invitation
+needed)</li>
+<li><strong>How to contribute:</strong> Pull requests are welcome.
+Please open an Issue to discuss larger changes first. One exception:
+changes to the core safety files (the 8 “protected files” referenced in
+§10 — the deny-hook, integrity list, etc.) are, by this project’s own
+design, not something the AI modifies on its own — please reach out by
+email first so a human can review and apply them.</li>
 </ul>
 <hr />
 <h2 id="update-summary">15. Update Summary</h2>
@@ -1835,6 +1980,71 @@ but a different root cause this time) — fixed at the root by having a
 small script generate the JSON automatically instead of hand-building
 the string, so this class of bug can’t recur.</li>
 </ul></li>
+</ul>
+</details>
+<details>
+<summary>
+<strong>Full live verification of all 3 safety layers + merged to the
+main branch (2026-09-01)</strong>
+</summary>
+<ul>
+<li>All 7 commands (<code>/re-ping</code>, <code>/re-start</code>,
+<code>/re-report</code>, <code>/re-selftest</code>,
+<code>/re-agent</code>, <code>/re-android</code>,
+<code>/re-binary</code>) have now been live-verified in fresh sessions.
+<code>/re-report</code> and <code>/re-agent</code> were confirmed this
+way for the first time.</li>
+<li>Layer 1 (the AI refusing risky requests on its own) was confirmed
+for the first time inside an actual conversation, rather than only in an
+isolated test script.</li>
+<li>Applied the 6th precision patch to the layer-2 deny-hook (internal
+codename R0) — it narrows an over-blocking issue where editing a
+<code>.md</code> file could trigger the guard even for normal,
+defensively-worded explanations of a risk concept, while keeping the
+highest-risk phrasing blocked inside <code>.md</code> files just as
+before. Verified live by actually creating a new <code>.md</code> file
+end to end.</li>
+<li>Merged the above changes into the GitHub <code>main</code> branch
+via two pull requests.</li>
+<li>Found and corrected leftover “private repository” language in this
+README that no longer matched the fact that the repository is already
+public (§6 Installation, §14 Contact · Contributing) — the download
+instructions now describe methods anyone can use without an
+invitation.</li>
+</ul>
+</details>
+<details>
+<summary>
+<strong>Full legal / copyright / license / commercial-use review
+(2026-09-01)</strong>
+</summary>
+<ul>
+<li>Confirmed the project has zero external code dependencies (no
+<code>package.json</code> or any other dependency manifest, no bundled
+third-party code) — there is structurally no license-conflict risk from
+dependencies.</li>
+<li>Ran the project’s own checking tool
+(<code>scripts/check-trust-freshness.mjs</code>) to re-verify all 15
+external repositories in the reference tool catalog
+(<code>references/trust-catalog.md</code>) against the live GitHub API —
+the 3 entries already marked “excluded” (2 with no license, 1 archived)
+were confirmed to still be excluded for the same reasons; no catalog
+update was needed.</li>
+<li>Found that <code>NOTICE</code> listed a tool whose license review is
+still pending (Frida) side-by-side with tools that are actually already
+integrated, and removed it (this tool is not actually used by any
+current command).</li>
+<li>Added explicit guidance — to both the standard report template and
+README §13 — that analysis reports (AI-generated) and this project’s own
+source code (largely written with an AI coding tool — confirmed on 43 of
+103 total commits) require human review before commercial use.</li>
+<li>Spelled out common specific commercial-use scenarios in table form
+(forking, redistribution, running a SaaS, selling, teaching material,
+client deliverables).</li>
+<li>Left matters that can be treated differently by jurisdiction — such
+as how copyright attaches to and is attributed for AI-assisted works —
+clearly marked as requiring legal/professional review rather than
+resolving them unilaterally.</li>
 </ul>
 </details>
 <blockquote>
