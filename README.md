@@ -428,9 +428,9 @@ SoDam-Reverse-Eng/
 ├── commands/                    ← 명령어 정의 (/re-start 등)
 │   ├── re-ping.md               ← 진단 명령어
 │   ├── re-start.md
-│   ├── re-report.md
+│   ├── re-report.md             ← 실사용 라이브 검증 완료
 │   ├── re-selftest.md
-│   ├── re-agent.md              ← AI 에이전트 구조 분석
+│   ├── re-agent.md              ← AI 에이전트 구조 분석, 실사용 라이브 검증 완료
 │   ├── re-android.md            ← 실사용 라이브 검증 완료
 │   └── re-binary.md             ← 실사용 라이브 검증 완료
 │

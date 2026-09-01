@@ -476,9 +476,9 @@ SoDam-Reverse-Eng/
 ├── commands/                    ← Command definitions
 │   ├── re-ping.md               ← /re-ping (diagnostic)
 │   ├── re-start.md              ← /re-start (analysis start)
-│   ├── re-report.md             ← /re-report
+│   ├── re-report.md             ← /re-report, live-verified
 │   ├── re-selftest.md           ← /re-selftest
-│   ├── re-agent.md              ← /re-agent (AI agent structure analysis)
+│   ├── re-agent.md              ← /re-agent (AI agent structure analysis), live-verified
 │   ├── re-android.md            ← live-verified
 │   └── re-binary.md             ← Live-verified
 │
