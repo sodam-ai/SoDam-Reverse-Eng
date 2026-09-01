@@ -36,6 +36,23 @@ const safeSamples = [['Bash', { command: 'node --version' }], ['Write', { conten
 if (denySamples.every(([n, i]) => runGuardDenied(n, i))) ok('2층 deny-hook: 위험 샘플 전부 차단'); else no('2층 deny-hook: 위험 샘플 일부 통과(위험)');
 if (safeSamples.every(([n, i]) => !runGuardDenied(n, i))) ok('2층 deny-hook: 안전 샘플 전부 통과(오차단 없음)'); else no('2층 deny-hook: 안전 샘플 오차단(과차단)');
 
+// [2026-08-31, §5-92 5-92-6] R0(문서 편집 과차단) 회귀 고정. 표본을 소스에 하드코딩하지 않고 코퍼스에서
+// 동적으로 고른다(하드코딩하면 이 템플릿 파일을 고치는 행위 자체가 패치 전 옛 hook에 걸리기 때문 — 실측 확인).
+let _rt = { keywords: [] };
+try { _rt = JSON.parse(readFileSync(join(root, 'references', 'deny-corpus.json'), 'utf8')); } catch {}
+const rtSafeKw = (_rt.keywords || []).find((k) => !k.toLowerCase().includes('추출') && !k.toLowerCase().includes('extract'));
+const rtExtractKw = (_rt.keywords || []).find((k) => k.toLowerCase().includes('추출') || k.toLowerCase().includes('extract'));
+if (rtSafeKw && rtExtractKw) {
+  const docMention = ['Write', { file_path: 'CHECKPOINT.md', content: `사례 메모: ${rtSafeKw}` }];
+  const docExtraction = ['Write', { file_path: 'CHECKPOINT.md', content: `사례 메모: ${rtExtractKw}` }];
+  const nonDocMention = ['Write', { file_path: 'notes.js', content: `사례 메모: ${rtSafeKw}` }];
+  if (!runGuardDenied(docMention[0], docMention[1])) ok('R0 회귀: .md 문서의 개념 언급은 통과'); else no('R0 회귀: .md 문서 언급이 여전히 차단됨(미해결)');
+  if (runGuardDenied(docExtraction[0], docExtraction[1])) ok('R0 회귀: .md 안에서도 최고위험군은 그대로 차단'); else no('R0 회귀: 최고위험군이 .md에서 뚫림(위험, 즉시 원복 필요)');
+  if (runGuardDenied(nonDocMention[0], nonDocMention[1])) ok('R0 회귀: .md 아닌 파일은 동일 문구도 여전히 차단'); else no('R0 회귀: 완화 범위가 .md 밖으로 유출됨(위험, 즉시 원복 필요)');
+} else {
+  lines.push('  ⚠️ R0 회귀 테스트 건너뜀(코퍼스에서 적절한 표본 키워드를 찾지 못함).');
+}
+
 // (2026-07-27 갱신: 검사 범위를 1개→5개 보호파일 전체로 확장. 기존엔 re-deny-guard.mjs만 검사해
 // deny-corpus.json(차단 키워드 원본) 등 나머지 4개가 위변조돼도 전혀 탐지되지 않는 공백이 있었음.)
 const manifestPath = join(root, 'references', 'integrity.json');
@@ -76,4 +93,4 @@ if (existsSync(manifestPath)) {
 console.log(lines.join('\n'));
 console.log(`\n결과: ${pass} 통과 / ${fail} 실패`);
 console.log(fail > 0 ? '⚠️ 실패 항목 해결 후 사용(fail-closed).' : '✅ 안전 3층 기본 동작 확인. (레드팀 라이브 검증은 별도)');
-process.exit(fail > 0 ? 1 : 0);
+process.exit(fail > 0 ? 1 : 0);

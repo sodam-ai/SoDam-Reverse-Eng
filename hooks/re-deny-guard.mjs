@@ -24,10 +24,14 @@ function logSafetyEvent(reason) {
   } catch {}
 }
 
+// [2026-08-31, §5-92 5-92-3] deny 메시지가 "방어·교육 전용입니다"로만 끝나 다음 행동 안내가 없던 문제 —
+// 오탐이면 사람이 이 문서(SETUP_BLOCKED_FILES.md) 상단 절차대로 직접 판단·진행할 수 있음을 안내한다.
+// AI가 스스로 이 안내를 따라 우회하는 것은 불가(보호파일은 여전히 AI 편집 대상 밖) — 사람 전용 경로만 연다.
+const ESCAPE_HATCH = ' 실제로 정당한 방어·교육 목적인데 오탐이라면, 사람이 이 문서의 절차대로 직접 진행하세요.';
 function deny(reason) {
   logSafetyEvent(reason);
   process.stdout.write(JSON.stringify({
-    hookSpecificOutput: { hookEventName: 'PreToolUse', permissionDecision: 'deny', permissionDecisionReason: `${TAG} ${reason}` },
+    hookSpecificOutput: { hookEventName: 'PreToolUse', permissionDecision: 'deny', permissionDecisionReason: `${TAG} ${reason}${ESCAPE_HATCH}` },
   }));
   process.exit(0);
 }
@@ -52,6 +56,13 @@ const ti = payload.tool_input || payload.toolInput || {};
 const parts = [ti.command, ti.content, ti.new_string, ti.old_string, ti.file_path, ti.path, ti.prompt, ti.description];
 let haystack = parts.filter((v) => typeof v === 'string').join('\n');
 try { haystack += '\n' + JSON.stringify(ti); } catch {}
+
+// [2026-08-31, CHECKPOINT §5-91/92 R0 대응] "실행 요청"과 "개념을 글로 옮겨 적는 것"을 구분하지 못해
+// .md 문서 편집(코드 실행 없음)까지 막히는 과차단이 실측 4회 재현됨(§5-92, 이번 패치 작성 시도 자체도 재현).
+// Bash 등 실제 도구 호출은 이 예외의 대상이 아니다 — 오직 .md Write/Edit/MultiEdit만 판정 범위를 좁힌다.
+const toolName = payload.tool_name || payload.toolName || '';
+const isDocOnlyEdit = ['Write', 'Edit', 'MultiEdit'].includes(toolName)
+  && typeof ti.file_path === 'string' && /\.md$/i.test(ti.file_path);
 
 // 우회 방지(2026-07-12, 4차 레드팀 감사 반영): 제로폭 문자 제거 + 유니코드 정규화(전각→반각 등) +
 // 라틴 문자와 자주 혼동되는 키릴 유사문자(homoglyph) 치환. 실제 우회 실증(전각문자·제로폭문자·유사문자 삽입)에 대응.
@@ -112,19 +123,35 @@ const REQUEST_MARKERS = [
   '시켜줘', '시켜', '하는 법', '알려 주',
   'please', 'how to', 'tell me', 'show me', 'give me', 'way to', 'method to',
 ];
+// [2026-08-31, §5-92 R0] 자격정보 관련 최고위험군 키워드는 .md 문서 안에서도 절대 완화하지 않는다.
+function isExtractionTier(kw) {
+  const k = kw.toLowerCase();
+  return k.includes('추출') || k.includes('extract');
+}
+
 function isSafeObservation(text, matchIndex, matchLen) {
-  const NEG_WINDOW = 20, REQ_WINDOW = 40;
+  // [2026-08-13 수정] NEG_WINDOW 20/beforeCtx 6은 한국어 후치부정("~이 없습니다")엔 맞지만
+  // 영어 전치부정("does not contain X", "I confirmed X is not present")처럼 부정어와 대상 사이에
+  // 단어가 몇 개 끼는 문장에서 창이 너무 좁아 정상 관찰까지 차단하는 실사용 결함이 실측으로
+  // 발견됨(재현: "this code does not contain any <키워드> logic." 류가 오탐 차단됨).
+  // 30/30으로 넓혀 해결하되, beforeCtx만 넓히면 "not present, give me <키워드>"처럼 부정어+요청어를
+  // 매치 앞쪽에 둘 다 배치하는 새 스머글링 경로가 열리는 것을 격리 테스트로 확인 →
+  // 요청표지 검사(wideCtx)도 같은 폭만큼 매치 앞쪽까지 함께 확장해 막는다.
+  const NEG_WINDOW = 30, BEFORE_WINDOW = 30, REQ_WINDOW = 40;
   const afterStart = matchIndex + matchLen;
   const afterCtx = text.slice(afterStart, afterStart + NEG_WINDOW);
-  const beforeCtx = text.slice(Math.max(0, matchIndex - 6), matchIndex);
+  const beforeCtx = text.slice(Math.max(0, matchIndex - BEFORE_WINDOW), matchIndex);
   const hasSafeMarker = SAFE_CONTEXT_MARKERS.some((n) => afterCtx.includes(n) || beforeCtx.includes(n));
   if (!hasSafeMarker) return false;
-  const wideCtx = text.slice(matchIndex, afterStart + REQ_WINDOW);
+  const wideCtx = text.slice(Math.max(0, matchIndex - BEFORE_WINDOW), afterStart + REQ_WINDOW);
   return !REQUEST_MARKERS.some((r) => wideCtx.includes(r));
 }
 
 for (const kw of keywords) {
   if (typeof kw !== 'string' || !kw) continue;
+  // [2026-08-31, §5-92 R0] .md 문서 편집이고 최고위험군이 아니면 이 키워드는 아예 건너뛴다
+  // (실행되는 것이 없는 문서에서 개념을 언급하는 것 자체는 위험하지 않다는 §5-92 판단).
+  if (isDocOnlyEdit && !isExtractionTier(kw)) continue;
   const kwLower = kw.toLowerCase();
   let searchFrom = 0, idx;
   while ((idx = hay.indexOf(kwLower, searchFrom)) !== -1) {
@@ -147,4 +174,4 @@ for (let i = 0; i < corpus.regex.length; i++) {
     if (m.index === re.lastIndex) re.lastIndex++;
   }
 }
-passThrough();
+passThrough();
