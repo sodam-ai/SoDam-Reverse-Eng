@@ -180,19 +180,15 @@ If not, install Claude Code from the Anthropic official website.
 
 ---
 
-### Step 1: Register the Marketplace
+### Step 1: Download and Register the Marketplace
 
-Type one of the following in the Claude Code chat:
+> 📦 **This is a public repository.** Anyone can get it directly with the methods below — no invitation or approval needed.
 
-> 📦 **This is a private repository.**
-> Choose the method below that matches how you received the plugin.
+**Download it first.** Pick whichever of the two methods below is more comfortable — both lead to the same result. If you have never used git, **Option B** is recommended.
 
 ---
 
-**Option A — Clone from GitHub (for invited repository members)**
-
-> ⚠️ You need a GitHub account and access permission (invitation) to the repository.
-> Request an invitation: startmxk@gmail.com
+**Option A — Clone with git (if you have git experience)**
 
 1. Open PowerShell (black window) and run the clone command:
    ```powershell
@@ -202,25 +198,26 @@ Type one of the following in the Claude Code chat:
 
 2. Note the path to the cloned folder (e.g., `C:\Users\YourName\SoDam-Reverse-Eng`)
 
-3. In the Claude Code chat, type:
-   ```
-   /plugin marketplace add C:\Users\YourName\SoDam-Reverse-Eng
-   ```
-   > 💡 Replace `YourName` with your actual Windows username.
+---
+
+**Option B — Download a ZIP directly from the GitHub page (no git required, recommended for first-timers)**
+
+1. Open https://github.com/sodam-ai/SoDam-Reverse-Eng in your browser
+2. Click the green **`<> Code`** button → click **`Download ZIP`**
+3. Unzip the downloaded `SoDam-Reverse-Eng-main.zip` into a location of your choice
+   (e.g., `C:\Users\YourName\SoDam-Reverse-Eng`)
+
+> 💡 No login or account is required. After unzipping, the folder name may end in `-main` — feel free to rename it to `SoDam-Reverse-Eng`.
 
 ---
 
-**Option B — Received as a folder or zip file (no git required)**
+**Once downloaded**, type the path of the folder you got from A or B into the Claude Code chat to register it as a marketplace:
 
-1. Unzip the received file or place the folder in a convenient location
-   (e.g., `C:\Users\YourName\SoDam-Reverse-Eng`)
-
-2. In the Claude Code chat, type the actual path:
-   ```
-   /plugin marketplace add C:\Users\YourName\SoDam-Reverse-Eng
-   ```
-   > 💡 If the path contains spaces, wrap it in double quotes:
-   > `/plugin marketplace add "C:\My Folder\SoDam-Reverse-Eng"`
+```
+/plugin marketplace add C:\Users\YourName\SoDam-Reverse-Eng
+```
+> 💡 Replace `YourName` with your actual Windows username. If the path contains spaces, wrap it in double quotes:
+> `/plugin marketplace add "C:\My Folder\SoDam-Reverse-Eng"`
 
 ### Step 2: Install the Plugin
 
@@ -357,6 +354,18 @@ setx SODAM_RE_IDA_PATH "C:\Program Files\IDA Pro 8.x\ida64.exe"
 Once the JDK and Ghidra are ready, start analyzing with `/re-binary [executable-path]`.
 
 </details>
+
+---
+
+### 6-3. Environment Variables · Build · Test · Deployment (Quick Summary)
+
+| Item | Notes |
+|---|---|
+| **Environment variables** | None required for basic use. The one exception is `SODAM_RE_IDA_PATH` (optional) — set it only if you want to connect your own licensed copy of IDA Pro. See [INSTALL.md](./INSTALL.md) (Korean) for the setup command. |
+| **Build** | **There is no build step.** This project consists entirely of files that need no compiling (Markdown, JSON, plain JavaScript) — once you get the folder and register it as a marketplace per "Installation" above, it just works. |
+| **Lint** | No lint configuration exists (nothing to lint, for the same reason there is no build). |
+| **Test** | `/re-selftest` is this project's own test command (checks all 3 safety layers — see §7). For developers, running `node hooks/_selftest.mjs` from the project folder does the same thing. |
+| **Deployment (how to hand this project to someone else)** | There is no separate deployment pipeline — `git clone`-ing the GitHub repository or downloading it as a ZIP *is* the deployment method (see §6, Step 1). If you distribute a modified version, you only need to keep the license terms (§13). |
 
 ---
 
@@ -681,6 +690,20 @@ node scripts/re-inject-harness.mjs
 | **Commercial use** | ✅ Permitted |
 | Patent use | ✅ Permitted |
 
+**Common specific scenarios** (under Apache-2.0, all permitted as long as you meet the "Required Actions" below):
+
+| What you want to do | Permitted? |
+|---|---|
+| Modify this code and use it in my own project | ✅ Permitted |
+| Fork it and redistribute under my own name | ✅ Permitted (must keep the original copyright/license notice) |
+| Run a paid service built on this tool (e.g., SaaS) | ✅ Permitted |
+| Sell this tool or a modified version of it | ✅ Permitted |
+| Include it in a deliverable for a company or client | ✅ Permitted |
+| Use it as teaching/course material | ✅ Permitted |
+| Use "SoDam" as my own product name as-is | ❌ Not permitted — separate from the code license, this is a trademark issue |
+
+> The table above covers **the license of this tool itself**. Whether it is lawful to analyze a given piece of third-party code or app with this tool is a completely separate question, covered below under "⚠️ Legal Responsibility Limits You Must Understand."
+
 ### Required Actions (Obligations)
 
 | Obligation | Details |
@@ -712,6 +735,12 @@ node scripts/re-inject-harness.mjs
 | Analyzed software | Check that software's EULA and license **separately** |
 | Claude API usage | Anthropic Terms of Service apply **separately** |
 | IDA Pro (Phase 3, optional) | Requires **separate** commercial license purchase |
+| This tool's own external dependencies | **None** — there is no `package.json` or any other dependency manifest, and no third-party code is bundled (confirmed 2026-09-01). Ghidra, JADX, etc. are installed by the user separately ("wrap," not bundled), so they do not affect this project's own redistribution terms. |
+
+### 🤖 A Note on AI-Generated Content
+
+- **The analysis reports this tool produces**: reports created by `/re-start`, `/re-android`, `/re-binary`, `/re-agent`, and similar commands are written by AI. Before using a report commercially, submitting it externally, or relying on it for a legal or contractual decision, **have a person review it directly**, and confirm the copyright/provenance of the original analyzed material and that the report's content actually matches the real code. The possibility of incidental resemblance to other works cannot be fully ruled out.
+- **How this project itself was built**: this project's own source code and documentation were developed with extensive use of an AI coding tool (Claude Code) — as of 2026-09-01, 43 of 103 total commits carry a "Co-Authored-By: Claude" co-author trailer (a confirmed fact, not a guess). How copyright attaches to and is attributed for AI-assisted works varies by country and jurisdiction (for example, whether such works are eligible for copyright registration at all). If this matters in practice for your situation (copyright/patent registration, a dispute, etc.), **seek legal/professional review** — this document does not resolve that question for you.
 
 ### ⚠️ Legal Responsibility Limits You Must Understand (Strict)
 
@@ -741,10 +770,10 @@ node scripts/re-inject-harness.mjs
 
 ## 14. Contact · Contributing
 
-- **Bug reports and feature requests:** [GitHub Issues](https://github.com/sodam-ai/SoDam-Reverse-Eng/issues) (accessible to invited members only) or by email
+- **Bug reports and feature requests:** [GitHub Issues](https://github.com/sodam-ai/SoDam-Reverse-Eng/issues) — open to anyone (public repository), or by email
 - **Email:** startmxk@gmail.com
-- **GitHub repository:** https://github.com/sodam-ai/SoDam-Reverse-Eng (private — invitation required)
-- **How to contribute:** Contact by email first → discuss and proceed (private repository)
+- **GitHub repository:** https://github.com/sodam-ai/SoDam-Reverse-Eng (public — no invitation needed)
+- **How to contribute:** Pull requests are welcome. Please open an Issue to discuss larger changes first. One exception: changes to the core safety files (the 8 "protected files" referenced in §10 — the deny-hook, integrity list, etc.) are, by this project's own design, not something the AI modifies on its own — please reach out by email first so a human can review and apply them.
 
 ---
 
@@ -881,6 +910,29 @@ node scripts/re-inject-harness.mjs
 - Two more issues surfaced and were fixed along the way:
   - Ghidra was actually fully usable, but an imprecise check made the AI wrongly conclude "JDK 21+ is missing," silently downgrading to a weaker analysis method.
   - The consent log got corrupted again (same symptom as the v0.3.0 fix, but a different root cause this time) — fixed at the root by having a small script generate the JSON automatically instead of hand-building the string, so this class of bug can't recur.
+
+</details>
+
+<details>
+<summary><strong>Full live verification of all 3 safety layers + merged to the main branch (2026-09-01)</strong></summary>
+
+- All 7 commands (`/re-ping`, `/re-start`, `/re-report`, `/re-selftest`, `/re-agent`, `/re-android`, `/re-binary`) have now been live-verified in fresh sessions. `/re-report` and `/re-agent` were confirmed this way for the first time.
+- Layer 1 (the AI refusing risky requests on its own) was confirmed for the first time inside an actual conversation, rather than only in an isolated test script.
+- Applied the 6th precision patch to the layer-2 deny-hook (internal codename R0) — it narrows an over-blocking issue where editing a `.md` file could trigger the guard even for normal, defensively-worded explanations of a risk concept, while keeping the highest-risk phrasing blocked inside `.md` files just as before. Verified live by actually creating a new `.md` file end to end.
+- Merged the above changes into the GitHub `main` branch via two pull requests.
+- Found and corrected leftover "private repository" language in this README that no longer matched the fact that the repository is already public (§6 Installation, §14 Contact · Contributing) — the download instructions now describe methods anyone can use without an invitation.
+
+</details>
+
+<details>
+<summary><strong>Full legal / copyright / license / commercial-use review (2026-09-01)</strong></summary>
+
+- Confirmed the project has zero external code dependencies (no `package.json` or any other dependency manifest, no bundled third-party code) — there is structurally no license-conflict risk from dependencies.
+- Ran the project's own checking tool (`scripts/check-trust-freshness.mjs`) to re-verify all 15 external repositories in the reference tool catalog (`references/trust-catalog.md`) against the live GitHub API — the 3 entries already marked "excluded" (2 with no license, 1 archived) were confirmed to still be excluded for the same reasons; no catalog update was needed.
+- Found that `NOTICE` listed a tool whose license review is still pending (Frida) side-by-side with tools that are actually already integrated, and removed it (this tool is not actually used by any current command).
+- Added explicit guidance — to both the standard report template and README §13 — that analysis reports (AI-generated) and this project's own source code (largely written with an AI coding tool — confirmed on 43 of 103 total commits) require human review before commercial use.
+- Spelled out common specific commercial-use scenarios in table form (forking, redistribution, running a SaaS, selling, teaching material, client deliverables).
+- Left matters that can be treated differently by jurisdiction — such as how copyright attaches to and is attributed for AI-assisted works — clearly marked as requiring legal/professional review rather than resolving them unilaterally.
 
 </details>
 

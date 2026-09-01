@@ -8,8 +8,13 @@ http://www.apache.org/licenses/LICENSE-2.0
 ---
 
 이 플러그인은 외부 리버스 엔지니어링 도구를 **번들하지 않고 "외부 설치 안내(wrap)"** 방식으로 연동합니다.
-각 외부 도구(예: Ghidra, JADX, Apktool, Frida, ghidra-mcp, ida-pro-mcp, android-reverse-engineering-skill 등)는
+각 외부 도구(예: Ghidra, JADX, Apktool, ghidra-mcp, ida-pro-mcp, android-reverse-engineering-skill 등)는
 **각자의 라이선스**를 따릅니다. 해당 도구를 설치·사용할 때는 그 도구의 LICENSE/NOTICE를 확인하세요.
 번들이 필요해지는 경우, 각 도구의 LICENSE/NOTICE를 함께 동봉해야 합니다.
 
 IDA Pro 등 상용 도구는 사용자 본인의 정식 라이선스가 필요합니다.
+
+이 프로젝트의 소스코드와 문서 작성에는 AI 코딩 도구(Claude Code)가 광범위하게 사용되었습니다
+(2026-09-01 기준 전체 커밋 103건 중 43건에 "Co-Authored-By: Claude" 공동저자 표기 확인).
+AI 보조로 작성된 저작물의 저작권 성립 범위·귀속은 국가·관할마다 다르게 취급될 수 있으므로,
+이 저작권 표시에 법적으로 의존해야 하는 경우(예: 저작권 등록, 분쟁 대응)에는 전문가(변호사)의 확인을 받으세요.
