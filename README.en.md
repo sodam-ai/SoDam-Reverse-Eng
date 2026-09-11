@@ -526,8 +526,12 @@ SoDam-Reverse-Eng/
 ├── samples/                     ← Example files for testing
 │   ├── safe-login.js
 │   ├── deny-demo.txt
+│   ├── mycode-injection-demo.js ← Source-code prompt-injection defense test
+│   ├── android-injection-demo.xml← Android prompt-injection defense test
+│   ├── binary-injection-demo.txt← Binary prompt-injection defense test
 │   ├── agent-injection-demo.md  ← Prompt-injection defense test
-│   └── agent-injection-demo-2.md← Combined-attack (red-team) defense test
+│   ├── agent-injection-demo-2.md← Combined-attack (red-team) defense test
+│   └── agent-injection-demo-3.md← Fake plugin-config injection test
 │
 ├── .sodam-re/                   ← Analysis results (auto-created, .gitignore)
 │
@@ -935,6 +939,17 @@ node scripts/re-inject-harness.mjs
 - Added explicit guidance — to both the standard report template and README §13 — that analysis reports (AI-generated) and this project's own source code (largely written with an AI coding tool — confirmed on 43 of 103 total commits) require human review before commercial use.
 - Spelled out common specific commercial-use scenarios in table form (forking, redistribution, running a SaaS, selling, teaching material, client deliverables).
 - Left matters that can be treated differently by jurisdiction — such as how copyright attaches to and is attributed for AI-assisted works — clearly marked as requiring legal/professional review rather than resolving them unilaterally.
+
+</details>
+
+<details>
+<summary><strong>Prompt-Injection Defense Audit + Blind Red-Team Validation Across All 4 Analysis Skills (2026-09-11 to 12)</strong></summary>
+
+- Directly comparing all 6 skill files revealed that `re-analyze-mycode` (the most frequently used Phase 1 core skill) was missing the prompt-injection defense rule that the other three skills (android, binary, agent) already had, and ported it over.
+- Found and fixed a related issue where `re-router`'s natural-language routing menu still described binary analysis (Phase 3) as "not ready yet," even though it had already been live-verified.
+- Discovered that `/re-start` embeds its own logic instead of delegating to the skill file, so the mycode fix above was not actually reaching the real `/re-start` execution path — added the same defense directly to `/re-start` as well.
+- Validated that these defenses actually work by having an independent agent — with no knowledge of this conversation — analyze deliberately poisoned test files using only the real skill instructions (a blind red-team test). All 4 analysis skills (mycode, android, binary, agent) defended successfully against a combined 16 attack scenarios (forged consent records, fake system messages, requests to expand the analysis scope, requests to stop analysis early, attempts to leak secrets, and instructions hidden in identifier names).
+- Permanently added the poisoned test fixtures used for this validation to `samples/` so the same checks can be re-run in the future.
 
 </details>
 
