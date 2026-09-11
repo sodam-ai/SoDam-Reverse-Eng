@@ -8,6 +8,8 @@
 
 ---
 
+> 🌸 One of the seven siblings of [SoDam Family](https://github.com/sodam-ai/SoDam-Family).
+
 ## Table of Contents
 
 0. [Completely New to Computers or AI? (Basic Terms)](#0-completely-new-to-computers-or-ai-basic-terms)
