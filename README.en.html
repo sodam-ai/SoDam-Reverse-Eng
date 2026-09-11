@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <title>SoDam-Reverse-Eng · README (English)</title>
+  <title>SoDam-Reverse-Eng</title>
   <style>
     html {
       color: #1a1a1a;
@@ -235,7 +235,7 @@
 </head>
 <body>
 <header id="title-block-header">
-<h1 class="title">SoDam-Reverse-Eng · README (English)</h1>
+<h1 class="title">SoDam-Reverse-Eng</h1>
 </header>
 <h1
 id="sodam-reverse-eng-ai-code-analysis-plugin-for-claude-code">SoDam-Reverse-Eng
@@ -251,7 +251,10 @@ authentication bypass, license bypass, and credential extraction are
 defense, education, and analysis of code you own.</p>
 </blockquote>
 <hr />
-<p>🌸 One of the seven siblings of <a href="https://github.com/sodam-ai/SoDam-Family">SoDam Family</a>.</p>
+<blockquote>
+<p>🌸 One of the seven siblings of <a
+href="https://github.com/sodam-ai/SoDam-Family">SoDam Family</a>.</p>
+</blockquote>
 <h2 id="table-of-contents">Table of Contents</h2>
 <ol start="0" type="1">
 <li><a
@@ -1138,8 +1141,12 @@ Structure</h2>
 ├── samples/                     ← Example files for testing
 │   ├── safe-login.js
 │   ├── deny-demo.txt
+│   ├── mycode-injection-demo.js ← Source-code prompt-injection defense test
+│   ├── android-injection-demo.xml← Android prompt-injection defense test
+│   ├── binary-injection-demo.txt← Binary prompt-injection defense test
 │   ├── agent-injection-demo.md  ← Prompt-injection defense test
-│   └── agent-injection-demo-2.md← Combined-attack (red-team) defense test
+│   ├── agent-injection-demo-2.md← Combined-attack (red-team) defense test
+│   └── agent-injection-demo-3.md← Fake plugin-config injection test
 │
 ├── .sodam-re/                   ← Analysis results (auto-created, .gitignore)
 │
@@ -2046,6 +2053,37 @@ client deliverables).</li>
 as how copyright attaches to and is attributed for AI-assisted works —
 clearly marked as requiring legal/professional review rather than
 resolving them unilaterally.</li>
+</ul>
+</details>
+<details>
+<summary>
+<strong>Prompt-Injection Defense Audit + Blind Red-Team Validation
+Across All 4 Analysis Skills (2026-09-11 to 12)</strong>
+</summary>
+<ul>
+<li>Directly comparing all 6 skill files revealed that
+<code>re-analyze-mycode</code> (the most frequently used Phase 1 core
+skill) was missing the prompt-injection defense rule that the other
+three skills (android, binary, agent) already had, and ported it
+over.</li>
+<li>Found and fixed a related issue where <code>re-router</code>’s
+natural-language routing menu still described binary analysis (Phase 3)
+as “not ready yet,” even though it had already been live-verified.</li>
+<li>Discovered that <code>/re-start</code> embeds its own logic instead
+of delegating to the skill file, so the mycode fix above was not
+actually reaching the real <code>/re-start</code> execution path — added
+the same defense directly to <code>/re-start</code> as well.</li>
+<li>Validated that these defenses actually work by having an independent
+agent — with no knowledge of this conversation — analyze deliberately
+poisoned test files using only the real skill instructions (a blind
+red-team test). All 4 analysis skills (mycode, android, binary, agent)
+defended successfully against a combined 16 attack scenarios (forged
+consent records, fake system messages, requests to expand the analysis
+scope, requests to stop analysis early, attempts to leak secrets, and
+instructions hidden in identifier names).</li>
+<li>Permanently added the poisoned test fixtures used for this
+validation to <code>samples/</code> so the same checks can be re-run in
+the future.</li>
 </ul>
 </details>
 <blockquote>

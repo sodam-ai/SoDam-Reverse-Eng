@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <title>SoDam-Reverse-Eng · README (한국어)</title>
+  <title>SoDam-Reverse-Eng</title>
   <style>
     html {
       color: #1a1a1a;
@@ -235,7 +235,7 @@
 </head>
 <body>
 <header id="title-block-header">
-<h1 class="title">SoDam-Reverse-Eng · README (한국어)</h1>
+<h1 class="title">SoDam-Reverse-Eng</h1>
 </header>
 <h1
 id="sodam-reverse-eng-소담-리버스-내-코드를-쉬운-한국어로-설명해-주는-도구">SoDam-Reverse-Eng
@@ -250,7 +250,10 @@ id="sodam-reverse-eng-소담-리버스-내-코드를-쉬운-한국어로-설명�
 분석 <strong>전용</strong>입니다.</p>
 </blockquote>
 <hr />
-<p>🌸 <a href="https://github.com/sodam-ai/SoDam-Family">SoDam Family</a>의 7형제 중 하나입니다.</p>
+<blockquote>
+<p>🌸 <a href="https://github.com/sodam-ai/SoDam-Family">SoDam
+Family</a> 7형제 중 하나입니다.</p>
+</blockquote>
 <h2 id="목차">목차</h2>
 <ol start="0" type="1">
 <li><a href="#0-컴퓨터ai가-정말-처음이신가요-기본-용어">컴퓨터·AI가 정말
@@ -1009,8 +1012,12 @@ Claude AI (Anthropic 서버)
 ├── samples/                     ← 테스트용 예제 파일
 │   ├── safe-login.js            ← 정상 분석 테스트용
 │   ├── deny-demo.txt            ← 차단 테스트용
+│   ├── mycode-injection-demo.js ← 소스코드 프롬프트 인젝션 방어 테스트용
+│   ├── android-injection-demo.xml← 안드로이드 프롬프트 인젝션 방어 테스트용
+│   ├── binary-injection-demo.txt← 바이너리 프롬프트 인젝션 방어 테스트용
 │   ├── agent-injection-demo.md  ← 프롬프트 인젝션 방어 테스트용
-│   └── agent-injection-demo-2.md← 결합공격(레드팀) 방어 테스트용
+│   ├── agent-injection-demo-2.md← 결합공격(레드팀) 방어 테스트용
+│   └── agent-injection-demo-3.md← 플러그인 설정파일 위장 인젝션 테스트용
 │
 ├── .sodam-re/                   ← 분석 결과 저장 (자동 생성, .gitignore)
 │
@@ -1853,6 +1860,33 @@ Ghidra 분석 → 표준 보고서까지 전 과정을 처음으로 완주했습
 <li>AI 보조 저작물의 저작권 성립·귀속처럼 국가별로 다르게 취급될 수 있는
 사항은 임의로 결론 내리지 않고 “법무/전문가 검토 필요”로 명확히 구분해
 남겼습니다.</li>
+</ul>
+</details>
+<details>
+<summary>
+<strong>프롬프트 인젝션 방어 전수 점검 + 4개 분석 스킬 블라인드 레드팀
+검증 (2026-09-11~12)</strong>
+</summary>
+<ul>
+<li>6개 스킬 파일을 직접 대조한 결과,
+<code>re-analyze-mycode</code>(가장 많이 쓰이는 Phase 1 핵심 스킬)에
+다른 3개 스킬(android·binary·agent)이 이미 갖추고 있던 프롬프트 인젝션
+방어 규칙이 빠져 있던 것을 발견해 이식했습니다.</li>
+<li>이어서 <code>re-router</code>의 자연어 라우팅 메뉴가 이미 완료된
+바이너리 분석(Phase 3)을 여전히 “준비중”으로 안내하던 것을 발견해
+바로잡았습니다.</li>
+<li><code>/re-start</code> 명령이 스킬을 그대로 위임하지 않고 자체
+로직을 내장하는 구조라, 위 mycode 수정이 실제로는 <code>/re-start</code>
+실행 경로에 적용되지 않고 있던 것을 재확인 과정에서 발견해
+<code>/re-start</code>에도 동일한 방어를 직접 추가했습니다.</li>
+<li>이 방어 규칙들이 실제로 작동하는지, 이 대화 맥락을 전혀 모르는
+독립된 에이전트에게 오염된 테스트 파일만 주고 분석시키는 방식(블라인드
+레드팀)으로 검증했습니다 — 4개 분석 스킬(mycode·android·binary·agent)
+전부, 총 16가지 공격 시나리오(위조 동의 기록·가짜 시스템 메시지·분석
+범위 확장 유도·분석 조기 중단 유도·비밀정보 노출 유도·이름에 숨긴
+지시문)에서 전부 방어에 성공했습니다.</li>
+<li>검증에 사용한 오염 테스트 파일들을 <code>samples/</code>에 영구
+보존해, 앞으로도 같은 방식으로 재검증할 수 있게 했습니다.</li>
 </ul>
 </details>
 <blockquote>
