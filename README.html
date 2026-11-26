@@ -865,8 +865,8 @@ href="./INSTALL.md">INSTALL.md §2</a></td>
 [1단계] 동의 게이트 (버튼 선택형 질문 3개, 2026-07-27부터)
   AI가 소유권·분석 목적·이용 동의 질문 3개를 한 번에 띄웁니다 — 타이핑 대신 버튼(선택지)을 눌러 답합니다.
   세 질문 모두 &quot;예&quot; 계열 선택 → 다음 단계로. 하나라도 &quot;아니오&quot; → 즉시 중단
-  (정확한 질문 문구는 §12 Q5 참고)
-  통과하면 `.sodam-re/consent-log.jsonl`에 동의 기록 1줄이 추가됩니다(경로·시각, 2026-08-02부터).
+  (질문 문구는 분석 종류에 따라 조금씩 다릅니다)
+  통과하면 `.sodam-re/consent-log.jsonl`에 동의 기록 1줄이 추가됩니다(경로·시각, 2026-08-02부터). 기록 저장에 실패해도 분석은 계속 진행됩니다.
           ↓
 (0단계 안전 3층 상세 — 참고용, 실행 순서는 위 [0단계] 참고)
   1층: AI가 크랙·우회 내용인지 자체 판단
@@ -952,7 +952,7 @@ Claude AI (Anthropic 서버)
 <pre><code>[작업 폴더]/                       ← 보통 Claude Code를 실행한 폴더
 └── .sodam-re/                     ← 기록·보고서 저장 폴더 (자동 생성)
     ├── consent-log.jsonl          ← 동의 통과 기록 (분석 대상 경로가 글자 그대로 저장됨, 줄 단위 추가)
-    └── safety-log.jsonl           ← 차단 이벤트 기록 (요청 원문은 SHA-256 해시, 차단 사유·감지 단어는 글자로 저장)</code></pre>
+    └── safety-log.jsonl           ← 차단 이벤트 기록 (요청 원문은 SHA-256 해시 앞 16자, 차단 사유는 글자로 저장. 키워드로 차단하면 감지 단어가 포함됨)</code></pre>
 <blockquote>
 <p>⚠️ <strong>보고서 저장:</strong> <code>/re-android</code>·<code>/re-binary</code>·<code>/re-agent</code>의 지침은 보고서를 <code>.sodam-re/</code> 아래 <code>android</code>·<code>binary</code>·<code>agent</code> 폴더에 저장하도록 되어 있습니다. <code>/re-start</code>에는 보고서를 파일로 저장하는 단계가 없습니다. 보고서 파일 이름 규칙은 고정돼 있지 않습니다.</p>
 <p>⚠️ <strong>Git 주의:</strong> 이 플러그인 저장소의 <code>.gitignore</code>에는 <code>.sodam-re/</code>가 있지만, <strong>내 프로젝트의 <code>.gitignore</code>에는 자동으로 추가되지 않습니다.</strong> Git 프로젝트에서 사용했다면 커밋 전에 그 프로젝트의 <code>.gitignore</code>에 <code>.sodam-re/</code> 한 줄을 직접 추가하세요. (이미 커밋한 파일은 <code>.gitignore</code>를 추가해도 Git에서 빠지지 않습니다.)</p>
@@ -1138,7 +1138,7 @@ href="./scripts/check-trust-freshness.mjs"><code>scripts/check-trust-freshness.m
 <tr>
 <td>플러그인 폴더 기록 정리 (수동)</td>
 <td><code>scripts/rotate-safety-log.mjs</code></td>
-<td>직접 실행하면 <strong>플러그인 폴더의</strong> <code>.sodam-re/</code>에서 30일(기본) 지난 안전로그·동의기록 항목 삭제. 다른 작업 폴더의 기록은 대상이 아님(<code>--only=safety</code>|<code>consent</code>로 개별 지정 가능)</td>
+<td>직접 실행하면 <strong>플러그인 폴더의</strong> <code>.sodam-re/</code>에서 30일(기본) 지난 안전로그·동의기록 항목 삭제. <strong>먼저 <code>--dry-run</code>으로 확인하세요.</strong> 일수를 잘못 적는 실수(예: 30 대신 3)는 막지 못합니다. <strong>0.3.2 이하 버전에서는 <code>--dryrun</code>처럼 잘못 적고 올바른 <code>--dry-run</code>이 없으면 미리보기가 아닌 삭제 모드로 실행되어, 보존기간이 지난 항목이 있으면 실제로 지워집니다.</strong> 이후 소스는 알 수 없는 옵션을 삭제 없이 거부합니다. 다른 작업 폴더의 기록은 대상이 아님(<code>--only=safety</code>|<code>consent</code>로 개별 지정 가능)</td>
 </tr>
 </tbody>
 </table>
@@ -1240,9 +1240,7 @@ class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb17
 <h3 id="q11.-되돌리기는-어떻게-하나요">Q11. 되돌리기는 어떻게 하나요?</h3>
 <p><strong>소담리버스는 읽기 전용</strong>이라 분석 대상(코드·앱·파일)을
 바꾸거나 지우지 않습니다. 그래서 분석 때문에 되돌려야 할 일은 생기지
-않습니다. 소담리버스가 만드는 것은 <code>.sodam-re/</code> 폴더의
-기록(동의·차단 기록)과 분석 보고서뿐이며, 필요 없으면 그 폴더를 직접
-삭제하면 됩니다.</p>
+않습니다. 소담리버스가 남기는 주된 결과물은 <code>.sodam-re/</code> 폴더의 기록(동의·차단 기록)과 저장한 분석 보고서이며, 필요 없으면 그 폴더를 직접 삭제하면 됩니다. 분석 중에는 작업용 파일도 생길 수 있습니다(동의 기록을 쓰기 위한 임시 스크립트, Ghidra를 쓰는 바이너리 분석의 임시 작업 폴더·프로젝트와 추출 결과 파일). 임시 스크립트는 지침상 실행 후 삭제하고 Ghidra 프로젝트는 <code>-deleteProject</code> 옵션으로 지우지만, 임시 작업 폴더나 <code>.sodam-re/</code> 밖의 추출 결과 파일은 남을 수 있습니다.</p>
 <p>다른 작업 중에 파일을 실수로 잃었다면, <strong>SoDam-Harness가 설치돼
 있을 때만</strong> <code>/sodam-harness:undo</code>로 최근 백업에서 복구할
 수 있습니다(Harness가 만든 백업이 있을 때만 가능).</p>
@@ -1806,8 +1804,7 @@ Ghidra 분석 → 표준 보고서까지 전 과정을 처음으로 완주했습
 문제</li>
 <li>동의 기록이 또 한 번 깨진 형식으로 저장되던 문제(v0.3.0에서 고친
 것과 증상은 같지만 원인은 달랐음) — 이번엔 손으로 만든 문자열 대신
-프로그램이 자동으로 형식을 만들도록 바꿔 같은 문제가 다시 생기지 않도록
-근본적으로 고쳤습니다.</li>
+프로그램이 자동으로 형식을 만들도록 바꿔 같은 형식 오류가 생기기 어렵게 고쳤습니다. <em>(2026-11-26 정정: 다시는 생길 수 없다는 뜻이 아니며, 기록 저장은 실패할 수 있습니다.)</em></li>
 </ul></li>
 </ul>
 </details>

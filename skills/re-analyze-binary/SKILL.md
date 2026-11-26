@@ -156,7 +156,7 @@ print(json.dumps(result, ensure_ascii=False))
 
 ## 5. 저장
 
-결과는 `./.sodam-re/binary/`에 **로컬 전용**으로 저장(외부 전송 0).
+결과는 `./.sodam-re/binary/`에 **로컬 전용**으로 저장(플러그인이 별도 서버로 보내지 않음. 분석 대화 자체는 AI 서버에서 처리됨).
 
 ---
 
