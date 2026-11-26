@@ -405,9 +405,9 @@ User: /re-start my-code/login.js
 [Step 1] Consent Gate (3 button-choice questions, since 2026-07-27)
   The AI shows 3 questions at once — covering ownership, purpose, and responsibility.
   Answer with buttons, not free typing. All three need a "Yes"-type answer to proceed;
-  any "No" stops immediately. (See §12 Q5 for the exact question wording)
+  any "No" stops immediately. (The question wording differs slightly by analysis type)
   Passing it appends one line to `.sodam-re/consent-log.jsonl` (path + timestamp,
-  since 2026-08-02).
+  since 2026-08-02). If writing the record fails, the analysis still continues.
           ↓
 (Step 0's 3-layer detail — for reference, execution order is [Step 0] above)
   Layer 1: AI self-judges whether content involves cracking/bypass
@@ -468,7 +468,7 @@ My computer (chat output · saved to .sodam-re/)
 [working-folder]/                  ← usually the folder where you started Claude Code
 └── .sodam-re/                     ← Logs and reports (auto-created)
     ├── consent-log.jsonl          ← Consent records (target path stored as plain text, appended line by line)
-    └── safety-log.jsonl           ← Block event log (request stored as SHA-256 hash; reason and matched word stored as plain text)
+    └── safety-log.jsonl           ← Block event log (request stored as the first 16 characters of its SHA-256 hash; the reason is plain text and includes the matched word for keyword blocks)
 ```
 
 > ⚠️ **Report storage:** the instructions for `/re-android`, `/re-binary`, and `/re-agent` save reports under the `android`, `binary`, and `agent` folders inside `.sodam-re/`. `/re-start` has no step that saves the report to a file. Report file names are not fixed.
@@ -571,7 +571,7 @@ SoDam-Reverse-Eng/
 | External Tool Curation | [`mcp/catalog.json`](./mcp/catalog.json) | Phase 2·3 per-tool trust tier, license, status |
 | Family Status | [`scripts/check-family.mjs`](./scripts/check-family.mjs) | 6-sibling diagnostic script |
 | Trust Freshness | [`scripts/check-trust-freshness.mjs`](./scripts/check-trust-freshness.mjs) | Checks trusted-tool catalog for staleness |
-| Plugin-folder log cleanup (manual) | `scripts/rotate-safety-log.mjs` | When you run it, deletes safety-log and consent-log entries older than 30 days (default) from the `.sodam-re/` **in the plugin folder only**; other working folders are not covered (`--only=safety`\|`consent` to target one) |
+| Plugin-folder log cleanup (manual) | `scripts/rotate-safety-log.mjs` | When you run it, deletes safety-log and consent-log entries older than 30 days (default) from the `.sodam-re/` **in the plugin folder only**; **Run it with `--dry-run` first.** A mistyped day count (for example 3 instead of 30) is not detected. **In version 0.3.2 and earlier, if you misspell it (for example `--dryrun`) and no correct `--dry-run` is present, the script runs in delete mode instead of preview, so entries past the retention period are really deleted.** Later source refuses unknown options without deleting. Other working folders are not covered (`--only=safety`\|`consent` to target one) |
 
 ---
 
@@ -680,7 +680,7 @@ node scripts/re-inject-harness.mjs
 ### Q11. How do I undo something?
 
 **SoDam-Reverse is read-only**: it never modifies or deletes the thing you analyze (code, app, files), so an analysis never leaves anything to undo.
-What it creates is the `.sodam-re/` folder (consent and block logs) and the analysis reports. If you don't need them, just delete that folder yourself.
+What it leaves behind is mainly the `.sodam-re/` folder (consent and block logs) and any saved analysis reports. If you don't need them, just delete that folder yourself. Working files may also be created during analysis (a temporary script used to write the consent record, and, for binary analysis with Ghidra, a temporary working folder and project plus an extraction output file). The instructions delete the temporary script after it runs and remove the Ghidra project with `-deleteProject`, but the temporary working folder or an extraction output file outside `.sodam-re/` may remain.
 
 If you lost a file during other work, you can restore it from a recent backup with `/sodam-harness:undo` — **only if SoDam-Harness is installed** and it has made a backup of that file.
 
@@ -928,7 +928,7 @@ If you lost a file during other work, you can restore it from a recent backup wi
 - **`/re-binary` completed its first full run in a real new session** — consent gate → Ghidra analysis → standard report, start to finish. Phase 1, 2, and 3 are now all live-verified.
 - Two more issues surfaced and were fixed along the way:
   - Ghidra was actually fully usable, but an imprecise check made the AI wrongly conclude "JDK 21+ is missing," silently downgrading to a weaker analysis method.
-  - The consent log got corrupted again (same symptom as the v0.3.0 fix, but a different root cause this time) — fixed at the root by having a small script generate the JSON automatically instead of hand-building the string, so this class of bug can't recur.
+  - The consent log got corrupted again (same symptom as the v0.3.0 fix, but a different root cause this time) — changed so that a small script generates the JSON instead of hand-building the string. *(Correction 2026-11-26: this does not mean it cannot recur; writing the record can still fail.)*
 
 </details>
 

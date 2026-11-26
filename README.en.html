@@ -990,9 +990,9 @@ correctly.</p>
 [Step 1] Consent Gate (3 button-choice questions, since 2026-07-27)
   The AI shows 3 questions at once — covering ownership, purpose, and responsibility.
   Answer with buttons, not free typing. All three need a &quot;Yes&quot;-type answer to proceed;
-  any &quot;No&quot; stops immediately. (See §12 Q5 for the exact question wording)
+  any &quot;No&quot; stops immediately. (The question wording differs slightly by analysis type)
   Passing it appends one line to `.sodam-re/consent-log.jsonl` (path + timestamp,
-  since 2026-08-02).
+  since 2026-08-02). If writing the record fails, the analysis still continues.
           ↓
 (Step 0&#39;s 3-layer detail — for reference, execution order is [Step 0] above)
   Layer 1: AI self-judges whether content involves cracking/bypass
@@ -1079,7 +1079,7 @@ through.</p>
 <pre><code>[working-folder]/                  ← usually the folder where you started Claude Code
 └── .sodam-re/                     ← Logs and reports (auto-created)
     ├── consent-log.jsonl          ← Consent records (target path stored as plain text, appended line by line)
-    └── safety-log.jsonl           ← Block event log (request stored as SHA-256 hash; reason and matched word stored as plain text)</code></pre>
+    └── safety-log.jsonl           ← Block event log (request stored as the first 16 characters of its SHA-256 hash; the reason is plain text and includes the matched word for keyword blocks)</code></pre>
 <blockquote>
 <p>⚠️ <strong>Report storage:</strong> the instructions for <code>/re-android</code>, <code>/re-binary</code>, and <code>/re-agent</code> save reports under the <code>android</code>, <code>binary</code>, and <code>agent</code> folders inside <code>.sodam-re/</code>. <code>/re-start</code> has no step that saves the report to a file. Report file names are not fixed.</p>
 <p>⚠️ <strong>Git warning:</strong> this plugin repository’s own <code>.gitignore</code> lists <code>.sodam-re/</code>, but it is <strong>not added to your project’s <code>.gitignore</code> automatically.</strong> If you used the plugin inside a Git project, add a <code>.sodam-re/</code> line to that project’s <code>.gitignore</code> before committing. (Files already committed are not removed from Git by adding the line.)</p>
@@ -1264,7 +1264,7 @@ href="./scripts/check-trust-freshness.mjs"><code>scripts/check-trust-freshness.m
 <tr>
 <td>Plugin-folder log cleanup (manual)</td>
 <td><code>scripts/rotate-safety-log.mjs</code></td>
-<td>When you run it, deletes safety-log and consent-log entries older than 30 days (default) from the <code>.sodam-re/</code> <strong>in the plugin folder only</strong>; other working folders are not covered (<code>--only=safety</code>|<code>consent</code> to target one)</td>
+<td>When you run it, deletes safety-log and consent-log entries older than 30 days (default) from the <code>.sodam-re/</code> <strong>in the plugin folder only</strong>; <strong>Run it with <code>--dry-run</code> first.</strong> A mistyped day count (for example 3 instead of 30) is not detected. <strong>In version 0.3.2 and earlier, if you misspell it (for example <code>--dryrun</code>) and no correct <code>--dry-run</code> is present, the script runs in delete mode instead of preview, so entries past the retention period are really deleted.</strong> Later source refuses unknown options without deleting. Other working folders are not covered (<code>--only=safety</code>|<code>consent</code> to target one)</td>
 </tr>
 </tbody>
 </table>
@@ -1371,9 +1371,7 @@ not connecting</h3>
 <h3 id="q11.-how-do-i-undo-something">Q11. How do I undo something?</h3>
 <p><strong>SoDam-Reverse is read-only</strong>: it never modifies or
 deletes the thing you analyze (code, app, files), so an analysis never
-leaves anything to undo. What it creates is the <code>.sodam-re/</code>
-folder (consent and block logs) and the analysis reports. If you don’t
-need them, just delete that folder yourself.</p>
+leaves anything to undo. What it leaves behind is mainly the <code>.sodam-re/</code> folder (consent and block logs) and any saved analysis reports. If you don’t need them, just delete that folder yourself. Working files may also be created during analysis (a temporary script used to write the consent record, and, for binary analysis with Ghidra, a temporary working folder and project plus an extraction output file). The instructions delete the temporary script after it runs and remove the Ghidra project with <code>-deleteProject</code>, but the temporary working folder or an extraction output file outside <code>.sodam-re/</code> may remain.</p>
 <p>If you lost a file during other work, you can restore it from a recent
 backup with <code>/sodam-harness:undo</code> — <strong>only if
 SoDam-Harness is installed</strong> and it has made a backup of that
@@ -1988,9 +1986,7 @@ live-verified.</li>
 wrongly conclude “JDK 21+ is missing,” silently downgrading to a weaker
 analysis method.</li>
 <li>The consent log got corrupted again (same symptom as the v0.3.0 fix,
-but a different root cause this time) — fixed at the root by having a
-small script generate the JSON automatically instead of hand-building
-the string, so this class of bug can’t recur.</li>
+but a different root cause this time) — changed so that a small script generates the JSON instead of hand-building the string. <em>(Correction 2026-11-26: this does not mean it cannot recur; writing the record can still fail.)</em></li>
 </ul></li>
 </ul>
 </details>
