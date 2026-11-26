@@ -1242,7 +1242,17 @@ class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb17
 <pre><code>node scripts/re-inject-harness.mjs</code></pre>
 <p>“RE 규칙 N개 주입 완료” 메시지가 나오면 성공.</p>
 <hr />
-<h3 id="q11.-더-자세한-오류-해결">Q11. 더 자세한 오류 해결</h3>
+<h3 id="q11.-되돌리기는-어떻게-하나요">Q11. 되돌리기는 어떻게 하나요?</h3>
+<p><strong>소담리버스는 읽기 전용</strong>이라 분석 대상(코드·앱·파일)을
+바꾸거나 지우지 않습니다. 그래서 분석 때문에 되돌려야 할 일은 생기지
+않습니다. 소담리버스가 만드는 것은 <code>.sodam-re/</code> 폴더의
+기록(동의·차단 기록)과 분석 보고서뿐이며, 필요 없으면 그 폴더를 직접
+삭제하면 됩니다.</p>
+<p>다른 작업 중에 파일을 실수로 잃었다면, <strong>SoDam-Harness가 설치돼
+있을 때만</strong> <code>/sodam-harness:undo</code>로 최근 백업에서 복구할
+수 있습니다(Harness가 만든 백업이 있을 때만 가능).</p>
+<hr />
+<h3 id="q12.-더-자세한-오류-해결">Q12. 더 자세한 오류 해결</h3>
 <p>→ <strong><a
 href="./TROUBLESHOOTING.md">TROUBLESHOOTING.md</a></strong> — 실패 패턴
 전체 해결법</p>

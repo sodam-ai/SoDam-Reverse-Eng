@@ -1375,7 +1375,18 @@ not connecting</h3>
 <pre><code>node scripts/re-inject-harness.mjs</code></pre>
 <p>“N RE rules injected” message means success.</p>
 <hr />
-<h3 id="q11.-more-detailed-error-resolution">Q11. More detailed error
+<h3 id="q11.-how-do-i-undo-something">Q11. How do I undo something?</h3>
+<p><strong>SoDam-Reverse is read-only</strong>: it never modifies or
+deletes the thing you analyze (code, app, files), so an analysis never
+leaves anything to undo. What it creates is the <code>.sodam-re/</code>
+folder (consent and block logs) and the analysis reports. If you don’t
+need them, just delete that folder yourself.</p>
+<p>If you lost a file during other work, you can restore it from a recent
+backup with <code>/sodam-harness:undo</code> — <strong>only if
+SoDam-Harness is installed</strong> and it has made a backup of that
+file.</p>
+<hr />
+<h3 id="q12.-more-detailed-error-resolution">Q12. More detailed error
 resolution</h3>
 <p>→ <strong><a
 href="./TROUBLESHOOTING.md">TROUBLESHOOTING.md</a></strong> — Full error
