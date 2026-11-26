@@ -435,8 +435,8 @@ reports</td>
 <td>All messages and errors displayed in Korean</td>
 </tr>
 <tr>
-<td>📁 Local Storage Only</td>
-<td>Results saved only to your computer (no external upload)</td>
+<td>📁 Local Storage</td>
+<td>Consent/block logs and saved reports stay in <code>.sodam-re/</code> on your computer (the plugin sends them to no separate server; the analysis itself runs on AI servers, see §9)</td>
 </tr>
 </tbody>
 </table>
@@ -1012,9 +1012,10 @@ correctly.</p>
   │ ■ Next steps (suggestions for follow-up)    │
   └─────────────────────────────────────────────┘
           ↓
-[Step 4] Local Storage
-  Saved to .sodam-re/ folder (.gitignore registered)
-  No upload to external servers</code></pre>
+[Step 4] Report output and storage
+  /re-start prints the report in chat; /re-android, /re-binary, /re-agent save to .sodam-re/
+  .sodam-re/ is NOT added to your project’s .gitignore automatically (see §9)
+  The plugin sends nothing to a separate server</code></pre>
 <hr />
 <h2 id="security-data-flow">9. Security · Data Flow</h2>
 <h3 id="where-does-my-code-data-go">Where Does My Code Data Go?</h3>
@@ -1022,12 +1023,12 @@ correctly.</p>
     ↓ (sent to AI for analysis)
 Claude AI (Anthropic servers)
     ↓ (only analysis results returned)
-Saved to .sodam-re/ on my computer</code></pre>
+My computer (chat output · saved to .sodam-re/)</code></pre>
 <ul>
 <li><strong>Sent to AI:</strong> Code content (required for analysis —
 Anthropic API Terms apply)</li>
-<li><strong>NOT sent externally:</strong> Analysis results, consent
-records, block logs</li>
+<li><strong>Also part of the AI conversation:</strong> the target path, your consent answers, and the generated report are processed on AI servers as part of the conversation</li>
+<li><strong>No separate upload by the plugin:</strong> the plugin does not send analysis results, consent records, or block logs to any separate server</li>
 <li><strong>Masked before saving:</strong> Passwords, keys, tokens found
 in code</li>
 </ul>
@@ -1075,21 +1076,15 @@ SHA-256 hashing</td>
 error, analysis is <strong>immediately halted</strong> — not passed
 through.</p>
 <h3 id="analysis-result-storage">Analysis Result Storage</h3>
-<pre><code>[plugin-folder]/
-└── .sodam-re/                     ← Results folder (auto-created)
-    ├── consent-log.jsonl          ← Consent records (one line appended per pass, never overwritten)
-    └── safety-log.jsonl           ← Block event log (SHA-256 hash only, never raw text)</code></pre>
+<pre><code>[working-folder]/                  ← usually the folder where you started Claude Code
+└── .sodam-re/                     ← Logs and reports (auto-created)
+    ├── consent-log.jsonl          ← Consent records (target path stored as plain text, appended line by line)
+    └── safety-log.jsonl           ← Block event log (request stored as SHA-256 hash; reason and matched word stored as plain text)</code></pre>
 <blockquote>
-<p>⚠️ <strong>Accuracy note</strong>: only “reports stay inside
-<code>.sodam-re/</code> and are never sent externally” is a confirmed
-rule — the exact file-naming convention for report output itself is not
-yet fixed in the code. The two files above
-(<code>consent-log.jsonl</code>, <code>safety-log.jsonl</code>) are the
-only ones actually confirmed in the source; no unconfirmed folder
-structure is listed here.</p>
+<p>⚠️ <strong>Report storage:</strong> the instructions for <code>/re-android</code>, <code>/re-binary</code>, and <code>/re-agent</code> save reports under the <code>android</code>, <code>binary</code>, and <code>agent</code> folders inside <code>.sodam-re/</code>. <code>/re-start</code> has no step that saves the report to a file. Report file names are not fixed.</p>
+<p>⚠️ <strong>Git warning:</strong> this plugin repository’s own <code>.gitignore</code> lists <code>.sodam-re/</code>, but it is <strong>not added to your project’s <code>.gitignore</code> automatically.</strong> If you used the plugin inside a Git project, add a <code>.sodam-re/</code> line to that project’s <code>.gitignore</code> before committing. (Files already committed are not removed from Git by adding the line.)</p>
+<p>🗑️ <strong>Deleting logs:</strong> logs are <strong>not deleted automatically.</strong> To remove them, delete the <code>.sodam-re/</code> folder in your working folder yourself (saved reports are deleted with it). <code>scripts/rotate-safety-log.mjs</code> only cleans the <code>.sodam-re/</code> <strong>inside the plugin folder where the script lives</strong>; it does not clean logs in other working folders.</p>
 </blockquote>
-<p>The <code>.sodam-re/</code> folder is registered in
-<code>.gitignore</code> — <strong>never uploaded to Git</strong>.</p>
 <hr />
 <h2 id="architecture-file-structure">10. Architecture · File
 Structure</h2>
@@ -1133,7 +1128,7 @@ Structure</h2>
 │   ├── re-inject-context.mjs    ← Context synergy setup
 │   ├── check-family.mjs         ← 6-sibling status check
 │   ├── check-trust-freshness.mjs
-│   └── rotate-safety-log.mjs    ← Safety-log &amp; consent-log retention cleanup (auto-expiry)
+│   └── rotate-safety-log.mjs    ← Cleans plugin-folder logs only (manual run)
 │
 ├── mcp/
 │   └── catalog.json             ← Phase 2·3 external tool curation (trust tier, license)
@@ -1267,11 +1262,9 @@ href="./scripts/check-trust-freshness.mjs"><code>scripts/check-trust-freshness.m
 <td>Checks trusted-tool catalog for staleness</td>
 </tr>
 <tr>
-<td>Safety-Log &amp; Consent-Log Retention</td>
+<td>Plugin-folder log cleanup (manual)</td>
 <td><code>scripts/rotate-safety-log.mjs</code></td>
-<td>Deletes safety-log and consent-log entries older than 30 days
-(default) — self-incrimination risk reduction
-(<code>--only=safety</code>|<code>consent</code> to target one)</td>
+<td>When you run it, deletes safety-log and consent-log entries older than 30 days (default) from the <code>.sodam-re/</code> <strong>in the plugin folder only</strong>; other working folders are not covered (<code>--only=safety</code>|<code>consent</code> to target one)</td>
 </tr>
 </tbody>
 </table>
@@ -1901,7 +1894,7 @@ answers.</li>
 block-history entries (<code>safety-log.jsonl</code>) older than 30 days
 (default, adjustable) so the log doesn’t grow forever. Only hashes are
 removed, never raw text, so this has no effect on safety-layer
-decisions.</li>
+decisions. <em>(Correction 2026-11-26: this is a manual script that never runs automatically, and it cleans plugin-folder logs only. Block reasons keep the matched word as plain text. See §9.)</em></li>
 <li>Fixed 4 internal recording gaps/typos in the planning docs (PRD) —
 no user-facing behavior changed.</li>
 </ul>
@@ -1950,7 +1943,7 @@ default Python version changed. Reconnected and re-verified it.</li>
 <li>The log auto-cleanup tool
 (<code>scripts/rotate-safety-log.mjs</code>), which already deleted
 30-day-old block-history entries, now also cleans up consent-record
-entries (<code>consent-log.jsonl</code>) the same way.</li>
+entries (<code>consent-log.jsonl</code>) the same way. <em>(Correction 2026-11-26: it is not automatic; you must run it, and it covers plugin-folder logs only. See §9.)</em></li>
 </ul>
 </details>
 <details>
