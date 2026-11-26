@@ -32,17 +32,33 @@ const TARGETS = [
 ];
 
 const args = process.argv.slice(2);
+// 모르는 옵션을 무시하면 안 된다: `--dryrun` 같은 오타가 미리보기가 아니라 실제 삭제가 된다(2026-11-26 재현).
+// 삭제 스크립트이므로 해석하지 못한 인자가 하나라도 있으면 아무것도 지우지 않고 중단한다.
+const unknownArgs = args.filter((a) => a !== '--dry-run' && !a.startsWith('--days=') && !a.startsWith('--only='));
+if (unknownArgs.length) {
+  // 입력값은 출력하지 않는다: 실수로 붙여 넣은 비밀값이나 제어문자가 화면에 남을 수 있다.
+  console.error(`❌ 알 수 없는 옵션이 ${unknownArgs.length}개 있습니다 — 아무것도 삭제하지 않았습니다.`);
+  console.error('   사용법: node scripts/rotate-safety-log.mjs [--days=30] [--dry-run] [--only=safety|consent]');
+  process.exit(1);
+}
+// 같은 값을 두 번 주면 어느 쪽을 의도했는지 알 수 없다(첫 값만 쓰면 `--days=1 --days=90`이 1일로 삭제된다).
+const repeated = ['--days=', '--only='].filter((p) => args.filter((a) => a.startsWith(p)).length > 1);
+if (repeated.length) {
+  console.error(`❌ ${repeated.join(' ')} 옵션은 한 번만 쓸 수 있습니다 — 아무것도 삭제하지 않았습니다.`);
+  process.exit(1);
+}
 const dryRun = args.includes('--dry-run');
 const daysArg = args.find((a) => a.startsWith('--days='));
 const RETENTION_DAYS = daysArg ? Number(daysArg.slice('--days='.length)) : 30;
 const onlyArg = args.find((a) => a.startsWith('--only='));
 const only = onlyArg ? onlyArg.slice('--only='.length) : null;
 
-if (!Number.isFinite(RETENTION_DAYS) || RETENTION_DAYS <= 0) {
+// Number()는 0.00001·1e-9·0x1E도 받아들인다. 보존 일수는 1 이상의 정수 표기만 허용한다.
+if ((daysArg && !/^--days=[1-9][0-9]*$/.test(daysArg)) || !Number.isFinite(RETENTION_DAYS)) {
   console.error('❌ --days 값이 올바르지 않습니다(양의 정수를 넣어주세요). 예: --days=30');
   process.exit(1);
 }
-if (only && !TARGETS.some((t) => t.key === only)) {
+if (only !== null && !TARGETS.some((t) => t.key === only)) {
   console.error(`❌ --only 값이 올바르지 않습니다(safety 또는 consent). 예: --only=consent`);
   process.exit(1);
 }
