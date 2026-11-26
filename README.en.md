@@ -673,7 +673,16 @@ node scripts/re-inject-harness.mjs
 
 ---
 
-### Q11. More detailed error resolution
+### Q11. How do I undo something?
+
+**SoDam-Reverse is read-only**: it never modifies or deletes the thing you analyze (code, app, files), so an analysis never leaves anything to undo.
+What it creates is the `.sodam-re/` folder (consent and block logs) and the analysis reports. If you don't need them, just delete that folder yourself.
+
+If you lost a file during other work, you can restore it from a recent backup with `/sodam-harness:undo` — **only if SoDam-Harness is installed** and it has made a backup of that file.
+
+---
+
+### Q12. More detailed error resolution
 
 → **[TROUBLESHOOTING.md](./TROUBLESHOOTING.md)** — Full error pattern reference
 
