@@ -41,12 +41,14 @@ Harness·Loop guard가 홈 폴더와 AppData를 보호하다가 정상 작업까
 ## 4. 분석이 시작이 안 돼요
 
 **원인 A:** 동의 게이트 미통과.
-→ "본인 소유 또는 허가 대상" + "방어·교육 목적"에 **둘 다** "예"를 해야 합니다.
+→ 동의 질문(소유권·분석 목적·이용 동의 등) **3개 모두** "예"를 선택해야 합니다. (`/re-agent`로 **본인 설정**을 분석할 때는 2개입니다.)
 
 **원인 B:** 분석 대상 경로가 동의 범위 밖.
-→ `../` 상위 폴더 이동이나 심볼릭 링크 탈출은 자동 차단됩니다.
+→ `../` 상위 폴더 이동·심볼릭 링크·동의 범위 밖 접근은 AI가 분석 규칙에 따라 거부하도록 되어 있습니다.
 
-**해결:** 분석 대상이 본인 소유이고 프로젝트 폴더 안에 있는지 확인하세요.
+> ⚠️ 이 경로 제한은 **AI(1층) 판단 기반**입니다. hook(2층) 코드가 경로를 검사해 막아 주는 것은 **아닙니다.** 분석 대상 범위는 직접 확인하세요.
+
+**해결:** 분석 대상이 본인 소유이고, 동의할 때 지정한 대상 범위 안에 있는지 확인하세요.
 
 ---
 
@@ -64,7 +66,7 @@ Harness·Loop guard가 홈 폴더와 AppData를 보호하다가 정상 작업까
 2. 없는 파일만 직접 만들기 (파일 내용은 `SETUP_BLOCKED_FILES.md` 안에 있음).
 3. Claude Code **완전 재시작** → `/re-selftest` 재실행.
 
-SHA-256 불일치 경고 시: hook 파일이 변조됐을 가능성 → 플러그인 재설치 후 `node scripts/re-inject-harness.mjs` 재실행.
+SHA-256 불일치 경고 시: hook 파일이 변조됐을 가능성 → 플러그인을 재설치하세요. (SoDam-Harness를 함께 쓰는 경우에만, 재설치 후 `node scripts/re-inject-harness.mjs`를 다시 실행합니다.)
 
 ---
 
@@ -120,10 +122,10 @@ node scripts/check-trust-freshness.mjs
 
 ## 12. Phase 2·3 명령어(/re-android·/re-binary)가 안 돼요
 
-Phase 2는 실제 도구로 라이브 검증 완료, Phase 3(바이너리)은 **코드·도구·환경까지는 검증됐으나 `/re-binary` 슬래시 명령 자체의 라이브 실행만 아직 남은 상태**입니다(2026-08-19 재확인: Java/JADX/Apktool·Ghidra·JDK 21 전부 이 PC에 설치·작동 확인됨). "구현 전"이 아니라 "슬래시 명령 실사용만 미검증"이 정확한 표현입니다.
+두 명령 모두 실사용 라이브 검증이 끝났습니다. 동작하지 않으면 먼저 **추가 도구 설치와 PATH 등록**을 확인하세요.
 
-- Phase 2(안드로이드): ✅ 라이브 검증 완료(2026-07-13). JADX·Apktool·Java 17+ 설치 필요(README.md §6-2).
-- Phase 3(바이너리): ✅ Ghidra 12.1.3 설치 + headless 분석·추출 스크립트 실제 성공까지 확인(2026-08-19). **JDK 21+** 필요(Java 17이 아님 — 실측 정정, README.md §6-2 참고). 슬래시 명령 자체의 새 세션 라이브 실행만 남음.
+- Phase 2(안드로이드, `/re-android`): ✅ 실사용 라이브 검증 완료(2026-07-13). JADX·Apktool·Java 17+ 설치 필요([INSTALL.md](./INSTALL.md) §1).
+- Phase 3(바이너리, `/re-binary`): ✅ 실사용 라이브 검증 완료(2026-08-21, Ghidra 12.1.3). **JDK 21+** 필요(Java 17이 아님, [INSTALL.md](./INSTALL.md) §2). IDA 연동과 악성코드 분석은 검증 범위에 포함되지 않습니다.
 
 도구를 설치했는데도 명령이 실패하면 아래 12-1·12-2를 확인하세요.
 
@@ -147,12 +149,12 @@ Phase 2는 실제 도구로 라이브 검증 완료, Phase 3(바이너리)은 **
 **`ghidraRun`(또는 `analyzeHeadless.bat`) 실행 시 "JDK 21+ (64-bit) could not be found" 에러가 남:**
 - **2026-08-19 실측 확인된 원인**: Ghidra 12.1.3부터 **JDK 21 이상**이 필요합니다(예전엔 Java 17로 안내됐으나 버전 요구사항이 올라갔습니다). 이 PC의 Java 17(안드로이드 도구용)만으로는 부족합니다.
 - **검증된 해결법**: 시스템 전역 `JAVA_HOME`을 바꾸지 마세요(JADX·Apktool이 Java 17에 의존하므로 깨질 수 있습니다). 대신 JDK 21을 별도 폴더에 받아 압축만 풀고, **Ghidra 설치 폴더의 `support/launch.properties` 파일에서 `JAVA_HOME_OVERRIDE=` 줄에 그 JDK 21 폴더 경로를 적어 넣으세요**(예: `JAVA_HOME_OVERRIDE=D:\Tools\jdk-21`). Ghidra만 21을 쓰고 나머지 도구는 그대로 17을 씁니다.
-- 상세 설치 방법은 README.md §6-2 참고.
+- 상세 설치 방법은 [INSTALL.md](./INSTALL.md) §2 참고.
 
 **IDA Pro 옵션이 인식 안 됨:**
-- `SODAM_RE_IDA_PATH` 환경변수가 정확히 설정됐는지 확인(README.md §6-2에 Windows `setx` 명령 안내).
+- `SODAM_RE_IDA_PATH` 환경변수가 정확히 설정됐는지 확인([INSTALL.md](./INSTALL.md) §2에 Windows `setx` 명령 안내).
 
 ---
 
 > 더 자세한 설치·사용법: **[README.md](./README.md)**  
-> 버그 신고: GitHub Issues (공개 후)
+> 버그 신고: [GitHub Issues](https://github.com/sodam-ai/SoDam-Reverse-Eng/issues)
