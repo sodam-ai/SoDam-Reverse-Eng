@@ -62,11 +62,11 @@ Harness·Loop guard가 홈 폴더와 AppData를 보호하다가 정상 작업까
 ## 6. `/re-selftest` 일부 항목이 ❌
 
 **해결:**
-1. `SETUP_BLOCKED_FILES.md`를 열어 5개 파일이 모두 있는지 확인.
-2. 없는 파일만 직접 만들기 (파일 내용은 `SETUP_BLOCKED_FILES.md` 안에 있음).
+1. 파일이 빠졌거나 ❌가 나오면 **플러그인을 다시 설치**.
+2. 파일을 손으로 만들지 않기 (눈에 보이지 않는 바이트 차이로 무결성 검사에 실패할 수 있음).
 3. Claude Code **완전 재시작** → `/re-selftest` 재실행.
 
-SHA-256 불일치 경고 시: hook 파일이 변조됐을 가능성 → 플러그인을 재설치하세요. (SoDam-Harness를 함께 쓰는 경우에만, 재설치 후 `node scripts/re-inject-harness.mjs`를 다시 실행합니다.)
+SHA-256 불일치 또는 "기준 파일 없음·해석 실패"가 나오면: 파일이 바뀌었거나 설치가 불완전할 수 있습니다 → 플러그인을 재설치하세요. 현재 파일의 해시로 `integrity.json`을 덮어쓰지 마세요. (0.3.3 이하를 GitHub에서 새로 받은 경우에는 줄바꿈 차이만으로도 불일치가 날 수 있어 0.3.4 이상이 필요합니다.) (SoDam-Harness를 함께 쓰는 경우에만, 재설치 후 `node scripts/re-inject-harness.mjs`를 다시 실행합니다.)
 
 ---
 

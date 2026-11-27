@@ -1,5 +1,10 @@
 # ⚙️ 수동 생성 필요 파일 (5개)
 
+> ⛔ **일반 사용자는 이 문서대로 파일을 만들지 마세요.** 아래 파일들은 설치본에 이미 들어 있습니다.
+> 이 문서의 코드 견본을 복사해 만들면 배포 파일과 바이트가 달라(파일 끝 줄바꿈 문자 등) 3층 무결성 검사에
+> 실패할 수 있습니다. 파일이 빠졌거나 달라졌으면 **재설치**하세요. 이 문서의 만들기·붙여넣기 안내는 모두
+> **유지보수자용 과거 기록·참고 견본**입니다.
+
 > **왜 이 문서가 있나요?**
 > 이 5개 파일은 **플러그인 manifest와 안전 hook**입니다. 원칙적으로 **사람이 직접** 만들고 고쳐야 합니다.
 >
@@ -15,7 +20,7 @@
 > 있다면 나중에 뺄 수도 있다는 뜻)이라, 실질적 방어는 **OS 파일 권한(사람이 직접 설정)**으로 옮겼습니다.
 > 아래 "권장 절차" 참고. 상세 경위는 `CHECKPOINT.md` §5-51.
 >
-> **만드는 법 (택1):**
+> **만드는 법 (택1, 유지보수자 전용):**
 > 1. 메모장/VS Code 등 편집기로 아래 경로에 새 파일을 만들고 코드블록 내용을 붙여넣기 (**UTF-8, BOM 없음**)
 > 2. 또는 Claude Code 입력창에서 `!` 를 붙여 사용자 셸로 직접 생성
 >
@@ -31,7 +36,7 @@
 > ```powershell
 > attrib +R "hooks\re-deny-guard.mjs" "hooks\_selftest.mjs" "hooks\hooks.json" ".claude-plugin\plugin.json" ".claude-plugin\marketplace.json" "references\deny-corpus.json" "references\mask-patterns.json" "references\integrity.json"
 > ```
-> 다시 고쳐야 할 때만 사람이 직접 해제 후 편집 → 저장 → 재잠금(**순서 중요**: 해제→편집→저장→해시
+> **(유지보수자 전용)** 다시 고쳐야 할 때만 사람이 직접 해제 후 편집 → 저장 → 재잠금(**순서 중요**: 해제→편집→저장→해시
 > 재계산→`integrity.json` 갱신→**그 다음에** 재잠금. 잠근 채로 저장을 먼저 시도하면 실패합니다):
 > ```powershell
 > attrib -R "hooks\re-deny-guard.mjs" "hooks\_selftest.mjs" "hooks\hooks.json" ".claude-plugin\plugin.json" ".claude-plugin\marketplace.json" "references\deny-corpus.json" "references\mask-patterns.json" "references\integrity.json"
@@ -345,31 +350,28 @@ const PROTECTED_FILES = [
   'references/deny-corpus.json',
   'references/mask-patterns.json',
 ];
-if (existsSync(manifestPath)) {
-  let manifest;
-  try { manifest = JSON.parse(readFileSync(manifestPath, 'utf8')); }
-  catch { no('3층 무결성: manifest 해석 실패'); manifest = null; }
-  if (manifest) {
-    for (const relPath of PROTECTED_FILES) {
-      const abs = join(root, relPath);
-      if (!existsSync(abs)) { no(`3층 무결성: 파일 없음 (${relPath})`); continue; }
-      const hash = createHash('sha256').update(readFileSync(abs)).digest('hex');
-      const expected = manifest[relPath];
-      if (!expected) no(`3층 무결성: manifest에 항목 없음 (${relPath})`);
-      else if (expected === hash) ok(`3층 무결성: 해시 일치 (${relPath})`);
-      else no(`3층 무결성: 해시 불일치·변조 의심 (${relPath}) → 재설치 권장`);
-    }
-  }
+// 해시는 줄바꿈 CRLF 를 LF 로 통일한 내용으로 계산한다. git 설정에 따라 같은 파일이 CRLF 또는 LF 로
+// 받아지기 때문이다. latin1 은 바이트를 1:1 로 옮기므로 그 밖의 변경은 그대로 탐지된다.
+const hashOf = (abs) => createHash('sha256')
+  .update(readFileSync(abs).toString('latin1').replace(/\r\n/g, '\n'), 'latin1')
+  .digest('hex');
+// 기준 파일을 쓸 수 없으면 "검사를 못 한 것"이므로 통과가 아니라 실패로 센다(fail-closed).
+// 현재 파일의 해시는 출력하지 않는다. 그 값을 기준으로 저장하면 변조된 파일도 정상이 되기 때문이다.
+let manifest = null;
+try { manifest = JSON.parse(readFileSync(manifestPath, 'utf8')); } catch {}
+if (!manifest || typeof manifest !== 'object' || Array.isArray(manifest)) {
+  const why = existsSync(manifestPath) ? '해석 실패' : '없음';
+  no(`3층 무결성: 기준 파일 ${why} (references/integrity.json) → 검사 불가, 재설치 권장`);
 } else {
-  lines.push('  ⚠️ 3층 무결성: manifest 없음 → 최초 1회 생성 필요.');
   for (const relPath of PROTECTED_FILES) {
     const abs = join(root, relPath);
-    if (existsSync(abs)) {
-      const hash = createHash('sha256').update(readFileSync(abs)).digest('hex');
-      lines.push(`     ${relPath}: ${hash}`);
-    }
+    if (!existsSync(abs)) { no(`3층 무결성: 파일 없음 (${relPath})`); continue; }
+    const hash = hashOf(abs);
+    const expected = manifest[relPath];
+    if (!expected) no(`3층 무결성: manifest에 항목 없음 (${relPath})`);
+    else if (expected === hash) ok(`3층 무결성: 해시 일치 (${relPath})`);
+    else no(`3층 무결성: 해시 불일치·변조 의심 (${relPath}) → 재설치 권장`);
   }
-  lines.push('     위 해시들을 references/integrity.json 에 저장하면 활성화됩니다.');
 }
 
 console.log(lines.join('\n'));
@@ -384,16 +386,10 @@ process.exit(fail > 0 ? 1 : 0);
 
 1. Claude Code **완전 재시작** (hook 로드에 필수).
 2. `/re-selftest` 또는 `node hooks/_selftest.mjs` 실행.
-3. 3층 무결성에서 출력된 **5개 파일의 해시**를 **`references/integrity.json`** 에 저장(이미 있는 항목은 유지, 없는 항목만 추가):
-   ```json
-   {
-     "hooks/hooks.json": "<셀프테스트가 출력한 해시>",
-     "hooks/re-deny-guard.mjs": "<셀프테스트가 출력한 해시>",
-     "hooks/_selftest.mjs": "<셀프테스트가 출력한 해시>",
-     "references/deny-corpus.json": "<셀프테스트가 출력한 해시>",
-     "references/mask-patterns.json": "<셀프테스트가 출력한 해시>"
-   }
+3. 3층 무결성 5개 항목이 전부 ✅인지 확인. 기준값은 `references/integrity.json`에 이미 들어 있습니다. ❌이면 기준값을 고치지 말고 먼저 파일이 왜 다른지 확인합니다(일반 사용자는 재설치).
+4. **보호파일을 의도적으로 고친 유지보수자만** 기준값을 갱신합니다. 바뀐 내용을 `git diff`로 직접 확인한 뒤, 바뀐 파일마다 아래 명령으로 값을 계산해 해당 항목만 교체하고 `/re-selftest`를 다시 실행합니다. 해시는 **줄바꿈 CRLF를 LF로 통일한 내용**으로 계산합니다(자가검사와 같은 방식).
+   ```powershell
+   node -e "const b=require('fs').readFileSync(process.argv[1]).toString('latin1').replace(/\r\n/g,'\n');console.log(require('crypto').createHash('sha256').update(b,'latin1').digest('hex'))" <파일경로>
    ```
-4. 다시 `/re-selftest` → 3층 5개 항목 전부 ✅ 확인.
 
 > **참고**: 이 문서 상단의 "5개 파일"(①~⑤, plugin.json·marketplace.json 포함)은 *AI가 쓰기 차단당해 사람이 새로 만들어야 하는* 파일 목록이고, 위 3층 무결성의 "5개 파일"은 *위변조 탐지 대상*(plugin.json·marketplace.json 대신 deny-corpus.json·mask-patterns.json 포함) 목록입니다. 3개가 겹치지만 목적이 달라 대상이 다릅니다 — 혼동 방지용으로 남겨둡니다.

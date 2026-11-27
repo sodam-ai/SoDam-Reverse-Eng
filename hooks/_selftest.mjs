@@ -63,31 +63,28 @@ const PROTECTED_FILES = [
   'references/deny-corpus.json',
   'references/mask-patterns.json',
 ];
-if (existsSync(manifestPath)) {
-  let manifest;
-  try { manifest = JSON.parse(readFileSync(manifestPath, 'utf8')); }
-  catch { no('3층 무결성: manifest 해석 실패'); manifest = null; }
-  if (manifest) {
-    for (const relPath of PROTECTED_FILES) {
-      const abs = join(root, relPath);
-      if (!existsSync(abs)) { no(`3층 무결성: 파일 없음 (${relPath})`); continue; }
-      const hash = createHash('sha256').update(readFileSync(abs)).digest('hex');
-      const expected = manifest[relPath];
-      if (!expected) no(`3층 무결성: manifest에 항목 없음 (${relPath})`);
-      else if (expected === hash) ok(`3층 무결성: 해시 일치 (${relPath})`);
-      else no(`3층 무결성: 해시 불일치·변조 의심 (${relPath}) → 재설치 권장`);
-    }
-  }
+// 해시는 줄바꿈 CRLF 를 LF 로 통일한 내용으로 계산한다. git 설정에 따라 같은 파일이 CRLF 또는 LF 로
+// 받아지기 때문이다. latin1 은 바이트를 1:1 로 옮기므로 그 밖의 변경은 그대로 탐지된다.
+const hashOf = (abs) => createHash('sha256')
+  .update(readFileSync(abs).toString('latin1').replace(/\r\n/g, '\n'), 'latin1')
+  .digest('hex');
+// 기준 파일을 쓸 수 없으면 "검사를 못 한 것"이므로 통과가 아니라 실패로 센다(fail-closed).
+// 현재 파일의 해시는 출력하지 않는다. 그 값을 기준으로 저장하면 변조된 파일도 정상이 되기 때문이다.
+let manifest = null;
+try { manifest = JSON.parse(readFileSync(manifestPath, 'utf8')); } catch {}
+if (!manifest || typeof manifest !== 'object' || Array.isArray(manifest)) {
+  const why = existsSync(manifestPath) ? '해석 실패' : '없음';
+  no(`3층 무결성: 기준 파일 ${why} (references/integrity.json) → 검사 불가, 재설치 권장`);
 } else {
-  lines.push('  ⚠️ 3층 무결성: manifest 없음 → 최초 1회 생성 필요.');
   for (const relPath of PROTECTED_FILES) {
     const abs = join(root, relPath);
-    if (existsSync(abs)) {
-      const hash = createHash('sha256').update(readFileSync(abs)).digest('hex');
-      lines.push(`     ${relPath}: ${hash}`);
-    }
+    if (!existsSync(abs)) { no(`3층 무결성: 파일 없음 (${relPath})`); continue; }
+    const hash = hashOf(abs);
+    const expected = manifest[relPath];
+    if (!expected) no(`3층 무결성: manifest에 항목 없음 (${relPath})`);
+    else if (expected === hash) ok(`3층 무결성: 해시 일치 (${relPath})`);
+    else no(`3층 무결성: 해시 불일치·변조 의심 (${relPath}) → 재설치 권장`);
   }
-  lines.push('     위 해시들을 references/integrity.json 에 저장하면 활성화됩니다.');
 }
 
 console.log(lines.join('\n'));

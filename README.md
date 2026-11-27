@@ -267,25 +267,19 @@ Claude Code가 열리면 `/re-p` 입력 → 자동완성에 아래가 떠야 정
 /re-selftest
 ```
 
-**기대 결과:** ✅ 13개 항목 전부 초록색(1층 스킬규칙 6개 + 2층 deny-hook 2개 + 3층 무결성 5개)
+**기대 결과:** ✅ 16개 항목 전부 초록색(1층 스킬규칙 6개 + 2층 deny-hook 2개 + 문서 예외 회귀 3개 + 3층 무결성 5개)
 
-초록색 3개가 나오지 않으면 → [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) 참고
+하나라도 초록색이 아니면 → [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) 참고
 
-### 단계 6: 무결성 해시 등록 (3층 활성화)
+### 단계 6: 3층 무결성 확인 (따로 설정할 것 없음)
 
-selftest 출력에서 **핵심 안전파일 5개의 해시**를 `references/integrity.json`에 저장하세요(이미 있는 항목은 유지):
-```json
-{
-  "hooks/hooks.json": "<셀프테스트가 출력한 해시>",
-  "hooks/re-deny-guard.mjs": "<셀프테스트가 출력한 해시>",
-  "hooks/_selftest.mjs": "<셀프테스트가 출력한 해시>",
-  "references/deny-corpus.json": "<셀프테스트가 출력한 해시>",
-  "references/mask-patterns.json": "<셀프테스트가 출력한 해시>"
-}
-```
-→ 다시 `/re-selftest` 실행 → **"3층 무결성: 해시 일치"가 5개 파일 전부에서** ✅ 확인
+기준값이 담긴 `references/integrity.json`은 플러그인에 **이미 들어 있습니다.** 위 `/re-selftest`에서 **"3층 무결성: 해시 일치"가 5개 파일 전부** ✅이면 끝입니다.
 
-> 💡 처음 설치하실 때는 `references/integrity.json`이 비어 있어서 selftest가 5개 파일의 해시를 화면에 한 번에 출력해 줍니다. 이 5개(`hooks.json`·`re-deny-guard.mjs`·`_selftest.mjs`·`deny-corpus.json`·`mask-patterns.json`) 전부가 실제로 검사에 쓰입니다 — 개발자용 상세는 `CHECKPOINT.md`를 참고하세요.
+- 하나라도 ❌이거나 "기준 파일 없음·해석 실패"가 나오면 분석을 시작하지 말고 **플러그인을 다시 설치하세요.**
+- 지금 파일의 해시를 계산해 `integrity.json`에 덮어쓰지 마세요. 파일이 바뀌었어도 "정상"으로 나오게 됩니다.
+
+> 💡 줄바꿈 방식(CRLF·LF) 차이는 변경으로 보지 않습니다. git 설정에 따라 같은 파일이 다른 줄바꿈으로 받아지기 때문이며, 그 밖의 내용 차이는 기준값과 비교해 찾아냅니다.
+> ⚠️ **한계:** 이 검사는 같은 폴더에 있는 기준값을 믿습니다. 누군가 파일을 바꾸고 **기준값까지 그 파일에 맞게** 바꾸거나 검사 코드가 비교를 건너뛰도록 바꾸면 알아챌 수 없습니다. 또 검사한 그 시점의 상태만 확인합니다. 실수로 바뀌었거나 설치가 불완전한 경우를 잡는 장치이며, 안전을 보증하지 않습니다.
 
 ---
 
@@ -294,7 +288,7 @@ selftest 출력에서 **핵심 안전파일 5개의 해시**를 `references/inte
 > 위 6단계를 이미 하셨다면, 설치 후 **첫 분석까지 이 5줄만 따라 하면 됩니다.**
 
 1. Claude Code 완전 재시작(설치 직후 필수) 후 `/re-ping` 입력 → "Pong!" 뜨면 설치 성공.
-2. `/re-selftest` 입력 → 안전장치 **13개** 항목 전부 ✅ 인지 확인(1개라도 ❌면 §12 문제해결 먼저 참고).
+2. `/re-selftest` 입력 → 안전장치 **16개** 항목 전부 ✅ 인지 확인(1개라도 ❌면 §12 문제해결 먼저 참고).
 3. `/re-start samples/safe-login.js` 입력 → "본인 소유/허가 대상인가요?" 등 질문에 **"예"**로 답하기.
 4. 잠시 기다리면 한국어 분석 보고서가 화면에 출력됩니다(요약·함수설명·근거위치 포함).
 5. 이후 내 코드로 실습: `/re-start [내 파일 경로]` — 이게 전부입니다.
@@ -594,21 +588,17 @@ claude
 
 ### Q7. `/re-selftest` 에서 일부 항목이 ❌
 
-[`SETUP_BLOCKED_FILES.md`](./SETUP_BLOCKED_FILES.md)에서 5개 파일이 모두 있는지 확인 →
-없는 파일만 다시 만들기 → Claude Code 완전 재시작 → 다시 `/re-selftest`
+파일이 빠졌거나 ❌가 나오면 **플러그인을 다시 설치** → Claude Code 완전 재시작 → 다시 `/re-selftest`
+(파일을 손으로 만들면 눈에 보이지 않는 바이트 차이로 무결성 검사에 실패할 수 있습니다.)
 
 > 💡 만약 이 파일들을 안전을 위해 읽기전용으로 잠가 두셨다면(`attrib +R`, `SETUP_BLOCKED_FILES.md` 참고), 수정 전에 먼저 잠금을 해제(`attrib -R`)해야 편집기로 저장이 됩니다.
 
-SHA-256 불일치:
-```
-node hooks/_selftest.mjs
-```
-출력 해시 → `references/integrity.json` 저장 → 재실행
+SHA-256 불일치 또는 "기준 파일 없음·해석 실패":
 
-> ⚠️ **주의:** `integrity.json`에 **이미 값이 들어있는 상태**에서 해시가 달라 ❌가 뜬 경우, 위 명령은 "불일치(변조 의심)"라고만 알려주고 **새 해시를 화면에 출력하지 않습니다**(해시 출력은 `integrity.json`이 비어있을 때만 나옵니다). 이럴 때는 ❌가 뜬 파일 경로(`hooks/hooks.json` · `hooks/re-deny-guard.mjs` · `hooks/_selftest.mjs` · `references/deny-corpus.json` · `references/mask-patterns.json` 중 하나)를 아래 명령의 `<파일경로>` 자리에 넣어 새 해시를 직접 확인하세요:
-> ```powershell
-> node -e "console.log(require('crypto').createHash('sha256').update(require('fs').readFileSync('<파일경로>')).digest('hex'))"
-> ```
+**플러그인을 다시 설치하세요.** 지금 파일의 해시를 `integrity.json`에 덮어써서 ❌를 없애지 마세요. 검사가 알려 주려던 변화를 가리게 됩니다.
+
+- 0.3.3 이하를 GitHub에서 새로 받았다면, 파일을 고치지 않았어도 줄바꿈 차이로 불일치가 날 수 있습니다. 0.3.4 이상으로 다시 받으세요.
+- 보호파일을 **의도적으로 고친 유지보수자**만 기준값을 갱신합니다. 방법은 [`SETUP_BLOCKED_FILES.md`](./SETUP_BLOCKED_FILES.md)를 참고하세요.
 
 ---
 
