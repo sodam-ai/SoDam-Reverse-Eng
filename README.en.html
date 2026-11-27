@@ -694,33 +694,35 @@ is complete.</p>
 <h3 id="step-5-verify-the-3-layer-safety-required">Step 5: Verify the
 3-Layer Safety (Required!)</h3>
 <pre><code>/re-selftest</code></pre>
-<p><strong>Expected result:</strong> ✅ All 13 checks green (6 Layer-1
-skill rules + 2 Layer-2 deny-hook checks + 5 Layer-3 integrity
-checks)</p>
+<p><strong>Expected result:</strong> ✅ All 16 checks green (6 Layer-1
+skill rules + 2 Layer-2 deny-hook checks + 3 document-exception
+regression checks + 5 Layer-3 integrity checks)</p>
 <p>If any are not green → See <a
 href="./TROUBLESHOOTING.md">TROUBLESHOOTING.md</a></p>
 <h3 id="step-6-register-integrity-hashes-activate-layer-3">Step 6:
-Register Integrity Hashes (Activate Layer 3)</h3>
-<p>Copy the <strong>hashes of the 5 core safety files</strong> from the
-selftest output and save them to <code>references/integrity.json</code>
-(keep any existing entries):</p>
-<div class="sourceCode" id="cb9"><pre
-class="sourceCode json"><code class="sourceCode json"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;hooks/hooks.json&quot;</span><span class="fu">:</span> <span class="st">&quot;&lt;hash from selftest&gt;&quot;</span><span class="fu">,</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;hooks/re-deny-guard.mjs&quot;</span><span class="fu">:</span> <span class="st">&quot;&lt;hash from selftest&gt;&quot;</span><span class="fu">,</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;hooks/_selftest.mjs&quot;</span><span class="fu">:</span> <span class="st">&quot;&lt;hash from selftest&gt;&quot;</span><span class="fu">,</span></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;references/deny-corpus.json&quot;</span><span class="fu">:</span> <span class="st">&quot;&lt;hash from selftest&gt;&quot;</span><span class="fu">,</span></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;references/mask-patterns.json&quot;</span><span class="fu">:</span> <span class="st">&quot;&lt;hash from selftest&gt;&quot;</span></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
-<p>→ Run <code>/re-selftest</code> again → confirm <strong>“Layer-3
-integrity: hash match”</strong> shows ✅ for all 5 files</p>
+Confirm Layer-3 Integrity (nothing to set up)</h3>
+<p><code>references/integrity.json</code>, which holds the reference
+values, <strong>already ships with the plugin.</strong> If
+<code>/re-selftest</code> above shows ✅ <strong>“hash match” for all 5
+files</strong>, you are done.</p>
+<ul>
+<li>If any item is ❌, or the reference file is reported missing or
+unreadable, do not start an analysis. <strong>Reinstall the
+plugin.</strong></li>
+<li>Do not compute the hashes of your current files and write them into
+<code>integrity.json</code>. Changed files would then be reported as
+fine.</li>
+</ul>
 <blockquote>
-<p>💡 On first install, <code>references/integrity.json</code> is empty,
-so selftest prints all 5 file hashes at once. All 5
-(<code>hooks.json</code>, <code>re-deny-guard.mjs</code>,
-<code>_selftest.mjs</code>, <code>deny-corpus.json</code>,
-<code>mask-patterns.json</code>) are actually checked — see
-<code>CHECKPOINT.md</code> for the developer-facing roadmap.</p>
+<p>💡 A difference only in line endings (CRLF vs LF) is not treated as a
+change, because git settings can deliver the same file either way. Other
+content differences are found by comparing with the reference
+values.</p>
+<p>⚠️ <strong>Limit:</strong> the check trusts reference values stored in
+the same folder. If someone changes a file <strong>and also updates its
+reference value to match</strong>, or changes the checking code so that it skips the comparison, it
+cannot tell. It also reflects only the moment it runs. It catches accidental changes and incomplete installs; it does not
+guarantee safety.</p>
 </blockquote>
 <hr />
 <h3 id="quick-start-5-minute-summary">6-1. Quick Start (5-Minute
@@ -732,7 +734,7 @@ first analysis.</strong></p>
 <ol type="1">
 <li>Fully restart Claude Code (required right after install), then type
 <code>/re-ping</code> → “Pong!” means installed successfully.</li>
-<li>Type <code>/re-selftest</code> → confirm all <strong>13</strong>
+<li>Type <code>/re-selftest</code> → confirm all <strong>16</strong>
 safety checks show ✅ (if any show ❌, see §12 Troubleshooting
 first).</li>
 <li>Type <code>/re-start samples/safe-login.js</code> → answer
@@ -1323,33 +1325,29 @@ for defense, education, and analysis of code you own.</p>
 <hr />
 <h3 id="q7.-re-selftest-shows-some-items-as">Q7.
 <code>/re-selftest</code> shows some items as ❌</h3>
-<p>Check that all 5 files from <a
-href="./SETUP_BLOCKED_FILES.md"><code>SETUP_BLOCKED_FILES.md</code></a>
-exist → Recreate any missing files → Fully restart Claude Code → Run
-<code>/re-selftest</code> again</p>
+<p>If a file is missing or an item is ❌, <strong>reinstall the
+plugin</strong> → Fully restart Claude Code → Run
+<code>/re-selftest</code> again (Files recreated by hand can fail the
+integrity check because of invisible byte differences.)</p>
 <blockquote>
 <p>💡 If you locked these files read-only for extra safety
 (<code>attrib +R</code>, see <code>SETUP_BLOCKED_FILES.md</code>),
 unlock them first (<code>attrib -R</code>) before your editor can save
 changes.</p>
 </blockquote>
-<p>SHA-256 mismatch:</p>
-<pre><code>node hooks/_selftest.mjs</code></pre>
-<p>Copy output hash → save to <code>references/integrity.json</code> →
-rerun</p>
-<blockquote>
-<p>⚠️ <strong>Note:</strong> If <code>references/integrity.json</code>
-<strong>already has a value</strong> and the hash differs (❌), the
-command above only reports “mismatch” and does <strong>not</strong>
-print the new hash (the hash is only printed when the entry is empty).
-In that case, take the path of whichever file shows ❌ (one of
-<code>hooks/hooks.json</code>, <code>hooks/re-deny-guard.mjs</code>,
-<code>hooks/_selftest.mjs</code>,
-<code>references/deny-corpus.json</code>,
-<code>references/mask-patterns.json</code>) and compute it directly:</p>
-<div class="sourceCode" id="cb17"><pre
-class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>node <span class="op">-</span>e <span class="st">&quot;console.log(require(&#39;crypto&#39;).createHash(&#39;sha256&#39;).update(require(&#39;fs&#39;).readFileSync(&#39;&lt;file-path&gt;&#39;)).digest(&#39;hex&#39;))&quot;</span></span></code></pre></div>
-</blockquote>
+<p>SHA-256 mismatch, or the reference file is missing or
+unreadable:</p>
+<p><strong>Reinstall the plugin.</strong> Do not overwrite
+<code>integrity.json</code> with the hashes of your current files to make
+❌ disappear. That hides the change the check is reporting.</p>
+<ul>
+<li>If you downloaded 0.3.3 or earlier from GitHub, a line-ending
+difference can cause a mismatch even though you changed nothing. Download
+0.3.4 or later.</li>
+<li>Only a <strong>maintainer who intentionally edited protected
+files</strong> updates the reference values. See <a
+href="./SETUP_BLOCKED_FILES.md"><code>SETUP_BLOCKED_FILES.md</code></a>.</li>
+</ul>
 <hr />
 <h3 id="q8.-passwords-appear-in-plain-text-in-the-report">Q8. Passwords
 appear in plain text in the report</h3>

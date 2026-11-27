@@ -1,9 +1,9 @@
 {
-  "_note": "/re-selftest 또는 node hooks/_selftest.mjs 실행 후 출력된 SHA-256 해시로 채우세요. (2026-07-27: 검사범위 1→5파일 확장, SETUP_BLOCKED_FILES.md 참조)",
+  "_note": "해시는 줄바꿈 CRLF를 LF로 통일한 내용의 SHA-256입니다. 자가검사가 실패하면 현재 파일의 값으로 덮어쓰지 말고 다시 설치하세요. 값은 보호파일을 의도적으로 고친 유지보수자만 갱신합니다(SETUP_BLOCKED_FILES.md).",
   "_example": "{ \"hooks/re-deny-guard.mjs\": \"abc123...\" }",
   "hooks/re-deny-guard.mjs": "557b12149a858265a7fd803357c3f0607d01be8494eb468fef996ae5890fb4db",
-  "hooks/_selftest.mjs": "53b81db826bb1700bac40517f905edb5e8cfa3e82d28c98131c752343975884a",
+  "hooks/_selftest.mjs": "fc9d275c9a23932618c303f986bf7be8fb656a1af19dbdded61349c5b3117407",
   "hooks/hooks.json": "677c9ffbbb7f63a4dd135171462ed83b4043d13877852927f1b4250e904418fc",
-  "references/deny-corpus.json": "797474c2dcd9e00dd63ed2dbd78139cccfd07224873d692132791b2c07a1680b",
-  "references/mask-patterns.json": "a0675eafa568f80dcc62278897ca2f3c767e881b92e743316c025cb23a03a03d"
+  "references/deny-corpus.json": "89067059b9b6f87607873b5b10b88459a2bea411e80e548b85439ea6e0fb59ec",
+  "references/mask-patterns.json": "08792b3e41ea83364f6582199c51c0e7db4e02cd43193f1636e550adcfdc6c7a"
 }

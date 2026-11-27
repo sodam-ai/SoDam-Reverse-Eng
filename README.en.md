@@ -265,25 +265,19 @@ The `(sodam-reverse)` tag confirms the plugin loaded correctly.
 /re-selftest
 ```
 
-**Expected result:** ✅ All 13 checks green (6 Layer-1 skill rules + 2 Layer-2 deny-hook checks + 5 Layer-3 integrity checks)
+**Expected result:** ✅ All 16 checks green (6 Layer-1 skill rules + 2 Layer-2 deny-hook checks + 3 document-exception regression checks + 5 Layer-3 integrity checks)
 
 If any are not green → See [TROUBLESHOOTING.md](./TROUBLESHOOTING.md)
 
-### Step 6: Register Integrity Hashes (Activate Layer 3)
+### Step 6: Confirm Layer-3 Integrity (nothing to set up)
 
-Copy the **hashes of the 5 core safety files** from the selftest output and save them to `references/integrity.json` (keep any existing entries):
-```json
-{
-  "hooks/hooks.json": "<hash from selftest>",
-  "hooks/re-deny-guard.mjs": "<hash from selftest>",
-  "hooks/_selftest.mjs": "<hash from selftest>",
-  "references/deny-corpus.json": "<hash from selftest>",
-  "references/mask-patterns.json": "<hash from selftest>"
-}
-```
-→ Run `/re-selftest` again → confirm **"Layer-3 integrity: hash match"** shows ✅ for all 5 files
+`references/integrity.json`, which holds the reference values, **already ships with the plugin.** If `/re-selftest` above shows ✅ **"hash match" for all 5 files**, you are done.
 
-> 💡 On first install, `references/integrity.json` is empty, so selftest prints all 5 file hashes at once. All 5 (`hooks.json`, `re-deny-guard.mjs`, `_selftest.mjs`, `deny-corpus.json`, `mask-patterns.json`) are actually checked — see `CHECKPOINT.md` for the developer-facing roadmap.
+- If any item is ❌, or the reference file is reported missing or unreadable, do not start an analysis. **Reinstall the plugin.**
+- Do not compute the hashes of your current files and write them into `integrity.json`. Changed files would then be reported as fine.
+
+> 💡 A difference only in line endings (CRLF vs LF) is not treated as a change, because git settings can deliver the same file either way. Other content differences are found by comparing with the reference values.
+> ⚠️ **Limit:** the check trusts reference values stored in the same folder. If someone changes a file **and also updates its reference value to match**, or changes the checking code so that it skips the comparison, it cannot tell. It also reflects only the moment it runs. It catches accidental changes and incomplete installs; it does not guarantee safety.
 
 ---
 
@@ -292,7 +286,7 @@ Copy the **hashes of the 5 core safety files** from the selftest output and save
 > Already did the 6 steps above? Here's the **5-line path to your first analysis.**
 
 1. Fully restart Claude Code (required right after install), then type `/re-ping` → "Pong!" means installed successfully.
-2. Type `/re-selftest` → confirm all **13** safety checks show ✅ (if any show ❌, see §12 Troubleshooting first).
+2. Type `/re-selftest` → confirm all **16** safety checks show ✅ (if any show ❌, see §12 Troubleshooting first).
 3. Type `/re-start samples/safe-login.js` → answer **"yes"** to the ownership/consent questions.
 4. Wait a moment — a Korean-language analysis report appears on screen (summary, function descriptions, evidence locations).
 5. Now try your own code: `/re-start [your-file-path]` — that's it.
@@ -633,21 +627,17 @@ Choose a "Yes"-type option to register consent. Choosing "No" or declining to an
 
 ### Q7. `/re-selftest` shows some items as ❌
 
-Check that all 5 files from [`SETUP_BLOCKED_FILES.md`](./SETUP_BLOCKED_FILES.md) exist →
-Recreate any missing files → Fully restart Claude Code → Run `/re-selftest` again
+If a file is missing or an item is ❌, **reinstall the plugin** → Fully restart Claude Code → Run `/re-selftest` again
+(Files recreated by hand can fail the integrity check because of invisible byte differences.)
 
 > 💡 If you locked these files read-only for extra safety (`attrib +R`, see `SETUP_BLOCKED_FILES.md`), unlock them first (`attrib -R`) before your editor can save changes.
 
-SHA-256 mismatch:
-```
-node hooks/_selftest.mjs
-```
-Copy output hash → save to `references/integrity.json` → rerun
+SHA-256 mismatch, or the reference file is missing or unreadable:
 
-> ⚠️ **Note:** If `references/integrity.json` **already has a value** and the hash differs (❌), the command above only reports "mismatch" and does **not** print the new hash (the hash is only printed when the entry is empty). In that case, take the path of whichever file shows ❌ (one of `hooks/hooks.json`, `hooks/re-deny-guard.mjs`, `hooks/_selftest.mjs`, `references/deny-corpus.json`, `references/mask-patterns.json`) and compute it directly:
-> ```powershell
-> node -e "console.log(require('crypto').createHash('sha256').update(require('fs').readFileSync('<file-path>')).digest('hex'))"
-> ```
+**Reinstall the plugin.** Do not overwrite `integrity.json` with the hashes of your current files to make ❌ disappear. That hides the change the check is reporting.
+
+- If you downloaded 0.3.3 or earlier from GitHub, a line-ending difference can cause a mismatch even though you changed nothing. Download 0.3.4 or later.
+- Only a **maintainer who intentionally edited protected files** updates the reference values. See [`SETUP_BLOCKED_FILES.md`](./SETUP_BLOCKED_FILES.md).
 
 ---
 

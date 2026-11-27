@@ -664,31 +664,31 @@ class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb5-
 완료.</p>
 <h3 id="단계-5-안전-3층-검증-필수">단계 5: 안전 3층 검증 (필수!)</h3>
 <pre><code>/re-selftest</code></pre>
-<p><strong>기대 결과:</strong> ✅ 13개 항목 전부 초록색(1층 스킬규칙 6개
-+ 2층 deny-hook 2개 + 3층 무결성 5개)</p>
-<p>초록색 3개가 나오지 않으면 → <a
+<p><strong>기대 결과:</strong> ✅ 16개 항목 전부 초록색(1층 스킬규칙 6개
++ 2층 deny-hook 2개 + 문서 예외 회귀 3개 + 3층 무결성 5개)</p>
+<p>하나라도 초록색이 아니면 → <a
 href="./TROUBLESHOOTING.md">TROUBLESHOOTING.md</a> 참고</p>
-<h3 id="단계-6-무결성-해시-등록-3층-활성화">단계 6: 무결성 해시 등록
-(3층 활성화)</h3>
-<p>selftest 출력에서 <strong>핵심 안전파일 5개의 해시</strong>를
-<code>references/integrity.json</code>에 저장하세요(이미 있는 항목은
-유지):</p>
-<div class="sourceCode" id="cb9"><pre
-class="sourceCode json"><code class="sourceCode json"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;hooks/hooks.json&quot;</span><span class="fu">:</span> <span class="st">&quot;&lt;셀프테스트가 출력한 해시&gt;&quot;</span><span class="fu">,</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;hooks/re-deny-guard.mjs&quot;</span><span class="fu">:</span> <span class="st">&quot;&lt;셀프테스트가 출력한 해시&gt;&quot;</span><span class="fu">,</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;hooks/_selftest.mjs&quot;</span><span class="fu">:</span> <span class="st">&quot;&lt;셀프테스트가 출력한 해시&gt;&quot;</span><span class="fu">,</span></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;references/deny-corpus.json&quot;</span><span class="fu">:</span> <span class="st">&quot;&lt;셀프테스트가 출력한 해시&gt;&quot;</span><span class="fu">,</span></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;references/mask-patterns.json&quot;</span><span class="fu">:</span> <span class="st">&quot;&lt;셀프테스트가 출력한 해시&gt;&quot;</span></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
-<p>→ 다시 <code>/re-selftest</code> 실행 → <strong>“3층 무결성: 해시
-일치”가 5개 파일 전부에서</strong> ✅ 확인</p>
+<h3 id="단계-6-무결성-해시-등록-3층-활성화">단계 6: 3층 무결성 확인
+(따로 설정할 것 없음)</h3>
+<p>기준값이 담긴 <code>references/integrity.json</code>은 플러그인에
+<strong>이미 들어 있습니다.</strong> 위 <code>/re-selftest</code>에서
+<strong>“3층 무결성: 해시 일치”가 5개 파일 전부</strong> ✅이면
+끝입니다.</p>
+<ul>
+<li>하나라도 ❌이거나 “기준 파일 없음·해석 실패”가 나오면 분석을
+시작하지 말고 <strong>플러그인을 다시 설치하세요.</strong></li>
+<li>지금 파일의 해시를 계산해 <code>integrity.json</code>에 덮어쓰지
+마세요. 파일이 바뀌었어도 “정상”으로 나오게 됩니다.</li>
+</ul>
 <blockquote>
-<p>💡 처음 설치하실 때는 <code>references/integrity.json</code>이 비어
-있어서 selftest가 5개 파일의 해시를 화면에 한 번에 출력해 줍니다. 이
-5개(<code>hooks.json</code>·<code>re-deny-guard.mjs</code>·<code>_selftest.mjs</code>·<code>deny-corpus.json</code>·<code>mask-patterns.json</code>)
-전부가 실제로 검사에 쓰입니다 — 개발자용 상세는
-<code>CHECKPOINT.md</code>를 참고하세요.</p>
+<p>💡 줄바꿈 방식(CRLF·LF) 차이는 변경으로 보지 않습니다. git 설정에
+따라 같은 파일이 다른 줄바꿈으로 받아지기 때문이며, 그 밖의 내용 차이는
+기준값과 비교해 찾아냅니다.</p>
+<p>⚠️ <strong>한계:</strong> 이 검사는 같은 폴더에 있는 기준값을
+믿습니다. 누군가 파일을 바꾸고 <strong>기준값까지 그 파일에 맞게</strong> 바꾸거나 검사
+코드가 비교를 건너뛰도록 바꾸면 알아챌 수 없습니다. 또 검사한 그 시점의
+상태만 확인합니다. 실수로 바뀌었거나 설치가
+불완전한 경우를 잡는 장치이며, 안전을 보증하지 않습니다.</p>
 </blockquote>
 <hr />
 <h3 id="빠른-시작-5분-요약">6-1. 빠른 시작 (5분 요약)</h3>
@@ -699,7 +699,7 @@ class="sourceCode json"><code class="sourceCode json"><span id="cb9-1"><a href="
 <ol type="1">
 <li>Claude Code 완전 재시작(설치 직후 필수) 후 <code>/re-ping</code>
 입력 → “Pong!” 뜨면 설치 성공.</li>
-<li><code>/re-selftest</code> 입력 → 안전장치 <strong>13개</strong> 항목
+<li><code>/re-selftest</code> 입력 → 안전장치 <strong>16개</strong> 항목
 전부 ✅ 인지 확인(1개라도 ❌면 §12 문제해결 먼저 참고).</li>
 <li><code>/re-start samples/safe-login.js</code> 입력 → “본인 소유/허가
 대상인가요?” 등 질문에 <strong>“예”</strong>로 답하기.</li>
@@ -1192,33 +1192,29 @@ class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb15
 <hr />
 <h3 id="q7.-re-selftest-에서-일부-항목이">Q7. <code>/re-selftest</code>
 에서 일부 항목이 ❌</h3>
-<p><a
-href="./SETUP_BLOCKED_FILES.md"><code>SETUP_BLOCKED_FILES.md</code></a>에서
-5개 파일이 모두 있는지 확인 → 없는 파일만 다시 만들기 → Claude Code 완전
-재시작 → 다시 <code>/re-selftest</code></p>
+<p>파일이 빠졌거나 ❌가 나오면 <strong>플러그인을 다시 설치</strong> →
+Claude Code 완전 재시작 → 다시 <code>/re-selftest</code> (파일을 손으로
+만들면 눈에 보이지 않는 바이트 차이로 무결성 검사에 실패할 수
+있습니다.)</p>
 <blockquote>
 <p>💡 만약 이 파일들을 안전을 위해 읽기전용으로 잠가
 두셨다면(<code>attrib +R</code>, <code>SETUP_BLOCKED_FILES.md</code>
 참고), 수정 전에 먼저 잠금을 해제(<code>attrib -R</code>)해야 편집기로
 저장이 됩니다.</p>
 </blockquote>
-<p>SHA-256 불일치:</p>
-<pre><code>node hooks/_selftest.mjs</code></pre>
-<p>출력 해시 → <code>references/integrity.json</code> 저장 → 재실행</p>
-<blockquote>
-<p>⚠️ <strong>주의:</strong> <code>integrity.json</code>에 <strong>이미
-값이 들어있는 상태</strong>에서 해시가 달라 ❌가 뜬 경우, 위 명령은
-“불일치(변조 의심)”라고만 알려주고 <strong>새 해시를 화면에 출력하지
-않습니다</strong>(해시 출력은 <code>integrity.json</code>이 비어있을
-때만 나옵니다). 이럴 때는 ❌가 뜬 파일
-경로(<code>hooks/hooks.json</code> ·
-<code>hooks/re-deny-guard.mjs</code> · <code>hooks/_selftest.mjs</code>
-· <code>references/deny-corpus.json</code> ·
-<code>references/mask-patterns.json</code> 중 하나)를 아래 명령의
-<code>&lt;파일경로&gt;</code> 자리에 넣어 새 해시를 직접 확인하세요:</p>
-<div class="sourceCode" id="cb17"><pre
-class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>node <span class="op">-</span>e <span class="st">&quot;console.log(require(&#39;crypto&#39;).createHash(&#39;sha256&#39;).update(require(&#39;fs&#39;).readFileSync(&#39;&lt;파일경로&gt;&#39;)).digest(&#39;hex&#39;))&quot;</span></span></code></pre></div>
-</blockquote>
+<p>SHA-256 불일치 또는 “기준 파일 없음·해석 실패”:</p>
+<p><strong>플러그인을 다시 설치하세요.</strong> 지금 파일의 해시를
+<code>integrity.json</code>에 덮어써서 ❌를 없애지 마세요. 검사가 알려
+주려던 변화를 가리게 됩니다.</p>
+<ul>
+<li>0.3.3 이하를 GitHub에서 새로 받았다면, 파일을 고치지 않았어도
+줄바꿈 차이로 불일치가 날 수 있습니다. 0.3.4 이상으로 다시
+받으세요.</li>
+<li>보호파일을 <strong>의도적으로 고친 유지보수자</strong>만 기준값을
+갱신합니다. 방법은 <a
+href="./SETUP_BLOCKED_FILES.md"><code>SETUP_BLOCKED_FILES.md</code></a>를
+참고하세요.</li>
+</ul>
 <hr />
 <h3 id="q8.-보고서에서-비밀번호가-그대로-보여요">Q8. 보고서에서
 비밀번호가 그대로 보여요</h3>
