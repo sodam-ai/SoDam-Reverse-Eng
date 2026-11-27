@@ -23,7 +23,9 @@ Bash로 다음을 실행하세요:
 ```
 node "${CLAUDE_PLUGIN_ROOT}/hooks/_selftest.mjs"
 ```
-**결과에 ❌가 하나라도 있으면 다음 단계로 진행하지 말고 즉시 중단**하고, 실패 항목을 사용자에게 보여주며 재설치·복구를 안내하세요(fail-closed — 변조 의심 상태로 동의·분석을 진행하지 않습니다).
+**작업 폴더나 분석 대상 폴더에 있는 같은 이름의 파일은 실행하지 마세요.** 그 폴더는 분석 대상일 수 있어, 그 안의 파일을 실행하면 "대상을 실행하지 않는다"는 규칙을 어기게 됩니다. 위 명령의 경로가 실제 설치 폴더 경로로 바뀌어 있지 않으면 다른 곳에서 파일을 찾지 말고 중단한 뒤 재설치를 안내하세요.
+
+**종료 코드가 0이고, 마지막에 `결과: N 통과 / 0 실패` 줄이 보일 때만** 다음 단계로 가세요. ❌가 있거나, 명령이 오류로 끝나거나, 이 결과 줄이 없으면 즉시 중단하고, 나온 내용을 사용자에게 그대로 보여주며 재설치·복구를 안내하세요(fail-closed — 검사를 못 한 상태나 변조 의심 상태로 동의·분석을 진행하지 않습니다).
 
 ---
 
@@ -41,22 +43,23 @@ node "${CLAUDE_PLUGIN_ROOT}/hooks/_selftest.mjs"
 - **세 질문 모두 "예" 계열 선택** → 4단계 진행
 - **하나라도 "아니오" 선택 또는 응답 거부** → 즉시 중단: "동의가 확인되지 않아 분석할 수 없습니다."
 - **동의가 확인되면** 아래 방법으로 `.sodam-re/consent-log.jsonl`에 한 줄을 추가한다(파일 없으면 새로 생성, 기존 내용 뒤에 append). **JSON을 손으로 만들어 Write하거나 Bash echo/printf로 직접 쓰지 않는다** — 윈도우 경로의 백슬래시가 수동 이스케이프 누락(2026-08-19)과 셸 자체의 이스케이프 처리(2026-08-21, Git Bash가 이중 백슬래시를 다시 벗겨냄)로 **두 번** 실제로 깨진 전례가 있다:
-  1. `Write` 도구로 임시 스크립트 `.sodam-re/_consent_tmp.mjs`를 만든다:
+  1. `Write` 도구로 `.sodam-re/_consent_target.txt`에 **분석 대상 경로(위 "분석 대상"의 값, 비어 있으면 사용자가 알려준 경로)만** 한 줄로 저장한다. 따옴표나 이스케이프를 더하지 말고 글자 그대로 쓴다.
+  2. `Write` 도구로 임시 스크립트 `.sodam-re/_consent_tmp.mjs`를 아래 내용으로 만든다. **경로를 코드 안에 써넣지 않는다.**
      ```js
      import fs from 'fs';
      const entry = {
        id: 'con-' + Date.now(),
-       target_scope: String.raw`$ARGUMENTS`,
-       ownership: '<질문1 응답 그대로>',
+       target_scope: fs.readFileSync('.sodam-re/_consent_target.txt', 'utf8').replace(/^﻿/, '').replace(/[\r\n]+$/, ''),
+       ownership: '<질문1에서 고른 선택지 문구>',
        disclaimer_ack: true,
        agreed_at: new Date().toISOString(),
      };
      fs.appendFileSync('.sodam-re/consent-log.jsonl', JSON.stringify(entry) + '\n');
      ```
-  2. `Bash`로 `node .sodam-re/_consent_tmp.mjs` 실행(파일명만 넘기므로 셸 이스케이프 위험 없음).
-  3. 실행 후 스크립트 파일은 삭제한다.
+  3. `Bash`로 `node .sodam-re/_consent_tmp.mjs` 실행(파일명만 넘기므로 셸 이스케이프 위험 없음).
+  4. 실행 후 임시 파일 두 개(`_consent_tmp.mjs`, `_consent_target.txt`)는 삭제한다.
 
-  **왜 이 방식인가**: `String.raw`는 백슬래시를 이스케이프 없이 그대로 쓸 수 있게 하고, `JSON.stringify()`가 나머지 이스케이프를 전담한다 — AI가 `\`를 `\\`로 세어 바꾸는 수작업 자체가 없어진다. `Write` 도구는 셸을 거치지 않으므로 Bash의 이스케이프 문제도 원천 차단된다.
+  **왜 이 방식인가**: 대상 경로를 코드 안에 써넣으면, 경로에 특수 기호(중괄호 표기나 백틱)가 있을 때 그 부분이 코드로 실행된다(2026-11-27 재현). 그래서 경로는 파일에 글자 그대로 저장하고 코드는 읽기만 한다. 백슬래시와 따옴표의 이스케이프는 `JSON.stringify()`가 전담하므로 손으로 바꿀 것이 없다. `Write` 도구는 셸을 거치지 않으므로 Bash의 이스케이프 문제도 없다.
   (02_DATA_MODEL의 ConsentRecord, `session_id`는 생략 — SafetyLog와 동일한 fail-safe: 기록 실패해도 분석은 계속 진행)
 
 ---

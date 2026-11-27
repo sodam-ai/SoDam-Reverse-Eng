@@ -40,7 +40,15 @@ Ghidra가 추출한 **디컴파일된 문자열·주석·심볼명(함수명·�
 
 ## 0-A. 안전장치 자가검증 (3층 무결성 — 시작 시 필수)
 
-동의 게이트로 넘어가기 전에 먼저 Bash로 `node hooks/_selftest.mjs`(또는 `${CLAUDE_PLUGIN_ROOT}/hooks/_selftest.mjs`)를 실행한다. **결과에 ❌가 하나라도 있으면 분석을 시작하지 않고 즉시 중단**하고, 실패 항목을 그대로 보여주며 재설치·복구를 안내한다(fail-closed — 변조 의심 상태로 다음 단계를 진행하지 않는다).
+동의 게이트로 넘어가기 전에 먼저 Bash로 아래 명령을 **글자 그대로** 실행한다(설치된 플러그인의 파일만 가리킨다).
+
+```
+node "${CLAUDE_PLUGIN_ROOT}/hooks/_selftest.mjs"
+```
+
+**작업 폴더나 분석 대상 폴더에 있는 같은 이름의 파일은 실행하지 않는다.** 그 폴더는 분석 대상일 수 있어, 그 안의 파일을 실행하면 "대상을 실행하지 않는다"는 규칙을 어기게 된다. 위 명령의 경로가 실제 설치 폴더 경로로 바뀌어 있지 않으면 다른 곳에서 파일을 찾지 말고 중단한 뒤 재설치를 안내한다.
+
+**종료 코드가 0이고, 마지막에 `결과: N 통과 / 0 실패` 줄이 보일 때만** 다음 단계로 간다. ❌가 있거나, 명령이 오류로 끝나거나, 이 결과 줄이 없으면 분석을 시작하지 않고 즉시 중단하고, 나온 내용을 그대로 보여주며 재설치·복구를 안내한다(fail-closed — 검사를 못 한 상태나 변조 의심 상태로 다음 단계를 진행하지 않는다).
 
 ## 1. 동의 게이트 (제3자 실행파일 경계 강화 — 통과 못 하면 분석 0건, 번호 선택 — 자연어 "예/아니오" 타이핑 요구 금지)
 
@@ -56,26 +64,28 @@ Ghidra가 추출한 **디컴파일된 문자열·주석·심볼명(함수명·�
 **세 질문 모두 "예" 계열 선택** → 다음 단계로. **하나라도 "아니오" 선택 또는 응답 거부** → 즉시 **중단**한다.
 
 동의가 확인되면 아래 방법으로 `.sodam-re/consent-log.jsonl`에 한 줄을 추가한다(파일 없으면 새로 생성, 기존 내용 뒤에 append). **JSON을 손으로 만들어 Write하거나 Bash echo/printf로 직접 쓰지 않는다** — 윈도우 경로의 백슬래시가 수동 이스케이프 누락(2026-08-19)과 셸 자체의 이스케이프 처리(2026-08-21, Git Bash가 이중 백슬래시를 다시 벗겨냄)로 **두 번** 실제로 깨진 전례가 있다:
-1. `Write` 도구로 임시 스크립트 `.sodam-re/_consent_tmp.mjs`를 만든다:
+1. `Write` 도구로 `.sodam-re/_consent_target.txt`에 **분석 대상 실행파일 경로만** 한 줄로 저장한다. 따옴표나 이스케이프를 더하지 말고 글자 그대로 쓴다.
+2. `Write` 도구로 임시 스크립트 `.sodam-re/_consent_tmp.mjs`를 아래 내용으로 만든다. **경로를 코드 안에 써넣지 않는다.**
    ```js
    import fs from 'fs';
    const entry = {
      id: 'con-' + Date.now(),
-     target_scope: String.raw`<분석 대상 실행파일 경로>`,
-     ownership: '<질문1 응답 그대로>',
+     target_scope: fs.readFileSync('.sodam-re/_consent_target.txt', 'utf8').replace(/^﻿/, '').replace(/[\r\n]+$/, ''),
+     ownership: '<질문1에서 고른 선택지 문구>',
      disclaimer_ack: true,
      agreed_at: new Date().toISOString(),
    };
    fs.appendFileSync('.sodam-re/consent-log.jsonl', JSON.stringify(entry) + '\n');
    ```
-2. `Bash`로 `node .sodam-re/_consent_tmp.mjs` 실행(파일명만 넘기므로 셸 이스케이프 위험 없음).
-3. 실행 후 스크립트 파일은 삭제한다.
+3. `Bash`로 `node .sodam-re/_consent_tmp.mjs` 실행(파일명만 넘기므로 셸 이스케이프 위험 없음).
+4. 실행 후 임시 파일 두 개(`_consent_tmp.mjs`, `_consent_target.txt`)는 삭제한다.
 
-**왜 이 방식인가**: `String.raw`는 백슬래시를 이스케이프 없이 그대로 쓸 수 있게 하고, `JSON.stringify()`가 나머지 이스케이프를 전담한다 — AI가 `\`를 `\\`로 세어 바꾸는 수작업 자체가 없어진다. `Write` 도구는 셸을 거치지 않으므로 Bash의 이스케이프 문제도 원천 차단된다.
+**왜 이 방식인가**: 대상 경로를 코드 안에 써넣으면, 경로에 `${…}`나 백틱이 있을 때 그 부분이 코드로 실행된다(2026-11-27 재현). 그래서 경로는 파일에 글자 그대로 저장하고 코드는 읽기만 한다. 백슬래시와 따옴표의 이스케이프는 `JSON.stringify()`가 전담하므로 손으로 바꿀 것이 없다. `Write` 도구는 셸을 거치지 않으므로 Bash의 이스케이프 문제도 없다.
 (02_DATA_MODEL의 ConsentRecord, `session_id`는 생략 — SafetyLog와 동일한 fail-safe: 기록 실패해도 분석은 계속 진행)
 
 ## 2. 도구 확인 (fail-closed)
 
+- **외부 도구는 새로 만든 빈 임시 폴더에서 실행한다**(설치 확인 명령과 아래 2-1·2-2 포함). `java`·`python`·`py`·`pip`·`jadx`·`apktool`·`analyzeHeadless`를 작업 폴더나 분석 대상 폴더에서 실행하지 않는다. 그 폴더에 심어 둔 파일(예: 라이브러리와 이름이 같은 `.py` 파일)이 대신 불려와 실행될 수 있다. `(cd "<빈 임시 폴더>" && <명령>)` 형태로 실행하고, 대상·출력·저장 경로는 모두 **절대경로**로 넘긴다. 직접 만드는 스크립트도 그 빈 폴더에 저장한다. 결과 저장 위치(`./.sodam-re/`)는 원래 작업 폴더 기준의 절대경로로 바꿔 쓴다. Python은 `-E` 옵션을 붙여 실행한다(`python -E <스크립트>`, `python -E -m pip install lief`, Windows는 `python` 대신 `py` 가능). `PYTHONPATH` 같은 환경변수에 분석 대상 폴더가 들어 있어도 거기서 불러오지 않게 하기 위해서다.
 - **Ghidra**(무료, NSA·Apache-2.0) + **JDK 21+** 필요(**2026-08-19 정정**: 이전엔 "Java 17+"로 적혀 있었으나, 실제로 Ghidra 12.1.3(2026-08-18 릴리스)을 라이브 설치·실행해보니 `analyzeHeadless`가 "JDK 21+ (64-bit) could not be found"로 명확히 요구함을 확인했다 — Ghidra 버전이 올라가며 요구 JDK도 올라간 것으로 보임, 새 Ghidra 버전을 만나면 이 요구사항을 다시 확인할 것). 설치 여부를 확인하고, 없으면 **설치 안내만** 하고 **분석은 시작하지 않는다**(도구 없이 추정 보고서 금지 = fail-closed). 설치 방법은 README §6-2 참조(2026-08-02: 구 GUIDE 문서는 제거되어 README로 통합됨).
   - **⚠️ 2026-08-21 실제 라이브 세션에서 발견된 오탐 — 반드시 지킬 것**: JDK 버전을 확인할 때 **시스템 전역 `java -version`을 실행해서 판단하지 마라.** 이 PC(그리고 README §6-2 설치 안내를 따른 다른 PC들)는 Ghidra만 `support/launch.properties`의 `JAVA_HOME_OVERRIDE`로 별도의 JDK 21을 쓰도록 설정돼 있어서, 시스템 전역 `java -version`은 여전히 (JADX·Apktool용) JDK 17을 보여주는 게 **정상**이다. 이걸 "JDK 21+ 없음"으로 오판하면, 실제로는 Ghidra가 완벽히 동작하는데도 LIEF 경량 분석으로 잘못 강등된다(2026-08-21 실측: `java -version`은 17을 보였지만 `analyzeHeadless.bat -help`는 정상 동작함).
   - **올바른 확인 방법**: `<Ghidra설치경로>/support/analyzeHeadless.bat -help`(또는 macOS/Linux는 `analyzeHeadless -help`)를 **직접 실행**해서 그 명령 자체의 성공/실패로 판단한다. 정상 출력(Usage 안내)이 나오면 JDK 요건이 충족된 것이고, "JDK 21+ (64-bit) could not be found" 같은 메시지가 나올 때만 실제로 미충족이다.
@@ -91,7 +101,7 @@ Ghidra가 추출한 **디컴파일된 문자열·주석·심볼명(함수명·�
 > **[정정 · 2026-08-13]** 위 "Python 자체가 설치돼 있지 않음(2026-07-16 실측)"은 낡은 기록이다. 2026-08-02에 Python 설치·`pip install lief`·PE 파일 스모크테스트가 이미 1회 성공했고(당시 3.13.7), 2026-08-13 재확인 시점엔 이 PC의 기본 `py` 인터프리터가 3.14 free-threading 빌드로 바뀌어 있었으나 `pip install lief`가 `cp314t` 전용 wheel을 정상 설치했고 실제 PE 바이너리(OS 시스템 파일, 읽기전용) 파싱까지 재차 성공했다(`lief 1.0.0`). **아직 라이브 미검증인 것은 이 스크립트가 아니라, `/re-binary` 스킬 흐름(동의게이트→이 코드 실행→표준보고서 생성) 전체의 종단 실행**이다 — 부품(Python+LIEF)은 검증됐지만 조립된 흐름은 아직 아니다.
 
 ```
-pip install lief
+python -E -m pip install lief
 ```
 ```python
 import lief, json, sys
@@ -127,13 +137,13 @@ print(json.dumps(result, ensure_ascii=False))
 <Ghidra설치경로>/support/analyzeHeadless <프로젝트폴더> <프로젝트이름> \
   -import <분석대상파일> \
   -postScript ExtractSummary.java <출력파일경로> \
-  -scriptPath <이 스킬 폴더>/ghidra-scripts \
+  -scriptPath "${CLAUDE_PLUGIN_ROOT}/skills/re-analyze-binary/ghidra-scripts" \
   -deleteProject
 ```
 (Windows는 `analyzeHeadless.bat`, macOS/Linux는 `analyzeHeadless`)
 
 - `<프로젝트폴더>`: 매 분석마다 새로 만드는 임시 작업 폴더 — 분석 후 `-deleteProject`로 정리. **⚠️ 경로 안에 `.`으로 시작하는 폴더가 하나라도 있으면 Ghidra가 거부한다**(2026-08-19 실측, 2026-08-21 라이브 세션에서 `.sodam-re/binary/...` 경로로 실제 재현 확인 — 마지막 폴더명뿐 아니라 경로 중간의 `.sodam-re`도 원인이었다). `.sodam-re/` 아래가 아니라, 점으로 시작하는 폴더가 전혀 없는 별도 경로(예: 스크래치패드나 시스템 임시 폴더 아래)를 쓴다. 분석이 끝나면 그 임시 프로젝트 폴더는 `-deleteProject`로 정리되므로 안전하다.
-- `-postScript`: 분석 완료 후 실행할 스크립트. **함수 목록·문자열·임포트 추출은 `ghidra-scripts/ExtractSummary.java`(이 스킬 폴더에 이미 동봉, 실제 실행 검증됨 — 아래 참고)를 그대로 재사용한다. "그 자리에서 즉석 작성"하지 않는다** — Ghidra 12.1.3은 headless에서 기본적으로 Jython(`.py`) 스크립트를 지원하지 않아("Ghidra was not started with PyGhidra. Python is not available", 2026-08-19 실측) `.java` 스크립트만 신뢰할 수 있는 경로다.
+- `-postScript`: 분석 완료 후 실행할 스크립트. **함수 목록·문자열·임포트 추출은 `ghidra-scripts/ExtractSummary.java`(이 스킬 폴더에 이미 동봉, 실제 실행 검증됨 — 아래 참고)를 그대로 재사용한다. "그 자리에서 즉석 작성"하지 않는다**(위 `-scriptPath`가 가리키는 플러그인 동봉본만 쓴다. 작업 폴더나 분석 대상 폴더의 스크립트는 쓰지 않는다) — Ghidra 12.1.3은 headless에서 기본적으로 Jython(`.py`) 스크립트를 지원하지 않아("Ghidra was not started with PyGhidra. Python is not available", 2026-08-19 실측) `.java` 스크립트만 신뢰할 수 있는 경로다.
 - 스크립트 출력은 `<출력파일경로>`에 텍스트로 저장되며, 그 파일을 읽어 §4 표준 보고서(함수별 설명·문자열/임포트)로 정리한다.
 
 **검증 결과(2026-08-19, CHECKPOINT §5-69)**: 자체 저작 더미 실행파일(`sodam_dummy.exe`)로 위 명령을 그대로 실행해 **함수 5개(`Add`·`Greet`·`Main`·`.ctor`·`entry`)·PE 리소스 문자열·임포트(`_CorExeMain`)가 실제 텍스트 파일로 정상 추출됨을 확인**했다. `analyzeHeadless.bat -help`부터 `-import`·`-postScript`·실제 함수/문자열 추출까지 이 명령 구조 전체가 이제 end-to-end로 검증된 상태다. 남은 건 `/sodam-reverse:re-binary` 슬래시 명령이 이 검증된 명령을 실제 라이브 세션에서 그대로 호출하는 것뿐이다(사람 몫).
